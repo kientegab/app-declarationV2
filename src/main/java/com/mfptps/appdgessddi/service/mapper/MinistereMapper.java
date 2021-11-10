@@ -11,12 +11,12 @@ import org.mapstruct.Mappings;
 public interface MinistereMapper {
 
     @Mappings({
-        @Mapping(target = "codeMinistere", source = "ministere.code")
+        @Mapping(target = "code", source = "ministere.code")
     })
     MinistereDTO toDto(Ministere ministere);
 
     @Mappings({
-        @Mapping(target = "code", source = "ministereDTO.codeMinistere")
+        @Mapping(target = "code", source = "ministereDTO.code")
     })
     Ministere toEntity(MinistereDTO ministereDTO);
 }
