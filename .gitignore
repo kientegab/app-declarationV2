@@ -48,3 +48,23 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Eclipse
+.classpath
+.settings/
+.loadpath
+.factorypath
+
+# env file
+.env
+
+######################
+# Directories
+######################
+/bin/
+/deploy/
+
+######################
+# Logs
+######################
+*.log*
+
