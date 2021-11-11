@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.service;
 
 import com.mfptps.appdgessddi.entities.Projet;
+import com.mfptps.appdgessddi.service.dto.ProjetDTO;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ import org.springframework.data.domain.Pageable;
  */
 public interface ProjetService {
 
-    Projet create(Projet projet);
+    Projet create(ProjetDTO projetDTO);
 
     Projet update(Projet projet);
 

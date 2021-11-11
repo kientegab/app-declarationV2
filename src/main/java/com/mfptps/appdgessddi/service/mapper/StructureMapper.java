@@ -11,11 +11,11 @@ import org.mapstruct.Mappings;
 public interface StructureMapper {
 
     @Mappings({
-            @Mapping(target = "descriptions", source = "description")
+            @Mapping(target = "description", source = "description")
     })
     StructureDTO  toDto(Structure structure);
     @Mappings({
-            @Mapping(target = "description", source = "descriptions"),
+            @Mapping(target = "description", source = "description"),
             @Mapping(target = "structure", source = "structureId")
 
     })
