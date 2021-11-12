@@ -1,20 +1,20 @@
 package com.mfptps.appdgessddi.service.dto;
 
 public class MinistereDTO {
-    
-    private String codeMinistere;
+
+    private String code;
     private String libelle;
     private String sigle;
-    
+
     public MinistereDTO() {
     }
 
-    public String getCodeMinistere() {
-        return codeMinistere;
+    public String getCode() {
+        return code;
     }
 
-    public void setCodeMinistere(String codeMinistere) {
-        this.codeMinistere = codeMinistere;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getLibelle() {
@@ -33,5 +33,4 @@ public class MinistereDTO {
         this.sigle = sigle;
     }
 
-    
 }

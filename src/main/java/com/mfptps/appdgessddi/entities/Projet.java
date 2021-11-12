@@ -2,7 +2,6 @@ package com.mfptps.appdgessddi.entities;
 
 import com.mfptps.appdgessddi.enums.BaseStatus;
 import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

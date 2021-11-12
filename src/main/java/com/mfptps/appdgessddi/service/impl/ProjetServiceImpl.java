@@ -8,7 +8,8 @@ package com.mfptps.appdgessddi.service.impl;
 import com.mfptps.appdgessddi.entities.Projet;
 import com.mfptps.appdgessddi.repositories.ProjetRepository;
 import com.mfptps.appdgessddi.service.ProjetService;
-import com.mfptps.appdgessddi.web.exceptions.CustomException;
+import com.mfptps.appdgessddi.service.dto.ProjetDTO;
+import com.mfptps.appdgessddi.service.mapper.ProjetMapper;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,19 +25,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProjetServiceImpl implements ProjetService {
 
     private final ProjetRepository repository;
+    private final ProjetMapper projetMapper;
 
-    public ProjetServiceImpl(ProjetRepository repository) {
+    public ProjetServiceImpl(ProjetRepository repository, ProjetMapper projetMapper) {
         this.repository = repository;
+        this.projetMapper = projetMapper;
     }
 
     /**
      *
-     * @param projet : object Projet
+     * @param projetDTO : object Projet
      * @return
      */
     @Override
-    public Projet create(Projet projet) {
-        return repository.save(projet);
+    public Projet create(ProjetDTO projetDTO) {
+        Projet mapped = projetMapper.toEntity(projetDTO);
+        return repository.save(mapped);
     }
 
     /**

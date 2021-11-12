@@ -7,16 +7,13 @@ package com.mfptps.appdgessddi.entities;
 
 import com.mfptps.appdgessddi.enums.BaseStatus;
 import java.util.Date;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,7 +34,7 @@ import org.hibernate.annotations.Where;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+//@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "programme")
 @SQLDelete(sql = "UPDATE programme SET deleted = true WHERE id=?") // to manage softDeletion
@@ -46,24 +43,25 @@ import org.hibernate.annotations.Where;
 @Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
 public class Programme extends CommonEntity {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id_programme;
 
-        @Column(nullable = false, length = 2)
-        private String code;
+    @Column(nullable = false, length = 2)
+    private String code_programme;
 
-        @Column(nullable = false, updatable = true)
-        private String libelle;
+    @Column(nullable = false, updatable = true)
+    private String libelle_programme;
 
-        private String description;
+    private String description_programme;
 
-        @Column(name = "programme_status")
-        private BaseStatus statut;
+    @Column(name = "programme_status")
+    private BaseStatus statut_programme;
 
-        private Date debut;
+    private Date debut_programme;
 
-        private Date fin;
+    private Date fin_programme;
 
-        private String details;
+    private String details_programme;
+
 }
