@@ -6,9 +6,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.*;
+
 @Entity
-@Table
-public class Ministere {
+@Table(name = "ministere")
+@SQLDelete(sql="UPDATE ministere SET deleted = true WHERE id=?")
+@Where(clause = "deleted = false")
+@FilterDef(
+        name = "deletedFilter",
+        parameters = @ParamDef(name = "isDeleted", type = "boolean")
+)
+@Filter(
+        name = "deletedFilter",
+        condition = "deleted = :isDeleted"
+)
+public class Ministere  extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

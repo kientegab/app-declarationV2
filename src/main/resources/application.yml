@@ -1,5 +1,44 @@
-server.port: 8089
+server:
+  port: 8089
+  servlet:
+    context-path: /dgess
+application:
+  name: dgess
+  security:
+    authentication:
+      jwt:
+        base64-secret: YmYwMThjYmY1NDVhODRmMTE3MTdlYjY5N2IyYjAwYTU5ZjYzNTdhNDNmOWE3ODE3ODk2ZTJiNzRkYmI1ZGY0NTI2NDc3MjMwOGQwOTAyZDUwNWQ1ZDU0ZWFiZjRjNTY4YTE5YmQ3MDBmMzFjM2NmNzc2NGQ2NjBmN2Y1YTdjOWE=
+        # Token is valid 24 hours
+        token-validity-in-seconds: 86400
+        token-validity-in-seconds-for-remember-me: 2592000
+  mail:
+    from: notation@mfptps.gov.bf
+    base-url: http://localhost:8089${server.servlet.context-path:/}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
+  jpa:
+    open-in-view: false
+
+---
 logging:
   level:
     ROOT: INFO
@@ -31,3 +70,27 @@ spring:
     console:
       enable: true
       path: /h2-console
+
+---
+logging:
+  level:
+    ROOT: INFO
+    com.mfptps.appdgessddi: INFO
+  
+spring:
+  config:
+    activate:
+      on-profile: prod
+  main:
+    banner-mode: off
+  jpa:
+    hibernate.ddl-auto: none
+  # spring.jpa.hibernate.ddl-auto=create
+  datasource:
+    initialization-mode: always
+    platform: postgres
+    url: jdbc:postgresql:localhost:5432/evaluationDB
+    username: admin
+    password:
+    hikari:
+      auto-commit: false
