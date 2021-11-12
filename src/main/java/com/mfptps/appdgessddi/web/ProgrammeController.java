@@ -10,6 +10,7 @@ import com.mfptps.appdgessddi.aop.utils.PaginationUtil;
 import com.mfptps.appdgessddi.aop.utils.ResponseUtil;
 import com.mfptps.appdgessddi.entities.Programme;
 import com.mfptps.appdgessddi.service.ProgrammeService;
+import com.mfptps.appdgessddi.service.dto.ProgrammeDTO;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -54,16 +55,16 @@ public class ProgrammeController {
 
     /**
      *
-     * @param programme
+     * @param programmeDTO
      * @return
      * @throws URISyntaxException
      */
     @PostMapping
-    public ResponseEntity<Programme> createProgramme(@Valid @RequestBody Programme programme) throws URISyntaxException {
-        Programme programmeSaved = programmeService.create(programme);
-        log.debug("Création du Programme : {}", programme);
-        return ResponseEntity.created(new URI("/api/programmes/" + programmeSaved.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, programmeSaved.getId().toString()))
+    public ResponseEntity<Programme> createProgramme(@Valid @RequestBody ProgrammeDTO programmeDTO) throws URISyntaxException {
+        Programme programmeSaved = programmeService.create(programmeDTO);
+        log.debug("Création du Programme : {}", programmeDTO);
+        return ResponseEntity.created(new URI("/api/programmes/" + programmeSaved.getId_programme()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, programmeSaved.getId_programme().toString()))
                 .body(programmeSaved);
     }
 
@@ -76,12 +77,12 @@ public class ProgrammeController {
     @PutMapping
     public ResponseEntity<Programme> updateProgramme(@Valid @RequestBody Programme programme) throws URISyntaxException {
         log.debug("Mis à jour du Programme : {}", programme);
-        if (programme.getId() == null) {
+        if (programme.getId_programme() == null) {
             throw new BadRequestAlertException("Id invalide", ENTITY_NAME, "idnull");
         }
         Programme result = programmeService.update(programme);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, programme.getId().toString()))
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, programme.getId_programme().toString()))
                 .body(result);
     }
 

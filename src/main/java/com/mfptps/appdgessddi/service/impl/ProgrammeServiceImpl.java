@@ -8,6 +8,8 @@ package com.mfptps.appdgessddi.service.impl;
 import com.mfptps.appdgessddi.entities.Programme;
 import com.mfptps.appdgessddi.repositories.ProgrammeRepository;
 import com.mfptps.appdgessddi.service.ProgrammeService;
+import com.mfptps.appdgessddi.service.dto.ProgrammeDTO;
+import com.mfptps.appdgessddi.service.mapper.ProgrammeMapper;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,14 +25,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProgrammeServiceImpl implements ProgrammeService {
 
     private final ProgrammeRepository repository;
+    
+    private final ProgrammeMapper programmeMapper;
 
-    public ProgrammeServiceImpl(ProgrammeRepository repository) {
+    public ProgrammeServiceImpl(ProgrammeRepository repository,
+            ProgrammeMapper programmeMapper) {
         this.repository = repository;
+        this.programmeMapper = programmeMapper;
     }
 
     @Override
-    public Programme create(Programme programme) {
-        return repository.save(programme);
+    public Programme create(ProgrammeDTO programmeDTO) {
+        return repository.save(programmeMapper.toEntity(programmeDTO));
     }
 
     @Override
@@ -41,7 +47,8 @@ public class ProgrammeServiceImpl implements ProgrammeService {
     @Override
     @Transactional(readOnly = true)
     public Optional<Programme> get(String code) {
-        return repository.findByCode(code);
+        return null; 
+//repository.findByCode_programme(code);
     }
 
     @Override
