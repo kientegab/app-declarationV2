@@ -2,15 +2,17 @@ package com.mfptps.appdgessddi.service.dto;
 
 public class StructureDTO {
 
-    private String libelle ;
-    private String description ;
-    private String type ;
-    private String statut ;
-    private int telephone ;
-    private String emailResp ;
-    private String emailStruct ;
+    private String libelle;
+    private String description;
+    private String type;
+    private String statut;
+    private String telephone;
+    private String emailResp;
+    private String emailStruct;
 
-    private Long structureId ;
+    private Long structureId;
+
+    private Long ministereId;
 
     public String getLibelle() {
         return libelle;
@@ -44,11 +46,11 @@ public class StructureDTO {
         this.statut = statut;
     }
 
-    public int getTelephone() {
+    public String getTelephone() {
         return telephone;
     }
 
-    public void setTelephone(int telephone) {
+    public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
 
@@ -75,4 +77,13 @@ public class StructureDTO {
     public void setStructureId(Long structureId) {
         this.structureId = structureId;
     }
+
+    public Long getMinistereId() {
+        return ministereId;
+    }
+
+    public void setMinistereId(Long ministereId) {
+        this.ministereId = ministereId;
+    }
+
 }
