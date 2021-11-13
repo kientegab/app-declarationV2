@@ -16,15 +16,22 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ProgrammeMapper {
 
+    @Mapping(source = "code", target = "code")
+    @Mapping(source = "libelle", target = "libelle")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "statut", target = "statut")
+    @Mapping(source = "debut", target = "debut")
+    @Mapping(source = "fin", target = "fin")
+    @Mapping(source = "details", target = "details")
     Programme toEntity(ProgrammeDTO programmeDTO);
 
-    @Mapping(source = "code_programme", target = "code")
-    @Mapping(source = "libelle_programme", target = "libelle")
-    @Mapping(source = "description_programme", target = "description")
-    @Mapping(source = "statut_programme", target = "statut")
-    @Mapping(source = "debut_programme", target = "debut")
-    @Mapping(source = "fin_programme", target = "fin")
-    @Mapping(source = "details_programme", target = "details")
+    @Mapping(source = "code", target = "code")
+    @Mapping(source = "libelle", target = "libelle")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "statut", target = "statut")
+    @Mapping(source = "debut", target = "debut")
+    @Mapping(source = "fin", target = "fin")
+    @Mapping(source = "details", target = "details")
     ProgrammeDTO toDto(Programme programme);
 
 }

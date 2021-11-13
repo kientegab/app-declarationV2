@@ -7,19 +7,13 @@ package com.mfptps.appdgessddi.entities;
 
 import com.mfptps.appdgessddi.enums.BaseStatus;
 import java.util.Date;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
@@ -42,93 +36,92 @@ import org.hibernate.annotations.Where;
 @Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
 public class Programme extends CommonEntity {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        private Long id_programme;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-        @Column(nullable = false, length = 2)
-        private String code_programme;
+    @Column(nullable = false, length = 2)
+    private String code;
 
-        @Column(nullable = false, updatable = true)
-        private String libelle_programme;
+    @Column(nullable = false, updatable = true)
+    private String libelle;
 
-        private String description_programme;
+    private String description;
 
-        @Column(name = "programme_status")
-        private BaseStatus statut_programme;
+    @Column(name = "programme_status")
+    private BaseStatus statut;
 
-        private Date debut_programme;
+    private Date debut;
 
-        private Date fin_programme;
+    private Date fin;
 
-        private String details_programme;
+    private String details;
 
     public Programme() {
     }
 
-    public Long getId_programme() {
-        return id_programme;
+    public Long getId() {
+        return id;
     }
 
-    public void setId_programme(Long id_programme) {
-        this.id_programme = id_programme;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getCode_programme() {
-        return code_programme;
+    public String getCode() {
+        return code;
     }
 
-    public void setCode_programme(String code_programme) {
-        this.code_programme = code_programme;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public String getLibelle_programme() {
-        return libelle_programme;
+    public String getLibelle() {
+        return libelle;
     }
 
-    public void setLibelle_programme(String libelle_programme) {
-        this.libelle_programme = libelle_programme;
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
     }
 
-    public String getDescription_programme() {
-        return description_programme;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescription_programme(String description_programme) {
-        this.description_programme = description_programme;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public BaseStatus getStatut_programme() {
-        return statut_programme;
+    public BaseStatus getStatut() {
+        return statut;
     }
 
-    public void setStatut_programme(BaseStatus statut_programme) {
-        this.statut_programme = statut_programme;
+    public void setStatut(BaseStatus statut) {
+        this.statut = statut;
     }
 
-    public Date getDebut_programme() {
-        return debut_programme;
+    public Date getDebut() {
+        return debut;
     }
 
-    public void setDebut_programme(Date debut_programme) {
-        this.debut_programme = debut_programme;
+    public void setDebut(Date debut) {
+        this.debut = debut;
     }
 
-    public Date getFin_programme() {
-        return fin_programme;
+    public Date getFin() {
+        return fin;
     }
 
-    public void setFin_programme(Date fin_programme) {
-        this.fin_programme = fin_programme;
+    public void setFin(Date fin) {
+        this.fin = fin;
     }
 
-    public String getDetails_programme() {
-        return details_programme;
+    public String getDetails() {
+        return details;
     }
 
-    public void setDetails_programme(String details_programme) {
-        this.details_programme = details_programme;
+    public void setDetails(String details) {
+        this.details = details;
     }
-        
-        
+
 }

@@ -10,6 +10,7 @@ import com.mfptps.appdgessddi.aop.utils.PaginationUtil;
 import com.mfptps.appdgessddi.aop.utils.ResponseUtil;
 import com.mfptps.appdgessddi.entities.Projet;
 import com.mfptps.appdgessddi.service.ProjetService;
+import com.mfptps.appdgessddi.service.dto.ProjetDTO;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -54,14 +55,14 @@ public class ProjetController {
 
     /**
      *
-     * @param projet
+     * @param projetDto
      * @return
      * @throws URISyntaxException
      */
     @PostMapping
-    public ResponseEntity<Projet> createProjet(@Valid @RequestBody Projet projet) throws URISyntaxException {
-        Projet projetSaved = projetService.create(projet);
-        log.debug("Création du Projet : {}", projet);
+    public ResponseEntity<Projet> createProjet(@Valid @RequestBody ProjetDTO projetDto) throws URISyntaxException {
+        Projet projetSaved = projetService.create(projetDto);
+        log.debug("Création du Projet : {}", projetDto);
         return ResponseEntity.created(new URI("/api/projets/" + projetSaved.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, projetSaved.getId().toString()))
                 .body(projetSaved);

@@ -1,29 +1,28 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package com.mfptps.appdgessddi.service.dto;
 
+import com.mfptps.appdgessddi.entities.Programme;
 import java.util.Date;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  *
- * @author Fatogoma HEBIE <fat19ebie@gmail.com>
+ * @author Canisius <canisiushien@gmail.com>
  */
-public class ProgrammeDTO {
+public class ProjetDTO {
 
-    @NotBlank
+    // fields of Projet entity
     @NotNull
-    @Size(max = 2)
-    private String code;
-
     @NotBlank
-    @NotNull
     private String libelle;
 
+    @NotNull
+    @NotBlank
     private String description;
 
     private String statut;
@@ -32,17 +31,9 @@ public class ProgrammeDTO {
 
     private Date fin;
 
-    private String details;
+    private Programme programme;
 
-    public ProgrammeDTO() {
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
+    public ProjetDTO() {
     }
 
     public String getLibelle() {
@@ -85,12 +76,12 @@ public class ProgrammeDTO {
         this.fin = fin;
     }
 
-    public String getDetails() {
-        return details;
+    public Programme getProgramme() {
+        return programme;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
+    public void setProgramme(Programme programme) {
+        this.programme = programme;
     }
 
 }

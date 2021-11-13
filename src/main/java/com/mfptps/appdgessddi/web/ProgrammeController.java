@@ -63,8 +63,8 @@ public class ProgrammeController {
     public ResponseEntity<Programme> createProgramme(@Valid @RequestBody ProgrammeDTO programmeDTO) throws URISyntaxException {
         Programme programmeSaved = programmeService.create(programmeDTO);
         log.debug("Création du Programme : {}", programmeDTO);
-        return ResponseEntity.created(new URI("/api/programmes/" + programmeSaved.getId_programme()))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, programmeSaved.getId_programme().toString()))
+        return ResponseEntity.created(new URI("/api/programmes/" + programmeSaved.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, programmeSaved.getId().toString()))
                 .body(programmeSaved);
     }
 
@@ -77,12 +77,12 @@ public class ProgrammeController {
     @PutMapping
     public ResponseEntity<Programme> updateProgramme(@Valid @RequestBody Programme programme) throws URISyntaxException {
         log.debug("Mis à jour du Programme : {}", programme);
-        if (programme.getId_programme() == null) {
+        if (programme.getId() == null) {
             throw new BadRequestAlertException("Id invalide", ENTITY_NAME, "idnull");
         }
         Programme result = programmeService.update(programme);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, programme.getId_programme().toString()))
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, programme.getId().toString()))
                 .body(result);
     }
 
