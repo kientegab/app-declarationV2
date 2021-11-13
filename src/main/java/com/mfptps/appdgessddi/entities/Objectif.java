@@ -6,12 +6,9 @@
 package com.mfptps.appdgessddi.entities;
 
 import com.mfptps.appdgessddi.enums.TypeObjectif;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
+import javax.persistence.*;
+
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
@@ -50,13 +47,72 @@ public class Objectif extends CommonEntity {
 
     private TypeObjectif type;
 
-//    @ManyToOne
-//    @JoinColumn(name = "objectif_id")
-//    private Objectif parent;//to manage SousObjectif notion
-//
-//    @ManyToOne
-//    private Action action;//ObjectifOperationnel to Action
-//
+   @ManyToOne
+   @JoinColumn(name = "objectif_id")
+   private Objectif parent;//to manage SousObjectif notion
+    @ManyToOne
+   private Action action;//ObjectifOperationnel to Action
+
 //    @OneToMany
 //    private Set<Action> actions;//this relationship can be move to entity Action
+
+    public Objectif() {
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getLibelle() {
+        return libelle;
+    }
+
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public TypeObjectif getType() {
+        return type;
+    }
+
+    public void setType(TypeObjectif type) {
+        this.type = type;
+    }
+
+    public Objectif getParent() {
+        return parent;
+    }
+
+    public void setParent(Objectif parent) {
+        this.parent = parent;
+    }
+
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
 }
