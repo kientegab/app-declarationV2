@@ -3,6 +3,7 @@ package com.mfptps.appdgessddi.web;
 import com.mfptps.appdgessddi.aop.utils.HeaderUtil;
 import com.mfptps.appdgessddi.aop.utils.PaginationUtil;
 import com.mfptps.appdgessddi.entities.Structure;
+import com.mfptps.appdgessddi.service.MinistereStructureService;
 import com.mfptps.appdgessddi.service.StructureService;
 import com.mfptps.appdgessddi.service.dto.ChangeMinistereDTO;
 import com.mfptps.appdgessddi.service.dto.StructureDTO;
@@ -36,8 +37,12 @@ public class StructureController {
      */
     private final StructureService structureService;
 
-    public StructureController(StructureService structureService) {
+    private final MinistereStructureService ministereStructureService;
+
+    public StructureController(StructureService structureService,
+            MinistereStructureService ministereStructureService) {
         this.structureService = structureService;
+        this.ministereStructureService = ministereStructureService;
     }
 
     @PostMapping(path = "/structures")
@@ -73,8 +78,8 @@ public class StructureController {
     }
 
     @GetMapping(path = "/structures")
-    public ResponseEntity<List<Structure>> findAllStructure(Pageable pageable) {
-        Page<Structure> structure = structureService.findAll(pageable);
+    public ResponseEntity<List<StructureDTO>> findAllStructure(Pageable pageable) {
+        Page<StructureDTO> structure = ministereStructureService.findAllBeta(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), structure);
         return ResponseEntity.ok().headers(headers).body(structure.getContent());
     }
