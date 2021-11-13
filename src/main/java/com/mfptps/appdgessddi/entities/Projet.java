@@ -2,7 +2,6 @@ package com.mfptps.appdgessddi.entities;
 
 import com.mfptps.appdgessddi.enums.BaseStatus;
 import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,7 +32,7 @@ import lombok.ToString;
 public class Projet extends CommonEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false, updatable = true)

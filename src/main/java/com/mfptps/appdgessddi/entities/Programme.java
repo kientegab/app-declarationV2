@@ -43,7 +43,7 @@ import org.hibernate.annotations.Where;
 public class Programme extends CommonEntity {
 
         @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @GeneratedValue(strategy = GenerationType.AUTO)
         private Long id_programme;
 
         @Column(nullable = false, length = 2)

@@ -1,14 +1,9 @@
 package com.mfptps.appdgessddi.service.dto;
 
-import com.mfptps.appdgessddi.entities.Structure;
-
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
 public class StructureDTO {
 
     private String libelle ;
-    private String descriptions ;
+    private String description ;
     private String type ;
     private String statut ;
     private int telephone ;
@@ -25,12 +20,12 @@ public class StructureDTO {
         this.libelle = libelle;
     }
 
-    public String getDescriptions() {
-        return descriptions;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescriptions(String descriptions) {
-        this.descriptions = descriptions;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getType() {
