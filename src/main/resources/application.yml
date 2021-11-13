@@ -85,6 +85,7 @@ spring:
     banner-mode: off
   jpa:
     hibernate.ddl-auto: none
+ 
   # spring.jpa.hibernate.ddl-auto=create
   datasource:
     initialization-mode: always
