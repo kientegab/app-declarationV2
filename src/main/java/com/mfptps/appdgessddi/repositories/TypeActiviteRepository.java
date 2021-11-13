@@ -9,7 +9,7 @@ import com.mfptps.appdgessddi.entities.TypeActivites;
 
 
 
-public interface TypeActiviteRepository extends JpaRepository<TypeActivites, Integer>{
+public interface TypeActiviteRepository extends JpaRepository<TypeActivites, Long>{
 
-	Optional<TypeActivites> findById(Integer id);
+	Optional<TypeActivites> findById(Long id);
 }

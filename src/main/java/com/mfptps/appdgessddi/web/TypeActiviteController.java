@@ -77,7 +77,7 @@ public class TypeActiviteController {
 	    }
 	    
 	    @GetMapping(path = "{id}")
-	    public ResponseEntity<TypeActivites> getTypeActivites(@PathVariable(name = "id") Integer id) {
+	    public ResponseEntity<TypeActivites> getTypeActivites(@PathVariable(name = "id") Long id) {
 	        log.debug("Consultation du Type d'activités : {}", id);
 	        Optional<TypeActivites> typeActivites = typeActiviteService.get(id);
 	        return ResponseUtil.wrapOrNotFound(typeActivites);
@@ -93,7 +93,7 @@ public class TypeActiviteController {
 	    
 
 	    @DeleteMapping(path = "/{id}")
-	    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+	    public ResponseEntity<Void> delete(@PathVariable Long id) {
 	        log.debug("Suppression du Ministere : {}", id);
 	        typeActiviteService.delete(id);
 	        return ResponseEntity

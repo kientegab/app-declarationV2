@@ -13,8 +13,8 @@ public interface TypeActivitesService {
 
 	TypeActivites create(TypeActiviteDTO typeActivite);
 	TypeActivites update(TypeActivites typeActivite);
-	Optional<TypeActivites> get(Integer id);
+	Optional<TypeActivites> get(Long id);
 	Page<TypeActivites> findPage(Pageable pageable);
-	void delete (Integer id);
+	void delete (Long id);
 	
 }

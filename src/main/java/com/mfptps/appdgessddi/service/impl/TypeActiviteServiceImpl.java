@@ -64,7 +64,7 @@ public class TypeActiviteServiceImpl implements TypeActivitesService {
 
 	@Override
 	 @Transactional(readOnly = true)
-	public Optional<TypeActivites> get(Integer id) {
+	public Optional<TypeActivites> get(Long id) {
 		return typeActiviteRepository.findById(id);   
 	}
 
@@ -77,7 +77,7 @@ public class TypeActiviteServiceImpl implements TypeActivitesService {
 	}
 
 	@Override
-	public void delete(Integer id) {
+	public void delete(Long id) {
 		 typeActiviteRepository.deleteById(id);
 		
 	}

@@ -14,7 +14,7 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "typeactivites")
-@SQLDelete(sql="UPDATE typeactivites SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE typeactivites SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 @FilterDef(
         name = "deletedFilter",
@@ -25,27 +25,31 @@ import org.hibernate.annotations.Where;
         condition = "deleted = :isDeleted"
 )
 public class TypeActivites extends CommonEntity {
-	
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String libelle;
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public String getLibelle() {
-		return libelle;
-	}
-	public void setLibelle(String libelle) {
-		this.libelle = libelle;
-	}
-	@Override
-	public String toString() {
-		return "typeactivites [id=" + id + ", libelle=" + libelle + "]";
-	}   
-    
-   
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLibelle() {
+        return libelle;
+    }
+
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
+
+    @Override
+    public String toString() {
+        return "typeactivites [id=" + id + ", libelle=" + libelle + "]";
+    }
+
 }
