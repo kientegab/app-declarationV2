@@ -13,10 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
@@ -29,12 +26,8 @@ import org.hibernate.annotations.Where;
  *
  * @author Canisius <canisiushien@gmail.com>
  */
-@Getter
-@Setter
 @ToString
-@NoArgsConstructor
-@AllArgsConstructor
-//@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "programme")
 @SQLDelete(sql = "UPDATE programme SET deleted = true WHERE id=?") // to manage softDeletion
@@ -44,24 +37,91 @@ import org.hibernate.annotations.Where;
 public class Programme extends CommonEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_programme;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @Column(nullable = false, length = 2)
-    private String code_programme;
+    private String code;
 
     @Column(nullable = false, updatable = true)
-    private String libelle_programme;
+    private String libelle;
 
-    private String description_programme;
+    private String description;
 
     @Column(name = "programme_status")
-    private BaseStatus statut_programme;
+    private BaseStatus statut;
 
-    private Date debut_programme;
+    private Date debut;
 
-    private Date fin_programme;
+    private Date fin;
 
-    private String details_programme;
+    private String details;
+
+    public Programme() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getLibelle() {
+        return libelle;
+    }
+
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public BaseStatus getStatut() {
+        return statut;
+    }
+
+    public void setStatut(BaseStatus statut) {
+        this.statut = statut;
+    }
+
+    public Date getDebut() {
+        return debut;
+    }
+
+    public void setDebut(Date debut) {
+        this.debut = debut;
+    }
+
+    public Date getFin() {
+        return fin;
+    }
+
+    public void setFin(Date fin) {
+        this.fin = fin;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
 }

@@ -8,6 +8,8 @@ package com.mfptps.appdgessddi.service.mapper;
 import com.mfptps.appdgessddi.entities.Projet;
 import com.mfptps.appdgessddi.service.dto.ProjetDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 /**
  *
@@ -23,14 +25,13 @@ public interface ProjetMapper {
      * @param projet
      * @return
      */
-//    @Mappings({
-//        @Mapping(target = "libelle", source = "projet.libelle"),
-//        @Mapping(target = "description", source = "projet.description"),
-//        @Mapping(target = "statut", source = "projet.statut"),
-//        @Mapping(target = "debut", source = "projet.debut"),
-//        @Mapping(target = "fin", source = "projet.fin"),
-//        @Mapping(target = "programme", source = "projet.programme")
-//    })
+    @Mappings({
+        @Mapping(target = "libelle", source = "libelle"),
+        @Mapping(target = "description", source = "description"),
+        @Mapping(target = "statut", source = "statut"),
+        @Mapping(target = "debut", source = "debut"),
+        @Mapping(target = "fin", source = "fin"),
+        @Mapping(target = "programme", source = "programme")})
     ProjetDTO toDto(Projet projet);
 
     /**
@@ -39,13 +40,12 @@ public interface ProjetMapper {
      * @param projetDTO
      * @return
      */
-//    @Mappings({
-//        @Mapping(target = "libelle", source = "projetDTO.libelle"),
-//        @Mapping(target = "description", source = "projetDTO.description"),
-//        @Mapping(target = "statut", source = "projetDTO.statut"),
-//        @Mapping(target = "debut", source = "projetDTO.debut"),
-//        @Mapping(target = "fin", source = "projetDTO.fin"),
-//        @Mapping(target = "programme", source = "projetDTO.programme")
-//    })
+    @Mappings({
+        @Mapping(target = "libelle", source = "libelle"),
+        @Mapping(target = "description", source = "description"),
+        @Mapping(target = "statut", source = "statut"),
+        @Mapping(target = "debut", source = "debut"),
+        @Mapping(target = "fin", source = "fin"),
+        @Mapping(target = "programme", source = "programme")})
     Projet toEntity(ProjetDTO projetDTO);
 }

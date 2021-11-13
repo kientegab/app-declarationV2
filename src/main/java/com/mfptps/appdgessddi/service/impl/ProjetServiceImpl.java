@@ -11,6 +11,7 @@ import com.mfptps.appdgessddi.service.ProjetService;
 import com.mfptps.appdgessddi.service.dto.ProjetDTO;
 import com.mfptps.appdgessddi.service.mapper.ProjetMapper;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Canisius <canisiushien@gmail.com>
  */
+@Slf4j
 @Service
 @Transactional
 public class ProjetServiceImpl implements ProjetService {

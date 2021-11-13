@@ -25,18 +25,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProgrammeServiceImpl implements ProgrammeService {
 
     private final ProgrammeRepository repository;
+
     private final ProgrammeMapper programmeMapper;
 
-    public ProgrammeServiceImpl(ProgrammeRepository repository, ProgrammeMapper programmeMapper) {
+    public ProgrammeServiceImpl(ProgrammeRepository repository,
+            ProgrammeMapper programmeMapper) {
         this.repository = repository;
         this.programmeMapper = programmeMapper;
     }
 
     @Override
     public Programme create(ProgrammeDTO programmeDTO) {
-        Programme mapped = programmeMapper.toEntity(programmeDTO);
-        System.out.println("___________Mapped : " + mapped);
-        return repository.save(mapped);
+        return repository.save(programmeMapper.toEntity(programmeDTO));
     }
 
     @Override
@@ -47,7 +47,8 @@ public class ProgrammeServiceImpl implements ProgrammeService {
     @Override
     @Transactional(readOnly = true)
     public Optional<Programme> get(String code) {
-        return repository.findByCode(code);
+        return null;
+//repository.findByCode_programme(code);
     }
 
     @Override
