@@ -1,96 +1,93 @@
 package com.mfptps.appdgessddi.entities;
 
+import com.mfptps.appdgessddi.enums.ActiviteStatus;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
 import org.hibernate.annotations.*;
-
-
 
 @Entity
 @Table(name = "activites")
-@SQLDelete(sql="UPDATE activites SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE activites SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 @FilterDef(
         name = "deletedFilter",
-        		  parameters = @ParamDef(name = "isDeleted", type = "boolean")
+        parameters = @ParamDef(name = "isDeleted", type = "boolean")
 )
 @Filter(
         name = "deletedFilter",
         condition = "deleted = :isDeleted"
 )
 public class Activites extends CommonEntity {
-	@Id
+
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-	private String code;
-	private String description;
+    private String code;
+    private String description;
     private String libelle;
-  
-    private String status;
-    
+
+    private ActiviteStatus status;
+
     @ManyToOne
     private TypeActivites typeActivites;
 
-	public Activites() {
-		
-	}
+    public Activites() {
 
-	public Long getId() {
-		return id;
-	}
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getCode() {
-		return code;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+    public String getCode() {
+        return code;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getLibelle() {
-		return libelle;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setLibelle(String libelle) {
-		this.libelle = libelle;
-	}
+    public String getLibelle() {
+        return libelle;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public ActiviteStatus getStatus() {
+        return status;
+    }
 
-	public TypeActivites getTypeActivites() {
-		return typeActivites;
-	}
+    public void setStatus(ActiviteStatus status) {
+        this.status = status;
+    }
 
-	public void setTypeActivites(TypeActivites typeActivites) {
-		this.typeActivites = typeActivites;
-	}
+    public TypeActivites getTypeActivites() {
+        return typeActivites;
+    }
 
-	@Override
-	public String toString() {
-		return "Activites [code=" + code + ", libelle=" + libelle + ", status=" + status + ", typeActivites="
-				+ typeActivites + "]";
-	}
-    
-    
+    public void setTypeActivites(TypeActivites typeActivites) {
+        this.typeActivites = typeActivites;
+    }
+
+    @Override
+    public String toString() {
+        return "Activites [code=" + code + ", libelle=" + libelle + ", status=" + status + ", typeActivites="
+                + typeActivites + "]";
+    }
 
 }
