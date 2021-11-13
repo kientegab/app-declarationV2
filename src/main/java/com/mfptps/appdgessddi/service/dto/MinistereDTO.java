@@ -1,11 +1,11 @@
 package com.mfptps.appdgessddi.service.dto;
 
 public class MinistereDTO {
-    
+
     private String code;
     private String libelle;
     private String sigle;
-    
+
     public MinistereDTO() {
     }
 
@@ -33,5 +33,4 @@ public class MinistereDTO {
         this.sigle = sigle;
     }
 
-    
 }

@@ -64,7 +64,7 @@ public final class HeaderUtil {
     public static HttpHeaders createEntityUpdateAlert(String applicationName, boolean enableTranslation, String entityName, String param) {
         String message = enableTranslation ? applicationName + "." + entityName + ".updated"
             : "Un objet " + entityName + " avec l'identifiant " + param + " a été mis à jour";
-        return createAlert(applicationName, message, param);
+        return createAlert(applicationName, message, param); 
     }
 
     /**

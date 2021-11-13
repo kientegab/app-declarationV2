@@ -14,7 +14,7 @@
     <name>app-dgessddi</name>
     <description>Plateforme d&apos;evaluation des performances des structures</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
         <hibernate.version>5.4.32.Final</hibernate.version>
         <springdoc.version>1.5.9</springdoc.version>
     </properties>

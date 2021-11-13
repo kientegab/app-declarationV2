@@ -10,6 +10,7 @@ import com.mfptps.appdgessddi.aop.utils.PaginationUtil;
 import com.mfptps.appdgessddi.aop.utils.ResponseUtil;
 import com.mfptps.appdgessddi.entities.Programme;
 import com.mfptps.appdgessddi.service.ProgrammeService;
+import com.mfptps.appdgessddi.service.dto.ProgrammeDTO;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -54,14 +55,14 @@ public class ProgrammeController {
 
     /**
      *
-     * @param programme
+     * @param programmeDTO
      * @return
      * @throws URISyntaxException
      */
     @PostMapping
-    public ResponseEntity<Programme> createProgramme(@Valid @RequestBody Programme programme) throws URISyntaxException {
-        Programme programmeSaved = programmeService.create(programme);
-        log.debug("Création du Programme : {}", programme);
+    public ResponseEntity<Programme> createProgramme(@Valid @RequestBody ProgrammeDTO programmeDTO) throws URISyntaxException {
+        Programme programmeSaved = programmeService.create(programmeDTO);
+        log.debug("Création du Programme : {}", programmeDTO);
         return ResponseEntity.created(new URI("/api/programmes/" + programmeSaved.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, programmeSaved.getId().toString()))
                 .body(programmeSaved);

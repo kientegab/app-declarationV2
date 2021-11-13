@@ -15,5 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface ProgrammeRepository extends JpaRepository<Programme, Long> {
 
-    Optional<Programme> findByCode(String code);
+//    Optional<Programme> findByCode_programme(String code);
 }
