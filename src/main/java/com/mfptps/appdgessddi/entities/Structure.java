@@ -1,14 +1,21 @@
 package com.mfptps.appdgessddi.entities;
 
-import org.hibernate.annotations.*;
-
-import javax.persistence.*;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "structure")
-@SQLDelete(sql="UPDATE structure SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE structure SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 @FilterDef(
         name = "deletedFilter",
@@ -18,24 +25,23 @@ import javax.persistence.Table;
         name = "deletedFilter",
         condition = "deleted = :isDeleted"
 )
-public class Structure  extends CommonEntity{
+public class Structure extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String libelle ;
-    private String description ;
-    private String type ;
-    private String statut ;
-    private int telephone ;
-    private String emailResp ;
-    private String emailStruct ;
+    private String libelle;
+    private String description;
+    private String type;
+    private String statut;
+    private String telephone;
+    private String emailResp;
+    private String emailStruct;
     @ManyToOne
-    @JoinColumn(name = "structure_id",nullable = true)
-    private Structure structure ;
+    @JoinColumn(name = "structure_id", nullable = true)
+    private Structure structure;
 
-
-    public Structure(){
+    public Structure() {
 
     }
 
@@ -79,11 +85,11 @@ public class Structure  extends CommonEntity{
         this.statut = statut;
     }
 
-    public int getTelephone() {
+    public String getTelephone() {
         return telephone;
     }
 
-    public void setTelephone(int telephone) {
+    public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
 
@@ -113,16 +119,16 @@ public class Structure  extends CommonEntity{
 
     @Override
     public String toString() {
-        return "Structure{" +
-                "id=" + id +
-                ", libelle='" + libelle + '\'' +
-                ", description='" + description + '\'' +
-                ", type='" + type + '\'' +
-                ", statut='" + statut + '\'' +
-                ", telephone=" + telephone +
-                ", emailResp='" + emailResp + '\'' +
-                ", emailStruct='" + emailStruct + '\'' +
-                ", structure=" + structure +
-                '}';
+        return "Structure{"
+                + "id=" + id
+                + ", libelle='" + libelle + '\''
+                + ", description='" + description + '\''
+                + ", type='" + type + '\''
+                + ", statut='" + statut + '\''
+                + ", telephone=" + telephone
+                + ", emailResp='" + emailResp + '\''
+                + ", emailStruct='" + emailStruct + '\''
+                + ", structure=" + structure
+                + '}';
     }
 }

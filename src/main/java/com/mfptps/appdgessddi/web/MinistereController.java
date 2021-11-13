@@ -1,18 +1,15 @@
 package com.mfptps.appdgessddi.web;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-
-import javax.validation.Valid;
-
 import com.mfptps.appdgessddi.aop.utils.*;
 import com.mfptps.appdgessddi.entities.Ministere;
 import com.mfptps.appdgessddi.service.MinistereService;
 import com.mfptps.appdgessddi.service.dto.MinistereDTO;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
-
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import javax.validation.Valid;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
@@ -30,7 +27,7 @@ public class MinistereController {
 
     @Value("${application.name}")
     private String applicationName;
-    
+
     private final MinistereService ministereService;
 
     public MinistereController(MinistereService ministereService) {
@@ -39,12 +36,12 @@ public class MinistereController {
 
     @PostMapping(path = "/ministeres")
     public ResponseEntity<Ministere> create(@Valid @RequestBody MinistereDTO ministere) throws URISyntaxException {
-        
+
         Ministere min = ministereService.create(ministere);
         log.debug("Création du Ministere : {}", ministere);
         return ResponseEntity.created(new URI("/api/ministeres/" + min.getId()))
-                             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, min.getId().toString()))
-                             .body(min);
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, min.getId().toString()))
+                .body(min);
     }
 
     @PutMapping(path = "/ministeres")
@@ -55,14 +52,21 @@ public class MinistereController {
         }
         Ministere result = ministereService.update(ministere);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, ministere.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, ministere.getId().toString()))
+                .body(result);
     }
 
     @GetMapping(path = "/ministeres/{code}")
     public ResponseEntity<Ministere> getMinistere(@PathVariable(name = "code") String code) {
         log.debug("Consultation du Ministere : {}", code);
         Optional<Ministere> ministere = ministereService.get(code);
+        return ResponseUtil.wrapOrNotFound(ministere);
+    }
+
+    @GetMapping(path = "/ministeres/{id}")
+    public ResponseEntity<Ministere> getMinistereById(@PathVariable(name = "id") Long id) {
+        log.debug("Consultation du Ministere : {}", id);
+        Optional<Ministere> ministere = ministereService.get(id);
         return ResponseUtil.wrapOrNotFound(ministere);
     }
 
@@ -78,9 +82,9 @@ public class MinistereController {
         log.debug("Suppression du Ministere : {}", id);
         ministereService.delete(id);
         return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
-            .build();
+                .noContent()
+                .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
+                .build();
     }
-    
+
 }

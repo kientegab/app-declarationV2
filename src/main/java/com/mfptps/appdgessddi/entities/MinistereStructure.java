@@ -1,19 +1,18 @@
 package com.mfptps.appdgessddi.entities;
 
-
-import javax.persistence.*;
 import java.util.Date;
-
+import javax.persistence.*;
 
 @Entity
 @Table(name = "ministere_structure")
 public class MinistereStructure extends CommonEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String statut ;
-    private Date dateDebut ;
-    private Date dateFin ;
+    private boolean statut = true;
+    private Date dateDebut;
+    private Date dateFin;
     /*
 
      */
@@ -23,7 +22,7 @@ public class MinistereStructure extends CommonEntity {
 
      */
     @ManyToOne
-    private  Ministere ministere ;
+    private Ministere ministere;
 
     public Long getId() {
         return id;
@@ -33,11 +32,11 @@ public class MinistereStructure extends CommonEntity {
         this.id = id;
     }
 
-    public String getStatut() {
+    public boolean isStatut() {
         return statut;
     }
 
-    public void setStatut(String statut) {
+    public void setStatut(boolean statut) {
         this.statut = statut;
     }
 

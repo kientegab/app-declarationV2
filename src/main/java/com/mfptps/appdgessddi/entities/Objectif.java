@@ -5,17 +5,12 @@
  */
 package com.mfptps.appdgessddi.entities;
 
-import ch.qos.logback.core.joran.action.Action;
 import com.mfptps.appdgessddi.enums.TypeObjectif;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
@@ -55,14 +50,13 @@ public class Objectif extends CommonEntity {
 
     private TypeObjectif type;
 
-    @ManyToOne
-    @JoinColumn(name = "objectif_id")
-    private Objectif parent;//to manage SousObjectif notion
-
-    @ManyToOne
-    private Action action;//ObjectifOperationnel to Action
-
-    @OneToMany
-    private Set<Action> actions;//this relationship can be move to entity Action
-
+//    @ManyToOne
+//    @JoinColumn(name = "objectif_id")
+//    private Objectif parent;//to manage SousObjectif notion
+//
+//    @ManyToOne
+//    private Action action;//ObjectifOperationnel to Action
+//
+//    @OneToMany
+//    private Set<Action> actions;//this relationship can be move to entity Action
 }
