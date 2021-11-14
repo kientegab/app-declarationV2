@@ -1,13 +1,15 @@
 package com.mfptps.appdgessddi.web;
 
-
-import com.mfptps.appdgessddi.aop.utils.HeaderUtil;
-import com.mfptps.appdgessddi.aop.utils.PaginationUtil;
-import com.mfptps.appdgessddi.aop.utils.ResponseUtil;
 import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.service.ExerciceService;
 import com.mfptps.appdgessddi.service.dto.ExerciceDTO;
+import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -16,12 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -34,7 +30,7 @@ public class ExerciceController {
     private String applicationName;
     /*
      */
-    private final ExerciceService exerciceService ;
+    private final ExerciceService exerciceService;
 
     public ExerciceController(ExerciceService exerciceService) {
         this.exerciceService = exerciceService;
@@ -48,9 +44,10 @@ public class ExerciceController {
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, exercice.getId().toString()))
                 .body(exercice);
     }
+
     @PutMapping
     public ResponseEntity<Exercice> updateExercice(@Valid @RequestBody Exercice exercice) throws URISyntaxException {
-        log.debug("Mis à jour d un exercice : {}",exercice);
+        log.debug("Mis à jour d un exercice : {}", exercice);
         if (exercice.getId() == null) {
             throw new BadRequestAlertException("Id invalide", ENTITY_NAME, "idnull");
         }

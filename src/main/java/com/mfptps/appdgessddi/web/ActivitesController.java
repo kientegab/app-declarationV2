@@ -1,9 +1,7 @@
 package com.mfptps.appdgessddi.web;
 
-import com.mfptps.appdgessddi.aop.utils.*;
+import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.entities.Activites;
-import com.mfptps.appdgessddi.entities.Ministere;
-import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.service.ActivitesService;
 import com.mfptps.appdgessddi.service.dto.ActivitesDTO;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
@@ -13,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.slf4j.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;

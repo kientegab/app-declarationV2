@@ -24,9 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.mfptps.appdgessddi.aop.utils.HeaderUtil;
-import com.mfptps.appdgessddi.aop.utils.PaginationUtil;
-import com.mfptps.appdgessddi.aop.utils.ResponseUtil;
+import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.entities.IndicateurObjectif;
 import com.mfptps.appdgessddi.entities.Objectif;
 import com.mfptps.appdgessddi.service.IndicateurObjectifService;

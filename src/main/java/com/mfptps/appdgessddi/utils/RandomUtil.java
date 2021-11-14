@@ -1,4 +1,4 @@
-package com.mfptps.appdgessddi.aop.utils;
+package com.mfptps.appdgessddi.utils;
 
 import org.apache.commons.lang3.RandomStringUtils;
 

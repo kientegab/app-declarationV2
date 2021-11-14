@@ -14,7 +14,7 @@ import org.springframework.core.env.Profiles;
 
 import java.util.Arrays;
 
-import com.mfptps.appdgessddi.aop.utils.AppProfile;
+import com.mfptps.appdgessddi.utils.AppProfile;
 
 /**
  * Aspect for logging execution of service and repository Spring components.

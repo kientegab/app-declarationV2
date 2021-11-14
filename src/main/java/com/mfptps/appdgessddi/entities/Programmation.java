@@ -63,6 +63,9 @@ public class Programmation extends CommonEntity {
     @ManyToOne
     private Projet projet;
 
+    @ManyToOne
+    private Structure structure;
+
     //============== CONSTRUCTORS && GETTERS/SETTERS
     public Programmation() {
     }
@@ -177,6 +180,14 @@ public class Programmation extends CommonEntity {
 
     public void setProjet(Projet projet) {
         this.projet = projet;
+    }
+
+    public Structure getStructure() {
+        return structure;
+    }
+
+    public void setStructure(Structure structure) {
+        this.structure = structure;
     }
 
     /**
