@@ -21,6 +21,7 @@ public interface MinistereStructureMapper {
     MinistereStructure toEntity(MinistereStructureDTO ministereSDTO);
 
     @Mappings({
+            @Mapping(target = "id", source = "structure.id"),
         @Mapping(target = "libelle", source = "structure.libelle"),
         @Mapping(target = "statut", source = "structure.statut"),
         @Mapping(target = "description", source = "structure.description"),
@@ -28,6 +29,7 @@ public interface MinistereStructureMapper {
         @Mapping(target = "type", source = "structure.type"),
         @Mapping(target = "emailResp", source = "structure.emailResp"),
         @Mapping(target = "emailStruct", source = "structure.emailStruct"),
-        @Mapping(target = "ministere", source = "ministere")})
+        @Mapping(target = "ministere", source = "ministere"),
+            @Mapping(target = "parent", source = "structure.parent")})
     StructureDTO toStructureDTO(MinistereStructure ministereStructure);
 }

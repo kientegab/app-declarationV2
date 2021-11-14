@@ -2,7 +2,10 @@ package com.mfptps.appdgessddi.web;
 
 import com.mfptps.appdgessddi.aop.utils.HeaderUtil;
 import com.mfptps.appdgessddi.aop.utils.PaginationUtil;
+import com.mfptps.appdgessddi.aop.utils.ResponseUtil;
+import com.mfptps.appdgessddi.entities.Action;
 import com.mfptps.appdgessddi.entities.Structure;
+import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.service.MinistereStructureService;
 import com.mfptps.appdgessddi.service.StructureService;
 import com.mfptps.appdgessddi.service.dto.ChangeMinistereDTO;
@@ -11,6 +14,7 @@ import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,6 +86,13 @@ public class StructureController {
         Page<StructureDTO> structure = ministereStructureService.findAllBeta(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), structure);
         return ResponseEntity.ok().headers(headers).body(structure.getContent());
+    }
+
+    @GetMapping(path = "/structures/{id}")
+    public ResponseEntity<Structure> getStructureById(@PathVariable Long id) {
+        log.debug("Consultation d une structure : {}", id);
+        Optional<Structure> structureFound = structureService.get(id);
+        return ResponseUtil.wrapOrNotFound(structureFound);
     }
 
     /**

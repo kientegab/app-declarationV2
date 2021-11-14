@@ -38,8 +38,8 @@ public class Structure extends CommonEntity {
     private String emailResp;
     private String emailStruct;
     @ManyToOne
-    @JoinColumn(name = "structure_id", nullable = true)
-    private Structure structure;
+    @JoinColumn(nullable = true)
+    private Structure parent;
 
     public Structure() {
 
@@ -109,12 +109,12 @@ public class Structure extends CommonEntity {
         this.emailStruct = emailStruct;
     }
 
-    public Structure getStructure() {
-        return structure;
+    public Structure getParent() {
+        return parent;
     }
 
-    public void setStructure(Structure structure) {
-        this.structure = structure;
+    public void setParent(Structure parent) {
+        this.parent = parent;
     }
 
     @Override
@@ -128,7 +128,7 @@ public class Structure extends CommonEntity {
                 + ", telephone=" + telephone
                 + ", emailResp='" + emailResp + '\''
                 + ", emailStruct='" + emailStruct + '\''
-                + ", structure=" + structure
+                + ", parent=" + parent
                 + '}';
     }
 }

@@ -1,44 +1,19 @@
-package com.mfptps.appdgessddi.entities;
+package com.mfptps.appdgessddi.service.dto;
+
+import com.mfptps.appdgessddi.entities.Performance;
 
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.hibernate.annotations.*;
+public class PonderationDTO {
 
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-@ToString
-@EqualsAndHashCode(callSuper = true)
-@Entity
-@Table(name = "ponderation")
-@SQLDelete(sql = "UPDATE ponderation SET deleted = true WHERE id=?") // to manage softDeletion
-@Where(clause = "deleted = false")
-@FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
-@Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
-public class Ponderation  extends CommonEntity{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     private double efficacité ;
     private double efficience ;
     private double gouvernance ;
     private double impact ;
     private boolean actif ;
-    @ManyToOne
+
     private Performance performance ;
 
-    public Ponderation() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public PonderationDTO() {
     }
 
     public double getEfficacité() {
