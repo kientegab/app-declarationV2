@@ -1,4 +1,4 @@
-package com.mfptps.appdgessddi.aop.utils;
+package com.mfptps.appdgessddi.utils;
 
 public interface AppProfile {
     String DEVELOPMENT = "dev";

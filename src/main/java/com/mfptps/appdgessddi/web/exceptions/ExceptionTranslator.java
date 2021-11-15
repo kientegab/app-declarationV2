@@ -18,9 +18,9 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
 import javax.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
-import com.mfptps.appdgessddi.aop.utils.AppProfile;
-import com.mfptps.appdgessddi.aop.utils.HeaderUtil;
 import com.mfptps.appdgessddi.service.UsernameAlreadyUsedException;
+import com.mfptps.appdgessddi.utils.AppProfile;
+import com.mfptps.appdgessddi.utils.HeaderUtil;
 
 import java.net.URI;
 import java.util.*;

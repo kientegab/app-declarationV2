@@ -2,8 +2,8 @@ package com.mfptps.appdgessddi.config;
 
 import java.sql.SQLException;
 
-import com.mfptps.appdgessddi.aop.utils.AppProfile;
-import com.mfptps.appdgessddi.aop.utils.H2Config;
+import com.mfptps.appdgessddi.utils.AppProfile;
+import com.mfptps.appdgessddi.utils.H2Config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

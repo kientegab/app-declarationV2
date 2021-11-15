@@ -1,36 +1,26 @@
-package com.mfptps.appdgessddi.entities;
+package com.mfptps.appdgessddi.service.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+/**
+ * Base abstract class for DTO which will hold definitions for created, last modified by and created,
+ * last modified by date.
+ */
+public abstract class AbstractAuditingDTO implements Serializable {
 
-import org.springframework.data.annotation.*;
+    private static final long serialVersionUID = 1L;
 
-
-@MappedSuperclass
-public abstract class CommonEntity implements Serializable {
-
-	private static final long serialVersionUID = 1L;
-
-    @CreatedBy
-    @Column(name = "created_by", nullable = false, length = 50, updatable = false)
+    @ReadOnlyProperty
     private String createdBy;
 
-    @CreatedDate
-    @Column(name = "created_date", updatable = false)
+    @ReadOnlyProperty
     private Instant createdDate = Instant.now();
 
-    @LastModifiedBy
-    @Column(name = "last_modified_by", length = 50)
     private String lastModifiedBy;
 
-    @LastModifiedDate
-    @Column(name = "last_modified_date")
     private Instant lastModifiedDate = Instant.now();
-
-	private boolean deleted = false;
 
     public String getCreatedBy() {
         return createdBy;
@@ -63,12 +53,4 @@ public abstract class CommonEntity implements Serializable {
     public void setLastModifiedDate(Instant lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
-
-	public boolean isDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
-	}
 }

@@ -10,8 +10,8 @@ import java.util.Arrays;
 
 import javax.servlet.*;
 
-import com.mfptps.appdgessddi.aop.utils.AppProfile;
-import com.mfptps.appdgessddi.aop.utils.H2Config;
+import com.mfptps.appdgessddi.utils.AppProfile;
+import com.mfptps.appdgessddi.utils.H2Config;
 
 import org.slf4j.*;
 import org.springframework.boot.web.server.*;
@@ -93,7 +93,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
         return extractedPath.substring(0, extractionEndIndex);
     }
 
-    /* @Bean
+    @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
@@ -102,7 +102,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
         config.addAllowedMethod("*");
         config.setAllowCredentials(false);
         config.setMaxAge(1800L);
-        config.setExposedHeaders(Arrays.asList("Authorization,Link,X-Total-Count,X-evaluation-alert,X-evaluation-error,X-evaluation-params"));
+        config.setExposedHeaders(Arrays.asList("Authorization,Link,X-Total-Count,X-dgess-alert,X-dgess-error,X-dgess-params"));
         log.debug("Methode {}", config.getAllowedMethods());
         if (!CollectionUtils.isEmpty(config.getAllowedOrigins())) {
             log.debug("Registering CORS filter");
@@ -113,7 +113,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
             
         }
         return new CorsFilter(source);
-    } */
+    }
 
     /**
      * Initializes H2 console.

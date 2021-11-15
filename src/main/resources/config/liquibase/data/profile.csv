@@ -1,0 +1,4 @@
+id;name;native_profile
+1;ADMIN;true
+2;MANAGER;true
+3;USER;false
