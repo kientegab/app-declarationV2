@@ -26,7 +26,7 @@ public class Performance  extends CommonEntity{
     private double gouvernance ;
     private double impact ;
     private double pgs ;
-    private double pgm ;
+    private Performer performer ;
 
     public Performance() {
     }
@@ -79,11 +79,11 @@ public class Performance  extends CommonEntity{
         this.pgs = pgs;
     }
 
-    public double getPgm() {
-        return pgm;
+    public Performer getPerformer() {
+        return performer;
     }
 
-    public void setPgm(double pgm) {
-        this.pgm = pgm;
+    public void setPerformer(Performer performer) {
+        this.performer = performer;
     }
 }
