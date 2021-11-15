@@ -9,6 +9,7 @@ import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
+import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Slf4j
 @Service
+@Transactional
 public class ProgrammationServiceImpl implements ProgrammationService {
 
     private final ProgrammationRepository programmationRepository;
@@ -48,6 +50,10 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     @Override
     public Programmation create(ProgrammationDTO programmationDTO) {
         Programmation programmationMapped = programmationMapper.toEntity(programmationDTO);
+        log.debug("Sum of Ponderations = {} %", programmationMapped.checkPonderation());
+        if (programmationMapped.checkPonderation() != 100) {
+            throw new CustomException("L'ensemble des ponderations de vos taches n'atteint pas 100%.");
+        }
         Programmation response = programmationRepository.save(programmationMapped);
 
         if (programmationDTO.isSingleton()) {//Activite with one Tache
@@ -60,7 +66,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             tacheRepository.save(tache);
         } else {//Activite with many Tache. Then we create those Taches linking ProgrammationId
             for (Tache tache : programmationDTO.getTaches()) {
-                log.info("Tache info {}", tache);
+                log.debug("Tache info {}", tache);
                 tache.setProgrammation(response);
                 tacheRepository.save(tache);
             }

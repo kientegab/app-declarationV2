@@ -28,6 +28,6 @@ public interface MinistereStructureMapper {
         @Mapping(target = "type", source = "structure.type"),
         @Mapping(target = "emailResp", source = "structure.emailResp"),
         @Mapping(target = "emailStruct", source = "structure.emailStruct"),
-        @Mapping(target = "ministereId", source = "ministere.id")})
+        @Mapping(target = "ministere", source = "ministere")})
     StructureDTO toStructureDTO(MinistereStructure ministereStructure);
 }

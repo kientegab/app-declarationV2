@@ -41,7 +41,7 @@ public class Tache extends CommonEntity {
 
     //================ relationships 
     @ManyToOne
-    @JsonIgnore//to avoid an infinite loop When retur Programmation object
+    @JsonIgnore//to avoid an infinite loop when return Programmation object
     private Programmation programmation;
 
     //================ CONSTRUCTOR && GETTERS/SETTERS 

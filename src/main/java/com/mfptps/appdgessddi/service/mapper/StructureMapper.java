@@ -1,6 +1,5 @@
 package com.mfptps.appdgessddi.service.mapper;
 
-
 import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.service.dto.StructureDTO;
 import org.mapstruct.Mapper;
@@ -11,14 +10,13 @@ import org.mapstruct.Mappings;
 public interface StructureMapper {
 
     @Mappings({
-            @Mapping(target = "description", source = "description")
+        @Mapping(target = "description", source = "description")
     })
-    StructureDTO  toDto(Structure structure);
-    @Mappings({
-            @Mapping(target = "description", source = "description"),
-            @Mapping(target = "structure", source = "structureId")
+    StructureDTO toDto(Structure structure);
 
-    })
+    @Mappings({
+        @Mapping(target = "description", source = "description"),
+        @Mapping(target = "structure", source = "structure")})
     Structure toEntity(StructureDTO structureDTO);
 
     default Structure fromId(Long id) {

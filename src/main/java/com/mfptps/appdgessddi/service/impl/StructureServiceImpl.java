@@ -4,6 +4,7 @@ import com.mfptps.appdgessddi.entities.Ministere;
 import com.mfptps.appdgessddi.entities.MinistereStructure;
 import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.repositories.MinistereRepository;
+import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
 import com.mfptps.appdgessddi.repositories.StructureRepository;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.StructureService;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
 
 @Service
 @Transactional
@@ -43,7 +43,7 @@ public class StructureServiceImpl implements StructureService {
         MinistereStructure ministereStructure = new MinistereStructure();
         Ministere ministere = new Ministere();
 
-        ministere.setId(structureDTO.getMinistereId());
+        ministere.setId(structureDTO.getMinistere().getId());
         ministereStructure.setMinistere(ministere);
         ministereStructure.setStructure(structureSaved);
         ministereStructure.setDateDebut(new Date());
