@@ -49,6 +49,7 @@ Thumbs.db
 *.wmv
 
 # Eclipse
+.project
 .classpath
 .settings/
 .loadpath

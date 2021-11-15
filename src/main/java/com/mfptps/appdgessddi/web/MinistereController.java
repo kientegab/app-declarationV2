@@ -70,7 +70,7 @@ public class MinistereController {
         return ResponseUtil.wrapOrNotFound(ministere);
     }
 
-    @GetMapping
+    @GetMapping(path = "/ministeres")
     public ResponseEntity<List<Ministere>> findAllMinisteres(Pageable pageable) {
         Page<Ministere> minsiteres = ministereService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), minsiteres);
