@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Where(clause = "deleted = false")
 @FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
 @Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
-public class Action {
+public class Action  extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +22,11 @@ public class Action {
     private String code ;
     private String libelle ;
     private String description ;
+    @ManyToOne
+    private Objectif objectif ;
+
+    public Action() {
+    }
 
     public Long getId() {
         return id;
@@ -53,5 +58,13 @@ public class Action {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Objectif getObjectif() {
+        return objectif;
+    }
+
+    public void setObjectif(Objectif objectif) {
+        this.objectif = objectif;
     }
 }
