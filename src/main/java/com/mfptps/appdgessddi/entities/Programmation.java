@@ -6,7 +6,6 @@
 package com.mfptps.appdgessddi.entities;
 
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -55,11 +54,14 @@ public class Programmation extends CommonEntity {
     @ManyToOne
     private SourceFinancement sourceFinancement;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "programmation", cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "programmation"/*, cascade = CascadeType.PERSIST*/)
     private List<Tache> taches;
 
     @ManyToOne
     private Activites activite;
+
+    @ManyToOne
+    private Projet projet;
 
     //============== CONSTRUCTORS && GETTERS/SETTERS
     public Programmation() {
@@ -167,6 +169,14 @@ public class Programmation extends CommonEntity {
 
     public void setActivite(Activites activite) {
         this.activite = activite;
+    }
+
+    public Projet getProjet() {
+        return projet;
+    }
+
+    public void setProjet(Projet projet) {
+        this.projet = projet;
     }
 
 }

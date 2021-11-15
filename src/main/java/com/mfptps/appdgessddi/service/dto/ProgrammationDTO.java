@@ -26,6 +26,8 @@ public class ProgrammationDTO {
 
     private boolean singleton;
 
+    private Long projetId;
+
     private Long sourceFinancementId;
 
     private Activites activite;
@@ -74,6 +76,14 @@ public class ProgrammationDTO {
 
     public void setSingleton(boolean singleton) {
         this.singleton = singleton;
+    }
+
+    public Long getProjetId() {
+        return projetId;
+    }
+
+    public void setProjetId(Long projetId) {
+        this.projetId = projetId;
     }
 
     public Long getSourceFinancementId() {

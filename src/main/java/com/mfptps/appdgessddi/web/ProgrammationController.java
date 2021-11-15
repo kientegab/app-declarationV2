@@ -6,19 +6,30 @@
 package com.mfptps.appdgessddi.web;
 
 import com.mfptps.appdgessddi.aop.utils.HeaderUtil;
+import com.mfptps.appdgessddi.aop.utils.PaginationUtil;
+import com.mfptps.appdgessddi.aop.utils.ResponseUtil;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  *
@@ -40,6 +51,12 @@ public class ProgrammationController {
         this.programmationService = programmationService;
     }
 
+    /**
+     *
+     * @param programmationDTO
+     * @return
+     * @throws URISyntaxException
+     */
     @PostMapping
     public ResponseEntity<Programmation> createProgrammation(@Valid @RequestBody ProgrammationDTO programmationDTO) throws URISyntaxException {
         Programmation saved = programmationService.create(programmationDTO);
@@ -47,5 +64,41 @@ public class ProgrammationController {
         return ResponseEntity.created(new URI("/api/programmations/" + saved.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, saved.getId().toString()))
                 .body(saved);
+    }
+
+    /**
+     *
+     * @param pageable
+     * @return
+     */
+    @GetMapping
+    public ResponseEntity<List<Programmation>> findAllProgrammations(Pageable pageable) {
+        Page<Programmation> programmations = programmationService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), programmations);
+        return ResponseEntity.ok().headers(headers).body(programmations.getContent());
+    }
+
+    /**
+     *
+     * @param libelle : field libelle of Activite
+     * @return
+     */
+    @GetMapping(path = "/libelle")
+    public ResponseEntity<List<Programmation>> findAllProgrammationsByLibelle(@RequestParam(required = true, name = "libelle") String libelle, Pageable pageable) {
+        Page<Programmation> programmations = programmationService.get(libelle, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), programmations);
+        return ResponseEntity.ok().headers(headers).body(programmations.getContent());
+    }
+
+    /**
+     *
+     * @param id : id of Programmation
+     * @return
+     */
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<Programmation> getProgrammationById(@PathVariable(name = "id") Long id) {
+        log.debug("Consultation du Programmation : {}", id);
+        Optional<Programmation> programmation = programmationService.get(id);
+        return ResponseUtil.wrapOrNotFound(programmation);
     }
 }

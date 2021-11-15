@@ -6,6 +6,8 @@
 package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.Programmation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -14,4 +16,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface ProgrammationRepository extends JpaRepository<Programmation, Long> {
 
+    Page<Programmation> findByActiviteLibelleContainingIgnoreCase(String libelle, Pageable pageable);
 }

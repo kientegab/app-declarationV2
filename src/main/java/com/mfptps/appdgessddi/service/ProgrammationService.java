@@ -21,7 +21,9 @@ public interface ProgrammationService {
 
     Programmation update(Programmation programmation);
 
-    Optional<Programmation> get(String cible);
+    Page<Programmation> get(String libelle, Pageable pageable);
+
+    Optional<Programmation> get(Long id);
 
     Page<Programmation> findAll(Pageable pageable);
 

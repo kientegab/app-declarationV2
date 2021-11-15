@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -38,10 +39,16 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         this.programmationMapper = programmationMapper;
     }
 
+    /**
+     *
+     * @param programmationDTO : DTO content Activite, Programmation, Projet,
+     * SourceFinancement, and Tache(s) fields
+     * @return
+     */
     @Override
     public Programmation create(ProgrammationDTO programmationDTO) {
-        Programmation response = null;
         Programmation programmationMapped = programmationMapper.toEntity(programmationDTO);
+        Programmation response = programmationRepository.save(programmationMapped);
 
         if (programmationDTO.isSingleton()) {//Activite with one Tache
             Tache tache = new Tache();
@@ -49,17 +56,14 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             tache.setPonderation(100);
             tache.setLibelle(programmationDTO.getActivite().getLibelle());
             tache.setDescription(programmationDTO.getActivite().getDescription());
-
-            response = programmationRepository.save(programmationMapped);
             tache.setProgrammation(response);
             tacheRepository.save(tache);
-        } else {
-            response = programmationRepository.save(programmationMapped);
-//            for (Tache tache : programmationDTO.getTaches()) {
-//                log.info("Tache info {}", tache);
-//                tache.setProgrammation(response);
-//                tacheRepository.save(tache);
-//            }
+        } else {//Activite with many Tache. Then we create those Taches linking ProgrammationId
+            for (Tache tache : programmationDTO.getTaches()) {
+                log.info("Tache info {}", tache);
+                tache.setProgrammation(response);
+                tacheRepository.save(tache);
+            }
         }
         return response;
     }
@@ -69,19 +73,39 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param libelle : libelle of Activite
+     * @return
+     */
     @Override
-    public Optional<Programmation> get(String cible) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Page<Programmation> get(String libelle, Pageable pageable) {
+        return programmationRepository.findByActiviteLibelleContainingIgnoreCase(libelle, pageable);
+    }
+
+    /**
+     *
+     * @param id : id of Programmation
+     * @return
+     */
+    @Override
+    public Optional<Programmation> get(Long id) {
+        return programmationRepository.findById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Programmation> findAll(Pageable pageable) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return programmationRepository.findAll(pageable);
     }
 
+    /**
+     *
+     * @param id : id of Programmation
+     */
     @Override
     public void delete(Long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        programmationRepository.deleteById(id);
     }
 
 }

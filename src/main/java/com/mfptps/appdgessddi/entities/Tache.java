@@ -5,6 +5,7 @@
  */
 package com.mfptps.appdgessddi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,6 +41,7 @@ public class Tache extends CommonEntity {
 
     //================ relationships 
     @ManyToOne
+    @JsonIgnore//to avoid an infinite loop When retur Programmation object
     private Programmation programmation;
 
     //================ CONSTRUCTOR && GETTERS/SETTERS 
