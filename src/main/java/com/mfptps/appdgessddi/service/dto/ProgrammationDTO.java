@@ -5,6 +5,7 @@
  */
 package com.mfptps.appdgessddi.service.dto;
 
+import com.mfptps.appdgessddi.entities.Activites;
 import com.mfptps.appdgessddi.entities.Tache;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class ProgrammationDTO {
 
     private Long sourceFinancementId;
 
-    private Long activiteId;//TO BE CHANGE INTO ENTITY
+    private Activites activite;
 
     private List<Tache> taches = new ArrayList<>();
 
@@ -83,12 +84,12 @@ public class ProgrammationDTO {
         this.sourceFinancementId = sourceFinancementId;
     }
 
-    public Long getActiviteId() {
-        return activiteId;
+    public Activites getActivite() {
+        return activite;
     }
 
-    public void setActiviteId(Long activiteId) {
-        this.activiteId = activiteId;
+    public void setActivite(Activites activite) {
+        this.activite = activite;
     }
 
     public List<Tache> getTaches() {

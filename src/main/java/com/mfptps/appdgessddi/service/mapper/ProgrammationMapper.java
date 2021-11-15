@@ -20,7 +20,7 @@ public interface ProgrammationMapper {
 
     @Mappings({
         @Mapping(target = "sourceFinancementId", source = "sourceFinancement.id"),
-        //@Mapping(target = "activite.id", source = "activiteId"),
+        @Mapping(target = "activite", source = "activite"),
         @Mapping(target = "taches", source = "taches")})
     ProgrammationDTO toDTO(Programmation programmation);
 
@@ -31,7 +31,7 @@ public interface ProgrammationMapper {
         @Mapping(target = "observation", source = "observation"),
         @Mapping(target = "singleton", source = "singleton"),
         @Mapping(target = "sourceFinancement.id", source = "sourceFinancementId"),
-        //@Mapping(target = "activite.id", source = "activiteId"),
+        @Mapping(target = "activite", source = "activite"),
         @Mapping(target = "taches", source = "taches")})
     Programmation toEntity(ProgrammationDTO programmationDTO);
 

@@ -58,8 +58,9 @@ public class Programmation extends CommonEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "programmation", cascade = CascadeType.PERSIST)
     private List<Tache> taches;
 
-//    @ManyToOne
-//    private Activite activite;
+    @ManyToOne
+    private Activites activite;
+
     //============== CONSTRUCTORS && GETTERS/SETTERS
     public Programmation() {
     }
@@ -158,6 +159,14 @@ public class Programmation extends CommonEntity {
 
     public void setTaches(List<Tache> taches) {
         this.taches = taches;
+    }
+
+    public Activites getActivite() {
+        return activite;
+    }
+
+    public void setActivite(Activites activite) {
+        this.activite = activite;
     }
 
 }

@@ -47,8 +47,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             Tache tache = new Tache();
             tache.setValeur(programmationDTO.getCible());
             tache.setPonderation(100);
-            tache.setLibelle(programmationDTO.getActiviteId().toString());//REVIEW
-            tache.setDescription(programmationDTO.getActiviteId().toString());//REVIEW
+            tache.setLibelle(programmationDTO.getActivite().getLibelle());
+            tache.setDescription(programmationDTO.getActivite().getDescription());
 
             response = programmationRepository.save(programmationMapped);
             tache.setProgrammation(response);
