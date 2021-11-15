@@ -6,8 +6,7 @@
 package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.Commentaire;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -21,5 +20,5 @@ public interface CommentaireRepository extends JpaRepository<Commentaire, Long> 
             + "WHERE c.programmation.id = p.id "
             + "AND p.id = :programmationId "
             + "AND p.deleted = false")
-    Page<Commentaire> findByProgrammation(Long programmationId, Pageable pageable);
+    List<Commentaire> findByProgrammation(Long programmationId);
 }

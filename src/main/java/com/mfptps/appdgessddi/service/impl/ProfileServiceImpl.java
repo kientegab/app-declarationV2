@@ -54,14 +54,14 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional
     public void delete(Long id) {
         log.debug("Request to delete Profile : {}", id);
-        /* profileRepository.deleteProfileFromUserAssociation(id);
-        profileRepository.deleteAssociateAction(id); */
+        profileRepository.deleteProfileFromAgentAssociation(id);
+        profileRepository.deleteAssociatePrivilege(id);
         profileRepository.deleteById(id);
     }
+    
     @Override
     @Transactional(readOnly = true)
-    public Optional<Profile> getProfilerWithActionsByName(String name) {
-        // return profileRepository.findOneWithActionsByNameIgnoreCase(name);
-        return null;
+    public Optional<Profile> getProfileWithPrivilegesByName(String name) {
+        return profileRepository.findOneWithPrivilegesByNameIgnoreCase(name);
     }
 }
