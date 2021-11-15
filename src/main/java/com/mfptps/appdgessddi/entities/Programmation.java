@@ -66,6 +66,9 @@ public class Programmation extends CommonEntity {
     @ManyToOne
     private Structure structure;
 
+    @ManyToOne
+    private Exercice exercice;
+
     //============== CONSTRUCTORS && GETTERS/SETTERS
     public Programmation() {
     }
@@ -188,6 +191,14 @@ public class Programmation extends CommonEntity {
 
     public void setStructure(Structure structure) {
         this.structure = structure;
+    }
+
+    public Exercice getExercice() {
+        return exercice;
+    }
+
+    public void setExercice(Exercice exercice) {
+        this.exercice = exercice;
     }
 
     /**

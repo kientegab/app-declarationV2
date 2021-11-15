@@ -1,33 +1,43 @@
 package com.mfptps.appdgessddi.entities;
 
-import org.hibernate.annotations.*;
-
-import javax.persistence.*;
+import com.mfptps.appdgessddi.enums.ExerciceStatus;
+import java.time.LocalDate;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.Date;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name="exercice")
+@Table(name = "exercice")
 @SQLDelete(sql = "UPDATE exercice SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 @FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
 @Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
-public class Exercice extends CommonEntity{
+public class Exercice extends CommonEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String description ;
-    private String statut ;
-    private Date debut ;
-    private Date fin ;
+    private String description;
+    @Enumerated(EnumType.STRING)
+    private ExerciceStatus statut;
+    private LocalDate debut;
+    private LocalDate fin;
     @ManyToOne
-    private Observations observations ;
+    private Observations observations;
     /*
      */
     @ManyToOne
-    private Ponderation ponderation ;
+    private Ponderation ponderation;
 
     public Exercice() {
     }
@@ -48,27 +58,27 @@ public class Exercice extends CommonEntity{
         this.description = description;
     }
 
-    public String getStatut() {
+    public ExerciceStatus getStatut() {
         return statut;
     }
 
-    public void setStatut(String statut) {
+    public void setStatut(ExerciceStatus statut) {
         this.statut = statut;
     }
 
-    public Date getDebut() {
+    public LocalDate getDebut() {
         return debut;
     }
 
-    public void setDebut(Date debut) {
+    public void setDebut(LocalDate debut) {
         this.debut = debut;
     }
 
-    public Date getFin() {
+    public LocalDate getFin() {
         return fin;
     }
 
-    public void setFin(Date fin) {
+    public void setFin(LocalDate fin) {
         this.fin = fin;
     }
 
@@ -87,4 +97,5 @@ public class Exercice extends CommonEntity{
     public void setPonderation(Ponderation ponderation) {
         this.ponderation = ponderation;
     }
+
 }
