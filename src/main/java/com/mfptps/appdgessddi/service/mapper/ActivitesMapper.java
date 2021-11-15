@@ -17,11 +17,13 @@ public interface ActivitesMapper {
     @Mapping(source = "description", target = "description")
 	@Mapping(source = "typeActivitesId", target = "typeActivites.id")
 	
+	
     Activites toEntity(ActivitesDTO activitesDTO);
 
     @Mapping(source = "code", target = "code")
     @Mapping(source = "libelle", target = "libelle")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "typeActivites.id", target = "typeActivitesId")
+   
     ActivitesDTO toDto(Activites activites);
 }
