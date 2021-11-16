@@ -24,6 +24,8 @@ public class Observations   extends CommonEntity{
     private Long id;
     private String libelle ;
     private String type ;
+    @ManyToOne
+    private Performer performer ;
 
     public Observations() {
     }
@@ -50,5 +52,13 @@ public class Observations   extends CommonEntity{
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Performer getPerformer() {
+        return performer;
+    }
+
+    public void setPerformer(Performer performer) {
+        this.performer = performer;
     }
 }

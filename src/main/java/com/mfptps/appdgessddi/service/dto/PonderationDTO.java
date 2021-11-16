@@ -5,7 +5,7 @@ import com.mfptps.appdgessddi.entities.Performance;
 
 public class PonderationDTO {
 
-    private double efficacité ;
+    private double efficacite ;
     private double efficience ;
     private double gouvernance ;
     private double impact ;
@@ -16,12 +16,12 @@ public class PonderationDTO {
     public PonderationDTO() {
     }
 
-    public double getEfficacité() {
-        return efficacité;
+    public double getEfficacite() {
+        return efficacite;
     }
 
-    public void setEfficacité(double efficacité) {
-        this.efficacité = efficacité;
+    public void setEfficacite(double efficacite) {
+        this.efficacite = efficacite;
     }
 
     public double getEfficience() {
