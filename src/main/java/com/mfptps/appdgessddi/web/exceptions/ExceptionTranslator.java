@@ -18,9 +18,9 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
 import javax.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
-import com.mfptps.appdgessddi.aop.utils.AppProfile;
-import com.mfptps.appdgessddi.aop.utils.HeaderUtil;
 import com.mfptps.appdgessddi.service.UsernameAlreadyUsedException;
+import com.mfptps.appdgessddi.utils.AppProfile;
+import com.mfptps.appdgessddi.utils.HeaderUtil;
 
 import java.net.URI;
 import java.util.*;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * The error response follows RFC7807 - Problem Details for HTTP APIs (https://tools.ietf.org/html/rfc7807).
  */
 @ControllerAdvice
-public class ExceptionTranslator implements ProblemHandling /*,  SecurityAdviceTrait */{
+public class ExceptionTranslator implements ProblemHandling ,  SecurityAdviceTrait{
 
     private static final String FIELD_ERRORS_KEY = "fieldErrors";
     private static final String MESSAGE_KEY = "message";

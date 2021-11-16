@@ -61,9 +61,18 @@ public class ApplicationProperties {
 
             public static class Jwt {
 
+                private String secret;
                 private String base64Secret;
                 private int tokenValidityInSeconds;
                 private int tokenValidityInSecondsForRememberMe;
+                
+                public String getSecret() {
+                    return secret;
+                }
+
+                public void setSecret(String secret) {
+                    this.secret = secret;
+                }
 
                 public String getBase64Secret() {
                     return base64Secret;
