@@ -1,7 +1,6 @@
 package com.mfptps.appdgessddi.web;
 
-import com.mfptps.appdgessddi.aop.utils.HeaderUtil;
-import com.mfptps.appdgessddi.aop.utils.PaginationUtil;
+import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.service.MinistereStructureService;
 import com.mfptps.appdgessddi.service.StructureService;

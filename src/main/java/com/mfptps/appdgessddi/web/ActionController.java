@@ -1,12 +1,15 @@
 package com.mfptps.appdgessddi.web;
 
-import com.mfptps.appdgessddi.aop.utils.HeaderUtil;
-import com.mfptps.appdgessddi.aop.utils.PaginationUtil;
-import com.mfptps.appdgessddi.aop.utils.ResponseUtil;
 import com.mfptps.appdgessddi.entities.Action;
 import com.mfptps.appdgessddi.service.ActionService;
 import com.mfptps.appdgessddi.service.dto.ActionDTO;
+import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -15,12 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -32,7 +29,7 @@ public class ActionController {
     @Value("${application.name}")
     private String applicationName;
 
-    private final ActionService actionService ;
+    private final ActionService actionService;
 
     public ActionController(ActionService actionService) {
         this.actionService = actionService;
@@ -49,7 +46,7 @@ public class ActionController {
 
     @PutMapping
     public ResponseEntity<Action> updateAction(@Valid @RequestBody Action action) throws URISyntaxException {
-        log.debug("Mis à jour d une action : {}",action);
+        log.debug("Mis à jour d une action : {}", action);
         if (action.getId() == null) {
             throw new BadRequestAlertException("Id invalide", ENTITY_NAME, "idnull");
         }
@@ -58,24 +55,28 @@ public class ActionController {
                 .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, action.getId().toString()))
                 .body(result);
     }
+
     @GetMapping(path = "/search")
     public ResponseEntity<List<Action>> getActionByLibelle(@RequestParam(required = true) String libelle) {
         log.debug("Recherche d'une action : {}", libelle);
         List<Action> foundAction = actionService.rechercheLibelle(libelle);
         return ResponseEntity.ok().body(foundAction);
     }
+
     @GetMapping(path = "/{id}")
     public ResponseEntity<Action> getActionById(@PathVariable Long id) {
         log.debug("Consultation d une action : {}", id);
         Optional<Action> actionFound = actionService.get(id);
         return ResponseUtil.wrapOrNotFound(actionFound);
     }
+
     @GetMapping
     public ResponseEntity<List<Action>> findAllActions(Pageable pageable) {
         Page<Action> actions = actionService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), actions);
         return ResponseEntity.ok().headers(headers).body(actions.getContent());
     }
+
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Suppression d une action : {}", id);

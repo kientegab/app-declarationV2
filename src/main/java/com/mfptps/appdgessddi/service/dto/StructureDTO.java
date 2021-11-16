@@ -17,6 +17,8 @@ public class StructureDTO {
 
     private Ministere ministere;
 
+
+    
     public String getLibelle() {
         return libelle;
     }
