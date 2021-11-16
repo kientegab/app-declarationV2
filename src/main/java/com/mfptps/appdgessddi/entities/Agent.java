@@ -27,7 +27,7 @@ public class Agent extends CommonEntity {
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
     @Column(length = 50, unique = true, nullable = false)
-    private String login;
+    private String matricule;
 
     @Email
     @Size(min = 5, max = 254)
@@ -90,12 +90,12 @@ public class Agent extends CommonEntity {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getMatricule() {
+        return matricule;
     }
 
-    public void setLogin(String login) {
-        this.login = StringUtils.lowerCase(login);;
+    public void setMatricule(String matricule) {
+        this.matricule = StringUtils.lowerCase(matricule);;
     }
 
     public String getEmail() {
@@ -205,7 +205,7 @@ public class Agent extends CommonEntity {
 
     @Override
     public String toString() {
-        return "Agent [email=" + email + ", login=" + login + ", nom=" + nom + ", prenom=" + prenom + ", telephone="
+        return "Agent [email=" + email + ", matricule=" + matricule + ", nom=" + nom + ", prenom=" + prenom + ", telephone="
                 + telephone + "]";
     }
 

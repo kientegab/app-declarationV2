@@ -103,7 +103,6 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
         config.setAllowCredentials(false);
         config.setMaxAge(1800L);
         config.setExposedHeaders(Arrays.asList("Authorization,Link,X-Total-Count,X-dgess-alert,X-dgess-error,X-dgess-params"));
-        log.debug("Methode {}", config.getAllowedMethods());
         if (!CollectionUtils.isEmpty(config.getAllowedOrigins())) {
             log.debug("Registering CORS filter");
             source.registerCorsConfiguration("/api/**", config);

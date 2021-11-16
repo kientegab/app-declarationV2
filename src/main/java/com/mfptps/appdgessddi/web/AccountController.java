@@ -27,21 +27,21 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/api")
-public class AccountResource {
+public class AccountController {
 
-    private static class AccountResourceException extends RuntimeException {
-        private AccountResourceException(String message) {
+    private static class AccountControllerException extends RuntimeException {
+        private AccountControllerException(String message) {
             super(message);
         }
     }
 
-    private final Logger log = LoggerFactory.getLogger(AccountResource.class);
+    private final Logger log = LoggerFactory.getLogger(AccountController.class);
 
     private final AgentRepository agentRepository;
 
     private final AgentService agentService;
 
-    public AccountResource(AgentRepository agentRepository, AgentService agentService) {
+    public AccountController(AgentRepository agentRepository, AgentService agentService) {
 
         this.agentRepository = agentRepository;
         this.agentService = agentService;
@@ -52,7 +52,7 @@ public class AccountResource {
      *
      * @param managedAgentVM the managed agent View Model.
      * @throws InvalidPasswordException {@code 400 (Bad Request)} if the password is incorrect.
-     * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already used.
+     * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the matricule is already used.
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -73,15 +73,15 @@ public class AccountResource {
     public void activateAccount(@RequestParam(value = "key") String key) {
         Optional<Agent> agent = agentService.activateRegistration(key);
         if (!agent.isPresent()) {
-            throw new AccountResourceException("No agent was found for this activation key");
+            throw new AccountControllerException("No agent was found for this activation key");
         }
     }
 
     /**
-     * {@code GET  /authenticate} : check if the agent is authenticated, and return its login.
+     * {@code GET  /authenticate} : check if the agent is authenticated, and return its matricule.
      *
      * @param request the HTTP request.
-     * @return the login if the agent is authenticated.
+     * @return the matricule if the agent is authenticated.
      */
     @GetMapping("/authenticate")
     public String isAuthenticated(HttpServletRequest request) {
@@ -97,24 +97,23 @@ public class AccountResource {
      */
     @GetMapping("/account")
     public AgentDTO getAccount() {
-        return agentService.getAgentWithAuthorities()
-            .map(AgentDTO::new)
-            .orElseThrow(() -> new AccountResourceException("Agent could not be found"));
+        return agentService.getAgentWithProfiles()
+            .orElseThrow(() -> new AccountControllerException("Agent could not be found"));
     }
 
     /**
      * {@code POST  /account} : update the current agent information.
      *
      * @param agentDTO the current agent information.
-     * @throws RuntimeException {@code 500 (Internal Server Error)} if the agent login wasn't found.
+     * @throws RuntimeException {@code 500 (Internal Server Error)} if the agent matricule wasn't found.
      */
     @PostMapping("/account")
     public void saveAccount(@Valid @RequestBody AgentDTO agentDTO) {
-        String agentLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AccountResourceException("Current agent login not found"));
+        String agentMatricule = SecurityUtils.getCurrentUserMatricule().orElseThrow(() -> new AccountControllerException("Current agent matricule not found"));
         
-        Optional<Agent> agent = agentRepository.findOneByLogin(agentLogin);
+        Optional<Agent> agent = agentRepository.findOneByMatricule(agentMatricule);
         if (!agent.isPresent()) {
-            throw new AccountResourceException("Agent could not be found");
+            throw new AccountControllerException("Agent could not be found");
         }
         agentService.updateAgent(agentDTO.getNom(), agentDTO.getPrenom(), agentDTO.getEmail());
     }
@@ -149,7 +148,7 @@ public class AccountResource {
             agentService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey());
 
         if (!agent.isPresent()) {
-            throw new AccountResourceException("No agent was found for this reset key");
+            throw new AccountControllerException("No agent was found for this reset key");
         }
     }
 

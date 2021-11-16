@@ -32,7 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * REST controller for managing agents.
  * <p>
- * This class accesses the {@link Agent} entity, and needs to fetch its collection of authorities.
+ * This class accesses the {@link Agent} entity, and needs to fetch its collection of profiles.
  * <p>
  * For a normal use-case, it would be better to have an eager relationship between Agent and Authority,
  * and send everything to the client side: there would be no View Model and DTO, a lot less code, and an outer-join
@@ -40,13 +40,13 @@ import org.apache.commons.lang3.StringUtils;
  * <p>
  * We use a View Model and a DTO for 3 reasons:
  * <ul>
- * <li>We want to keep a lazy association between the agent and the authorities, because people will
- * quite often do relationships with the agent, and we don't want them to get the authorities all
+ * <li>We want to keep a lazy association between the agent and the profiles, because people will
+ * quite often do relationships with the agent, and we don't want them to get the profiles all
  * the time for nothing (for performance reasons). This is the #1 goal: we should not impact our agents'
  * application because of this use-case.</li>
  * <li> Not having an outer join causes n+1 requests to the database. This is not a real issue as
  * we have by default a second-level cache. This means on the first HTTP call we do the n+1 requests,
- * but then all authorities come from the cache, so in fact it's much better than doing an outer join
+ * but then all profiles come from the cache, so in fact it's much better than doing an outer join
  * (which will get lots of data from the database, for each HTTP call).</li>
  * <li> As this manages agents, for security reasons, we'd rather have a DTO layer.</li>
  * </ul>
@@ -82,7 +82,7 @@ public class AgentController {
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login is already in use.
      */
     @PostMapping("/agents")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_CREATE_USER\")")
+    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\")")
     public ResponseEntity<Agent> createAgent(@Valid @RequestBody ManagedAgentVM agentDTO) throws URISyntaxException {
         log.debug("REST request to save Agent : {}", agentDTO);
 
@@ -95,13 +95,13 @@ public class AgentController {
             // Lowercase the agent login before comparing with database
         }
 
-        if (agentRepository.findOneByLogin(agentDTO.getLogin().toLowerCase()).isPresent()) {
+        if (agentRepository.findOneByMatricule(agentDTO.getMatricule().toLowerCase()).isPresent()) {
             throw new LoginAlreadyUsedException();
         }
         
         Agent newAgent = agentService.createAgent(agentDTO, agentDTO.getPassword());
-            return ResponseEntity.created(new URI("/security-service/agents/" + newAgent.getLogin()))
-                .headers(HeaderUtil.createAlert(applicationName,  "agentManagement.created", newAgent.getLogin()))
+            return ResponseEntity.created(new URI("/api/agents/" + newAgent.getMatricule()))
+                .headers(HeaderUtil.createAlert(applicationName,  "agentManagement.created", newAgent.getMatricule()))
                 .body(newAgent);
     }
 
@@ -114,18 +114,18 @@ public class AgentController {
      * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already in use.
      */
     @PutMapping("/agents")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_UPDATE_USER\")")
+    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\")")
     public ResponseEntity<AgentDTO> updateAgent(@Valid @RequestBody AgentDTO agentDTO) {
         log.debug("REST request to update Agent : {}", agentDTO);
         
-        Optional<Agent> existingAgent = agentRepository.findOneByLogin(agentDTO.getLogin().toLowerCase());
+        Optional<Agent> existingAgent = agentRepository.findOneByMatricule(agentDTO.getMatricule().toLowerCase());
         if (existingAgent.isPresent() && (!existingAgent.get().getId().equals(agentDTO.getId()))) {
             throw new LoginAlreadyUsedException();
         }
         Optional<AgentDTO> updatedAgent = agentService.updateAgent(agentDTO);
 
         return ResponseUtil.wrapOrNotFound(updatedAgent,
-            HeaderUtil.createAlert(applicationName, "agentManagement.updated", agentDTO.getLogin()));
+            HeaderUtil.createAlert(applicationName, "agentManagement.updated", agentDTO.getMatricule()));
     }
 
     /**
@@ -142,12 +142,12 @@ public class AgentController {
     }
 
     /**
-     * Gets a list of all roles.
-     * @return a string list of all roles.
+     * Gets a list of all profiles.
+     * @return a string list of all profiles.
      */
-    @GetMapping("/agents/authorities")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_GETALL_ROLE\")")
-    public List<String> getAuthorities() {
+    @GetMapping("/agents/profiles")
+    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\")")
+    public List<String> getProfiles() {
         return agentService.getProfiles();
     }
 
@@ -158,11 +158,11 @@ public class AgentController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" agent, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/agents/{login:" + Constants.LOGIN_REGEX + "}")
-    @PreAuthorize("#login == principal.agentname || hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_GET_USER\")")
+    @PreAuthorize("#login == principal.username || hasAnyAuthority(\"ROLE_ADMIN\")")
     public ResponseEntity<AgentDTO> getAgent(@PathVariable String login) {
         log.debug("REST request to get Agent : {}", login);
         return ResponseUtil.wrapOrNotFound(
-            agentService.getAgentWithAuthoritiesByLogin(login)
+            agentService.getAgentWithProfilesByMatricule(login)
                 .map(AgentDTO::new));
     }
 
@@ -173,7 +173,7 @@ public class AgentController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/agents/{login:" + Constants.LOGIN_REGEX + "}")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_DELETE_USER\")")
+    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\")")
     public ResponseEntity<Void> deleteAgent(@PathVariable String login) {
         log.debug("REST request to delete Agent: {}", login);
         agentService.deleteAgent(login);

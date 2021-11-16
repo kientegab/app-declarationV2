@@ -23,7 +23,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface AgentRepository extends JpaRepository<Agent, Long>{
     
-    String USERS_BY_LOGIN_CACHE = "usersByLogin";
+    String USERS_BY_LOGIN_CACHE = "usersByMatricule";
     String USERS_BY_EMAIL_CACHE = "usersByEmail";
 
     Optional<Agent> findOneByActivationKey(String activationKey);
@@ -32,15 +32,15 @@ public interface AgentRepository extends JpaRepository<Agent, Long>{
 
     Optional<Agent> findOneByResetKey(String resetKey);
 
-    Optional<Agent> findOneByLogin(String login);
+    Optional<Agent> findOneByMatricule(String matricule);
 
     @EntityGraph(attributePaths = "profiles")
-    @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
-    Optional<Agent> findOneWithAuthoritiesByLogin(String login);
+    //@Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
+    Optional<Agent> findOneWithProfilesByMatricule(String matricule);
 
     @EntityGraph(attributePaths = "profiles")
-    @Cacheable(cacheNames = USERS_BY_EMAIL_CACHE)
-    Optional<Agent> findOneWithAuthoritiesByEmailIgnoreCase(String email);
+    //@Cacheable(cacheNames = USERS_BY_EMAIL_CACHE)
+    Optional<Agent> findOneWithProfilesByEmailIgnoreCase(String email);
 
     Page<Agent> findAllByIdNotNullAndActifIsTrue(Pageable pageable);
 }

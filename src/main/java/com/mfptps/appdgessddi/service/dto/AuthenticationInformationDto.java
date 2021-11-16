@@ -1,11 +1,6 @@
 package com.mfptps.appdgessddi.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -13,11 +8,6 @@ import java.util.Map;
 /**
  * Required information to send as response in the {@code login} request
  */
-/* @AllArgsConstructor
-@Builder
-@Data
-@EqualsAndHashCode(of = {"jwtId"})
-@NoArgsConstructor */
 public class AuthenticationInformationDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,9 +21,6 @@ public class AuthenticationInformationDto implements Serializable {
 
     @JsonProperty(value = "refresh_token")
     private String refreshToken;
-
-    @JsonProperty(value = "token_type")
-    private String tokenType;
 
     @JsonProperty(value = "jti")
     private String jwtId;
@@ -74,14 +61,6 @@ public class AuthenticationInformationDto implements Serializable {
 
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
-    }
-
-    public String getTokenType() {
-        return tokenType;
-    }
-
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
     }
 
     public String getJwtId() {
@@ -128,7 +107,6 @@ public class AuthenticationInformationDto implements Serializable {
     @Override
     public String toString() {
         return "AuthenticationInformationDto [accessToken=" + accessToken + ", additionalInfo=" + additionalInfo
-                + ", expiresIn=" + expiresIn + ", jwtId=" + jwtId + ", refreshToken=" + refreshToken + ", tokenType="
-                + tokenType + "]";
+                + ", expiresIn=" + expiresIn + ", jwtId=" + jwtId + ", refreshToken=" + refreshToken + "]";
     }
 }

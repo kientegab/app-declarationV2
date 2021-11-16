@@ -18,11 +18,11 @@ public final class SecurityUtils {
     }
 
     /**
-     * Get the login of the current user.
+     * Get the matricule of the current user.
      *
-     * @return the login of the current user.
+     * @return the matricule of the current user.
      */
-    public static Optional<String> getCurrentUserLogin() {
+    public static Optional<String> getCurrentUserMatricule() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
     }

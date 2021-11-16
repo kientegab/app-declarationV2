@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * A DTO representing a agent, with his authorities.
+ * A DTO representing a agent, with his profiles.
  */
 public class AgentDTO {
 
@@ -20,7 +20,7 @@ public class AgentDTO {
     @NotBlank
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
-    private String login;
+    private String matricule;
 
     @Size(max = 50)
     private String nom;
@@ -44,17 +44,16 @@ public class AgentDTO {
 
     private Instant lastModifiedDate;
     
-    private Set<String> authorities;
+    private Set<String> permissions;
     
     private Set<String> profiles;
 
     public AgentDTO() {
-        // Empty constructor needed for Jackson.
     }
 
     public AgentDTO(Agent agent) {
         this.id = agent.getId();
-        this.login = agent.getLogin();
+        this.matricule = agent.getMatricule();
         this.nom = agent.getNom();
         this.prenom = agent.getPrenom();
         this.email = agent.getEmail();
@@ -70,9 +69,10 @@ public class AgentDTO {
             actions.addAll(r.getPermissions());
                 });
         this.profiles = prof;
-        this.authorities = actions.stream()
+        this.permissions = actions.stream()
             .map(Permission::getName)
             .collect(Collectors.toSet());
+        
     }
 
     public Long getId() {
@@ -83,12 +83,12 @@ public class AgentDTO {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getMatricule() {
+        return matricule;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setMatricule(String matricule) {
+        this.matricule = matricule;
     }
 
     
@@ -148,20 +148,20 @@ public class AgentDTO {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public Set<String> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Set<String> authorities) {
-        this.authorities = authorities;
-    }
-
     public String getTelephone() {
         return telephone;
     }
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    public Set<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<String> permissions) {
+        this.permissions = permissions;
     }
 
     public Set<String> getProfiles() {
@@ -183,7 +183,7 @@ public class AgentDTO {
     @Override
     public String toString() {
         return "AgentDTO{" +
-            "login='" + login + '\'' +
+            "matricule='" + matricule + '\'' +
             ", nom='" + nom + '\'' +
             ", prenom='" + prenom + '\'' +
             ", email='" + email + '\'' +
@@ -193,7 +193,7 @@ public class AgentDTO {
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", profiles=" + profiles +
-            ", authorities=" + authorities +
+            ", permissions=" + permissions +
             "}";
     }
 }

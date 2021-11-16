@@ -22,7 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 
 @RestController
-@RequestMapping("/security-service")
+@RequestMapping("/api")
 public class ProfileController {
 
     private final Logger log = LoggerFactory.getLogger(ProfileController.class);
@@ -32,96 +32,96 @@ public class ProfileController {
     @Value("${application.name}")
     private String applicationName;
 
-    private final ProfileService roleService;
+    private final ProfileService profileService;
 
-    public ProfileController(ProfileService roleService) {
-        this.roleService = roleService;
+    public ProfileController(ProfileService profileService) {
+        this.profileService = profileService;
     }
 
     /**
-     * {@code POST  /roles} : Create a new role.
+     * {@code POST  /profiles} : Create a new profile.
      *
-     * @param role the role to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new role, or with status {@code 400 (Bad Request)} if the role has already an ID.
+     * @param profile the profile to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new profile, or with status {@code 400 (Bad Request)} if the profile has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_CREATE_ROLE\")")
-    @PostMapping("/roles")
-    public ResponseEntity<Profile> createProfile(@RequestBody Profile role) throws URISyntaxException {
-        log.debug("REST request to save Profile : {}", role);
-        if (role.getId() != null) {
-            throw new BadRequestAlertException("A new role cannot already have an ID", ENTITY_NAME, "idexists");
+    @PostMapping("/profiles")
+    public ResponseEntity<Profile> createProfile(@RequestBody Profile profile) throws URISyntaxException {
+        log.debug("REST request to save Profile : {}", profile);
+        if (profile.getId() != null) {
+            throw new BadRequestAlertException("A new profile cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Profile result = roleService.save(role);
-        return ResponseEntity.created(new URI("/security-service/roles/" + result.getId()))
+        Profile result = profileService.save(profile);
+        return ResponseEntity.created(new URI("/security-service/profiles/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * {@code PUT  /roles} : Updates an existing role.
+     * {@code PUT  /profiles} : Updates an existing profile.
      *
-     * @param role the role to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated role,
-     * or with status {@code 400 (Bad Request)} if the role is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the role couldn't be updated.
+     * @param profile the profile to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated profile,
+     * or with status {@code 400 (Bad Request)} if the profile is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the profile couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/roles")
+    @PutMapping("/profiles")
     @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_UPDATE_ROLE\")")
-    public ResponseEntity<Profile> updateProfile(@RequestBody Profile role) throws URISyntaxException {
-        log.debug("REST request to update Profile : {}", role);
-        if (role.getId() == null) {
+    public ResponseEntity<Profile> updateProfile(@RequestBody Profile profile) throws URISyntaxException {
+        log.debug("REST request to update Profile : {}", profile);
+        if (profile.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Profile result = roleService.save(role);
+        Profile result = profileService.save(profile);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, role.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, profile.getId().toString()))
             .body(result);
     }
 
     /**
-     * {@code GET  /roles} : get all the roles.
+     * {@code GET  /profiles} : get all the profiles.
      *
      * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of roles in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of profiles in body.
      */
-    @GetMapping("/roles")
+    @GetMapping("/profiles")
     @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_GETALL_ROLE\")")
     public ResponseEntity<List<Profile>> getAllProfiles(Pageable pageable) {
         log.debug("REST request to get a page of Profiles");
-        Page<Profile> page = roleService.findAll(pageable);
+        Page<Profile> page = profileService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-     * {@code GET  /roles/:name} : get the "name" role.
+     * {@code GET  /profiles/:name} : get the "name" profile.
      *
-     * @param name the name of the role to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the role, or with status {@code 404 (Not Found)}.
+     * @param name the name of the profile to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the profile, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/roles/{name}")
+    @GetMapping("/profiles/{name}")
     public ResponseEntity<Profile> getProfile(@PathVariable String name) {
         log.debug("REST request to get Profile : {}", name);
-        Optional<Profile> role = roleService.getProfilerWithActionsByName(name);
-        return ResponseUtil.wrapOrNotFound(role);
+        Optional<Profile> profile = profileService.getProfilerWithActionsByName(name);
+        return ResponseUtil.wrapOrNotFound(profile);
     }
 
     /**
-     * {@code DELETE  /roles/:id} : delete the "id" role.
+     * {@code DELETE  /profiles/:id} : delete the "id" profile.
      *
-     * @param id the id of the role to delete.
+     * @param id the id of the profile to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/roles/{id}")
+    @DeleteMapping("/profiles/{id}")
     @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_DELETE_ROLE\")")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
         log.debug("REST request to delete Profile : {}", id);
         if (id < 3) {
              throw new RuntimeException("Ce profile ne peut être supprimé.");
         }
-        roleService.delete(id);
+        profileService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }
