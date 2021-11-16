@@ -82,7 +82,7 @@ public class AgentController {
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login is already in use.
      */
     @PostMapping("/agents")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\")")
+    //@PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\")")
     public ResponseEntity<Agent> createAgent(@Valid @RequestBody ManagedAgentVM agentDTO) throws URISyntaxException {
         log.debug("REST request to save Agent : {}", agentDTO);
 
@@ -114,7 +114,7 @@ public class AgentController {
      * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already in use.
      */
     @PutMapping("/agents")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\")")
+    // @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\")")
     public ResponseEntity<AgentDTO> updateAgent(@Valid @RequestBody AgentDTO agentDTO) {
         log.debug("REST request to update Agent : {}", agentDTO);
         
@@ -146,7 +146,7 @@ public class AgentController {
      * @return a string list of all profiles.
      */
     @GetMapping("/agents/profiles")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\")")
+    // @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\")")
     public List<String> getProfiles() {
         return agentService.getProfiles();
     }
@@ -158,7 +158,7 @@ public class AgentController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" agent, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/agents/{login:" + Constants.LOGIN_REGEX + "}")
-    @PreAuthorize("#login == principal.username || hasAnyAuthority(\"ROLE_ADMIN\")")
+    // @PreAuthorize("#login == principal.username || hasAnyAuthority(\"ROLE_ADMIN\")")
     public ResponseEntity<AgentDTO> getAgent(@PathVariable String login) {
         log.debug("REST request to get Agent : {}", login);
         return ResponseUtil.wrapOrNotFound(
