@@ -23,12 +23,12 @@ public class Profile extends CommonEntity {
     
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "profile_permission", 
+    @JoinTable(name = "profile_privilege", 
             joinColumns = {@JoinColumn(name = "profile_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "permission_id", referencedColumnName = "id")}
+            inverseJoinColumns = {@JoinColumn(name = "privilege_id", referencedColumnName = "id")}
     )
     @BatchSize(size = 20)
-    private Set<Permission> permissions = new HashSet<>();
+    private Set<Privilege> privileges = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -50,12 +50,12 @@ public class Profile extends CommonEntity {
         this.name = name;
     }
 
-    public Set<Permission> getPermissions() {
-        return permissions;
+    public Set<Privilege> getPrivileges() {
+        return privileges;
     }
 
-    public void setPermissions(Set<Permission> permissions) {
-        this.permissions = permissions;
+    public void setPrivileges(Set<Privilege> privileges) {
+        this.privileges = privileges;
     }
 
     @Override

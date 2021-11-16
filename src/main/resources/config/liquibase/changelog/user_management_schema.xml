@@ -92,7 +92,7 @@
                                 columnDataType="varchar(60)"
                                 tableName="agent"/>
         
-        <createTable tableName="permission" >
+        <createTable tableName="privilege" >
             <column name="id" type="bigint" autoIncrement="true" incrementBy="1" >
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -110,28 +110,28 @@
             </column>
         </createTable>
 
-        <createTable tableName="profile_permission">
+        <createTable tableName="profile_privilege">
             <column name="profile_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="permission_id" type="bigint">
+            <column name="privilege_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
         </createTable>
 
-        <addPrimaryKey columnNames="profile_id, permission_id" tableName="profile_permission"/>
+        <addPrimaryKey columnNames="profile_id, privilege_id" tableName="profile_privilege"/>
 
         <addForeignKeyConstraint baseColumnNames="profile_id"
-                                 baseTableName="profile_permission"
-                                 constraintName="fk_profile_id_permission"
+                                 baseTableName="profile_privilege"
+                                 constraintName="fk_profile_id_privilege"
                                  referencedColumnNames="id"
                                  referencedTableName="profile"/>
 
-        <addForeignKeyConstraint baseColumnNames="permission_id"
-                                 baseTableName="profile_permission"
-                                 constraintName="fk_permission_id"
+        <addForeignKeyConstraint baseColumnNames="privilege_id"
+                                 baseTableName="profile_privilege"
+                                 constraintName="fk_privilege_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="permission"/>
+                                 referencedTableName="privilege"/>
 
         <loadData
             file="config/liquibase/data/agent.csv"
@@ -160,19 +160,19 @@
         </loadData>
         
         <loadData
-            file="config/liquibase/data/permission.csv"
+            file="config/liquibase/data/privilege.csv"
             separator=";"
-            tableName="permission">
+            tableName="privilege">
             <column name="id" type="numeric"/>
             <column name="name" type="string"/>
         </loadData>
         
         <loadData
-            file="config/liquibase/data/profile_permission.csv"
+            file="config/liquibase/data/profile_privilege.csv"
             separator=";"
-            tableName="profile_permission">
+            tableName="profile_privilege">
             <column name="profile_id" type="numeric"/>
-            <column name="permission_id" type="numeric"/>
+            <column name="privilege_id" type="numeric"/>
         </loadData>
     </changeSet>
 

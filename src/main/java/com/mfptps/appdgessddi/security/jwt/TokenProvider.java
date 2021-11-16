@@ -29,7 +29,7 @@ public class TokenProvider {
 
     private final Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
-    private static final String AUTHORITIES_KEY = "permissions";
+    private static final String AUTHORITIES_KEY = "privileges";
 
     private Key key;
 

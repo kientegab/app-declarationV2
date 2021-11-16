@@ -57,7 +57,7 @@ public class AgentService {
                 // activate given agent for the registration key.
                 agent.setActif(true);
                 agent.setActivationKey(null);
-                // this.clearAgentCaches(agent);
+                this.clearAgentCaches(agent);
                 log.debug("Activated agent: {}", agent);
                 return agent;
             });
@@ -71,7 +71,7 @@ public class AgentService {
                 agent.setPassword(passwordEncoder.encode(newPassword));
                 agent.setResetKey(null);
                 agent.setResetDate(null);
-                // this.clearAgentCaches(agent);
+                this.clearAgentCaches(agent);
                 return agent;
             });
     }
@@ -82,7 +82,7 @@ public class AgentService {
             .map(agent -> {
                 agent.setResetKey(RandomUtil.generateResetKey());
                 agent.setResetDate(Instant.now());
-                // this.clearAgentCaches(agent);
+                this.clearAgentCaches(agent);
                 return agent;
             });
     }
@@ -101,6 +101,7 @@ public class AgentService {
         newAgent.setPassword(encryptedPassword);
         newAgent.setNom(agentDTO.getNom());
         newAgent.setPrenom(agentDTO.getPrenom());
+        newAgent.setEmail(agentDTO.getEmail());
         // new agent is not active
         newAgent.setActif(false);
         // new agent gets registration key
@@ -120,7 +121,7 @@ public class AgentService {
         }
         agentRepository.delete(existingAgent);
         agentRepository.flush();
-        // this.clearAgentCaches(existingAgent);
+        this.clearAgentCaches(existingAgent);
         return true;
     }
 
@@ -129,7 +130,7 @@ public class AgentService {
         agent.setMatricule(agentDTO.getMatricule().toLowerCase());
         agent.setNom(agentDTO.getNom());
         agent.setPrenom(agentDTO.getPrenom());
-        // agent.setCreatedBy(agentDTO.getCreatedBy());
+        agent.setCreatedBy(agentDTO.getCreatedBy());
         String encryptedPassword = passwordEncoder.encode(password);
         agent.setPassword(encryptedPassword);
         agent.setResetKey(RandomUtil.generateResetKey());
@@ -144,7 +145,7 @@ public class AgentService {
             agent.setProfiles(profiles);
         }
         agentRepository.save(agent);
-        // this.clearAgentCaches(agent);
+        this.clearAgentCaches(agent);
         log.debug("Created Information for Agent: {}", agent);
         return agent;
     }
@@ -161,7 +162,7 @@ public class AgentService {
             .filter(Optional::isPresent)
             .map(Optional::get)
             .map(agent -> {
-                // this.clearAgentCaches(agent);
+                this.clearAgentCaches(agent);
                 agent.setMatricule(agentDTO.getMatricule().toLowerCase());
                 agent.setNom(agentDTO.getNom());
                 agent.setPrenom(agentDTO.getPrenom());
@@ -173,7 +174,7 @@ public class AgentService {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .forEach(managedProfiles::add);
-                // this.clearAgentCaches(agent);
+                this.clearAgentCaches(agent);
                 log.debug("Changed Information for Agent: {}", agent);
                 return agent;
             })
@@ -183,7 +184,7 @@ public class AgentService {
     public void deleteAgent(String matricule) {
         agentRepository.findOneByMatricule(matricule).ifPresent(agent -> {
             agentRepository.delete(agent);
-            // this.clearAgentCaches(agent);
+            this.clearAgentCaches(agent);
             log.debug("Deleted Agent: {}", agent);
         });
     }
@@ -204,7 +205,7 @@ public class AgentService {
                 if (email != null) {
                     agent.setEmail(email.toLowerCase());
                 }
-               // this.clearAgentCaches(agent);
+               this.clearAgentCaches(agent);
                 log.debug("Changed Information for Agent: {}", agent);
             });
     }
@@ -221,7 +222,7 @@ public class AgentService {
                 }
                 String encryptedPassword = passwordEncoder.encode(newPassword);
                 agent.setPassword(encryptedPassword);
-                // this.clearAgentCaches(agent);
+                this.clearAgentCaches(agent);
                 log.debug("Changed password for Agent: {}", agent);
             });
     }
@@ -258,7 +259,7 @@ public class AgentService {
             .forEach(agent -> {
                 log.debug("Deleting not activated agent {}", agent.getMatricule());
                 agentRepository.delete(agent);
-                // this.clearAgentCaches(agent);
+                this.clearAgentCaches(agent);
             });
     }
 
@@ -272,7 +273,7 @@ public class AgentService {
     }
 
 
-    /* private void clearAgentCaches(Agent agent) {
+    private void clearAgentCaches(Agent agent) {
         Objects.requireNonNull(cacheManager.getCache(AgentRepository.USERS_BY_LOGIN_CACHE)).evict(agent.getMatricule());
-    } */
+    }
 }
