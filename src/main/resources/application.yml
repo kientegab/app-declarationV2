@@ -14,6 +14,10 @@ application:
   mail:
     from: plainte.support@fonction-publique.gov.bf
     base-url: http://localhost:8089${server.servlet.context-path:/}
+  cache: # Cache configuration
+    ehcache: # Ehcache configuration
+      time-to-live-seconds: 3600 # By default objects stay 1 hour in the cache
+      max-entries: 100 # Number of objects in each cache entry
 
 management:
   endpoints:
