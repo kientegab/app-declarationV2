@@ -21,11 +21,11 @@ public interface ProgrammationService {
 
     Programmation update(Programmation programmation);
 
-    Page<Programmation> get(String libelle, Pageable pageable);
+    Page<Programmation> get(Long structureId, String libelle, Pageable pageable);
 
-    Optional<Programmation> get(Long id);
+    Optional<Programmation> get(Long structureId, Long id);
 
-    Page<Programmation> findAll(Pageable pageable);
+    Page<Programmation> findAll(Long structureId, Pageable pageable);
 
     void delete(Long id);
 }

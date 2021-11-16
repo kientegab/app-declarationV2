@@ -19,6 +19,7 @@ import org.mapstruct.Mappings;
 public interface ProgrammationMapper {
 
     @Mappings({
+        @Mapping(target = "structureId", source = "structure.id"),
         @Mapping(target = "projetId", source = "projet.id"),
         @Mapping(target = "sourceFinancementId", source = "sourceFinancement.id"),
         @Mapping(target = "activite", source = "activite"),
@@ -31,6 +32,7 @@ public interface ProgrammationMapper {
         @Mapping(target = "cible", source = "cible"),
         @Mapping(target = "observation", source = "observation"),
         @Mapping(target = "singleton", source = "singleton"),
+        @Mapping(target = "structure.id", source = "structureId"),
         @Mapping(target = "projet.id", source = "projetId"),
         @Mapping(target = "sourceFinancement.id", source = "sourceFinancementId"),
         @Mapping(target = "activite", source = "activite"),
