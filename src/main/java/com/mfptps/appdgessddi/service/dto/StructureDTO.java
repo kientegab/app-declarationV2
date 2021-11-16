@@ -1,5 +1,8 @@
 package com.mfptps.appdgessddi.service.dto;
 
+import com.mfptps.appdgessddi.entities.Ministere;
+import com.mfptps.appdgessddi.entities.Structure;
+
 public class StructureDTO {
 
     private String libelle;
@@ -10,10 +13,12 @@ public class StructureDTO {
     private String emailResp;
     private String emailStruct;
 
-    private Long structureId;
+    private Structure structure;
 
-    private Long ministereId;
+    private Ministere ministere;
 
+
+    
     public String getLibelle() {
         return libelle;
     }
@@ -70,20 +75,20 @@ public class StructureDTO {
         this.emailStruct = emailStruct;
     }
 
-    public Long getStructureId() {
-        return structureId;
+    public Structure getStructure() {
+        return structure;
     }
 
-    public void setStructureId(Long structureId) {
-        this.structureId = structureId;
+    public void setStructure(Structure structure) {
+        this.structure = structure;
     }
 
-    public Long getMinistereId() {
-        return ministereId;
+    public Ministere getMinistere() {
+        return ministere;
     }
 
-    public void setMinistereId(Long ministereId) {
-        this.ministereId = ministereId;
+    public void setMinistere(Ministere ministere) {
+        this.ministere = ministere;
     }
 
 }

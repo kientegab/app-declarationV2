@@ -58,7 +58,7 @@ public class SourceFinancementController {
     public ResponseEntity<SourceFinancement> createSourceFinancement(@Valid @RequestBody SourceFinancement sourceFinancement) throws URISyntaxException {
         SourceFinancement entitySaved = sourceFinancementService.create(sourceFinancement);
         log.debug("Création d'une SourceFinancement : {}", sourceFinancement);
-        return ResponseEntity.created(new URI("/api/source-financements/" + entitySaved.getId()))
+        return ResponseEntity.created(new URI("/api/source-financements" + entitySaved.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, entitySaved.getId().toString()))
                 .body(entitySaved);
     }
@@ -87,7 +87,7 @@ public class SourceFinancementController {
      * @return
      */
     @GetMapping(path = "/{libelle}")
-    public ResponseEntity<List<SourceFinancement>> findSourceByLibelle(@PathVariable(name = "libelle") String libelle) {
+    public ResponseEntity<List<SourceFinancement>> findSourceByLibelle(@PathVariable(name = "libelle", required = true) String libelle) {
         List<SourceFinancement> sources = sourceFinancementService.find(libelle);
         return ResponseEntity.ok().body(sources);
     }

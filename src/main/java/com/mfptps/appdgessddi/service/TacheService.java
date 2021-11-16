@@ -6,7 +6,7 @@
 package com.mfptps.appdgessddi.service;
 
 import com.mfptps.appdgessddi.entities.Tache;
-import com.mfptps.appdgessddi.service.dto.TacheDTO;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,13 +16,40 @@ import org.springframework.data.domain.Pageable;
  */
 public interface TacheService {
 
-    Tache create(TacheDTO tache);
-
+    /**
+     * Do not modify ponderation field
+     *
+     * @param tache
+     * @return
+     */
     Tache update(Tache tache);
 
-    Page<Tache> get(String libelle);
+    /**
+     * THIS FUNCTION ACTS AS DELETION AND UPDATE. Here, ponderations fields can
+     * be update after checking these sum 100%
+     *
+     * @param taches
+     * @return
+     */
+    List<Tache> update(List<Tache> taches);
 
-    Page<Tache> findAll(Pageable pageable);
+    /**
+     * return a Tache (by libelle) not deleted of a Programmation
+     *
+     * @param libelle
+     * @param programmationId
+     * @param pageable
+     * @return
+     */
+    Page<Tache> get(String libelle, Long programmationId, Pageable pageable);
 
-    void delete(Long id);
+    /**
+     * return all Taches (not deleted) of a Programmation
+     *
+     * @param programmationId
+     * @param pageable
+     * @return
+     */
+    Page<Tache> get(Long programmationId, Pageable pageable);
+
 }

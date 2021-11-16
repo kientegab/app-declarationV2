@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class ParametreServiceImpl  implements ParametreService {
@@ -35,6 +37,12 @@ public class ParametreServiceImpl  implements ParametreService {
     @Override
     public Page<Parametre> findAll(Pageable pageable) {
         return parametreRepository.findAll(pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Parametre> get(Long id) {
+        return parametreRepository.findById(id);
     }
 
     @Override

@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -67,5 +68,11 @@ public class ParametreController {
                 .noContent()
                 .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
                 .build();
+    }
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<Parametre> getParametreById(@PathVariable Long id) {
+        log.debug("Consultation d un parametre : {}", id);
+        Optional<Parametre> parametreFound = parametreService.get(id);
+        return ResponseUtil.wrapOrNotFound(parametreFound);
     }
 }

@@ -179,4 +179,14 @@ public class Programmation extends CommonEntity {
         this.projet = projet;
     }
 
+    /**
+     * Previous to check if sum of taches's ponderation equals 100%
+     *
+     * @return
+     */
+    public double checkPonderation() {
+        double total = this.taches.stream().map(tache -> tache.getPonderation())
+                .reduce(0D, (subtotal, element) -> subtotal + element);
+        return total;
+    }
 }
