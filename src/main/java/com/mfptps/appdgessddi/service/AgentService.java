@@ -101,6 +101,7 @@ public class AgentService {
         newAgent.setPassword(encryptedPassword);
         newAgent.setNom(agentDTO.getNom());
         newAgent.setPrenom(agentDTO.getPrenom());
+        newAgent.setEmail(agentDTO.getEmail());
         // new agent is not active
         newAgent.setActif(false);
         // new agent gets registration key

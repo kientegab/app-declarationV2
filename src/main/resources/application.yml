@@ -12,7 +12,7 @@ application:
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
   mail:
-    from: notation@mfptps.gov.bf
+    from: plainte.support@fonction-publique.gov.bf
     base-url: http://localhost:8089${server.servlet.context-path:/}
 
 management:
@@ -37,6 +37,17 @@ spring:
         bootstrap-mode: deferred
   liquibase:
     change-log: classpath:config/liquibase/master.xml
+  mail:
+    host: email-smtp.eu-west-1.amazonaws.com
+    port: 587
+    username: AKIASHLP5WJRJ5U2XDJS
+    password: BDxLBdCYYNRgnmhZ3ZCT6pQllX/W4NNNhJpEghPHz3nj
+    protocol: smtp
+    tls: true
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+      ssl.trust: email-smtp.eu-west-1.amazonaws.com
   jpa:
     open-in-view: false
     properties:
