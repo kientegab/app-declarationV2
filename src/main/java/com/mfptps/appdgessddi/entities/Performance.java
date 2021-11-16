@@ -1,6 +1,5 @@
 package com.mfptps.appdgessddi.entities;
 
-
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.*;
@@ -12,12 +11,12 @@ import javax.persistence.Table;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "ponderation")
-@SQLDelete(sql = "UPDATE ponderation SET deleted = true WHERE id=?") // to manage softDeletion
+@Table(name = "performance")
+@SQLDelete(sql = "UPDATE performance SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 @FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
 @Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
-public class Ponderation  extends CommonEntity{
+public class Performance  extends CommonEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,11 +25,10 @@ public class Ponderation  extends CommonEntity{
     private double efficience ;
     private double gouvernance ;
     private double impact ;
-    private boolean actif ;
-    @ManyToOne
-    private Performance performance ;
+    private double pgs ;
+    private double pgm ;
 
-    public Ponderation() {
+    public Performance() {
     }
 
     public Long getId() {
@@ -73,19 +71,19 @@ public class Ponderation  extends CommonEntity{
         this.impact = impact;
     }
 
-    public boolean isActif() {
-        return actif;
+    public double getPgs() {
+        return pgs;
     }
 
-    public void setActif(boolean actif) {
-        this.actif = actif;
+    public void setPgs(double pgs) {
+        this.pgs = pgs;
     }
 
-    public Performance getPerformance() {
-        return performance;
+    public double getPgm() {
+        return pgm;
     }
 
-    public void setPerformance(Performance performance) {
-        this.performance = performance;
+    public void setPgm(double pgm) {
+        this.pgm = pgm;
     }
 }
