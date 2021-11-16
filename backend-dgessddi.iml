@@ -9,6 +9,9 @@
     <content url="file://$MODULE_DIR$/src/main/resources">
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
     </content>
+    <content url="file://$MODULE_DIR$/target/generated-sources/annotations">
+      <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/annotations" isTestSource="false" generated="true" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.mfptps:ui-dgessdii:0.0.1-SNAPSHOT" level="project" />
