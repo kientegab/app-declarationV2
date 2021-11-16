@@ -7,12 +7,12 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
-import com.mfptps.appdgessddi.entities.Permission;
+import com.mfptps.appdgessddi.entities.Privilege;
 
 /**
- * Service Interface for managing {@link Permission}.
+ * Service Interface for managing {@link Privilege}.
  */
-public interface PermissionService {
+public interface PrivilegeService {
 
     /**
      * Save a permission.
@@ -20,7 +20,7 @@ public interface PermissionService {
      * @param permission the entity to save.
      * @return the persisted entity.
      */
-    Permission save(Permission permission);
+    Privilege save(Privilege permission);
 
     /**
      * Get all the permission.
@@ -28,14 +28,14 @@ public interface PermissionService {
      * @param pageable the pagination information.
      * @return the list of entities.
      */
-    Page<Permission> findAll(Pageable pageable);
+    Page<Privilege> findAll(Pageable pageable);
     
     /**
      * Get all the permission.
      *
      * @return the list of entities.
      */
-    List<Permission> getList();
+    List<Privilege> getList();
 
 
     /**
@@ -44,7 +44,7 @@ public interface PermissionService {
      * @param id the id of the entity.
      * @return the entity.
      */
-    Optional<Permission> findOne(Long id);
+    Optional<Privilege> findOne(Long id);
 
     /**
      * Delete the "id" permission.
