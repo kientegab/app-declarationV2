@@ -85,8 +85,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
      * @return
      */
     @Override
-    public Page<Programmation> get(String libelle, Pageable pageable) {
-        return programmationRepository.findByActiviteLibelleContainingIgnoreCase(libelle, pageable);
+    public Page<Programmation> get(Long structureId, String libelle, Pageable pageable) {
+        return programmationRepository.findByLibelle(structureId, libelle, pageable);
     }
 
     /**
@@ -95,14 +95,14 @@ public class ProgrammationServiceImpl implements ProgrammationService {
      * @return
      */
     @Override
-    public Optional<Programmation> get(Long id) {
-        return programmationRepository.findById(id);
+    public Optional<Programmation> get(Long structureId, Long id) {
+        return programmationRepository.findById(structureId, id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Programmation> findAll(Pageable pageable) {
-        return programmationRepository.findAll(pageable);
+    public Page<Programmation> findAll(Long structureId, Pageable pageable) {
+        return programmationRepository.findAll(structureId, pageable);
     }
 
     /**
