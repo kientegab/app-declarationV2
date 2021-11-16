@@ -9,14 +9,8 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring")
 public interface StructureMapper {
 
-    @Mappings({
-        @Mapping(target = "description", source = "description")
-    })
     StructureDTO toDto(Structure structure);
 
-    @Mappings({
-        @Mapping(target = "description", source = "description"),
-        @Mapping(target = "structure", source = "structure")})
     Structure toEntity(StructureDTO structureDTO);
 
     default Structure fromId(Long id) {

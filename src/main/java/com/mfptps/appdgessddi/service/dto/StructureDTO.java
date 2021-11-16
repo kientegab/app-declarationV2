@@ -4,7 +4,7 @@ import com.mfptps.appdgessddi.entities.Ministere;
 import com.mfptps.appdgessddi.entities.Structure;
 
 public class StructureDTO {
-
+    private Long id ;
     private String libelle;
     private String description;
     private String type;
@@ -13,12 +13,18 @@ public class StructureDTO {
     private String emailResp;
     private String emailStruct;
 
-    private Structure structure;
+    private Structure parent;
 
     private Ministere ministere;
 
+    public Long getId() {
+        return id;
+    }
 
-    
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getLibelle() {
         return libelle;
     }
@@ -75,12 +81,12 @@ public class StructureDTO {
         this.emailStruct = emailStruct;
     }
 
-    public Structure getStructure() {
-        return structure;
+    public Structure getParent() {
+        return parent;
     }
 
-    public void setStructure(Structure structure) {
-        this.structure = structure;
+    public void setParent(Structure parent) {
+        this.parent = parent;
     }
 
     public Ministere getMinistere() {
