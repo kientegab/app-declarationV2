@@ -1,7 +1,7 @@
 package com.mfptps.appdgessddi.config;
 
 import com.mfptps.appdgessddi.aop.LoggingAspect;
-import com.mfptps.appdgessddi.aop.utils.AppProfile;
+import com.mfptps.appdgessddi.utils.AppProfile;
 
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;

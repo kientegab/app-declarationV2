@@ -5,7 +5,7 @@
  */
 package com.mfptps.appdgessddi.web;
 
-import com.mfptps.appdgessddi.aop.utils.PaginationUtil;
+import com.mfptps.appdgessddi.utils.PaginationUtil;
 import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.service.TacheService;
 import com.mfptps.appdgessddi.service.dto.TacheVM;

@@ -1,9 +1,7 @@
 package com.mfptps.appdgessddi.web;
 
 
-import com.mfptps.appdgessddi.aop.utils.HeaderUtil;
-import com.mfptps.appdgessddi.aop.utils.PaginationUtil;
-import com.mfptps.appdgessddi.aop.utils.ResponseUtil;
+import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.service.ExerciceService;
 import com.mfptps.appdgessddi.service.dto.ExerciceDTO;
