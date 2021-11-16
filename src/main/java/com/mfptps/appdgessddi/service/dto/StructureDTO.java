@@ -5,7 +5,6 @@ import com.mfptps.appdgessddi.entities.Structure;
 
 public class StructureDTO {
 
-    private Long id;
     private String libelle;
     private String description;
     private String type;
@@ -18,13 +17,6 @@ public class StructureDTO {
 
     private Ministere ministere;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     
     public String getLibelle() {
