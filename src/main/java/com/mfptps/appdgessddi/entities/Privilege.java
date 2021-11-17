@@ -8,16 +8,16 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "permission")
+@Table(name = "privilege")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Permission extends CommonEntity {
+public class Privilege extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name", length = 50)
     private String name;
 
-    public Permission() {
+    public Privilege() {
     }
 
     public Long getId() {
@@ -47,7 +47,7 @@ public class Permission extends CommonEntity {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Permission other = (Permission) obj;
+        final Privilege other = (Privilege) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
