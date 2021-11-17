@@ -9,8 +9,8 @@ import java.util.Optional;
 
 import com.mfptps.appdgessddi.entities.Profile;
 
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
@@ -20,7 +20,15 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>{
 
     Optional<Profile> findByName(String name);
 
-    @EntityGraph(attributePaths = "permissions")
-    Optional<Profile> findOneWithPermissionsByNameIgnoreCase(String name);
+    @EntityGraph(attributePaths = "privileges")
+    Optional<Profile> findOneWithPrivilegesByNameIgnoreCase(String name);
+
+    @Modifying
+    @Query(value = "DELETE FROM AGENT_PROFILE WHERE PROFILE_ID = :id", nativeQuery = true)
+    int deleteProfileFromAgentAssociation(@Param("id") Long id);
+    
+    @Modifying
+    @Query(value = "DELETE FROM PROFILE_PRIVILEGE WHERE PROFILE_ID = :id", nativeQuery = true)
+    int deleteAssociatePrivilege(@Param("id") Long id);
     
 }

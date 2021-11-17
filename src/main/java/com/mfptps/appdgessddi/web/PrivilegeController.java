@@ -51,7 +51,7 @@ public class PrivilegeController {
             throw new BadRequestAlertException("A new privilege cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Privilege result = privilegeService.save(privilege);
-        return ResponseEntity.created(new URI("/security-service/privileges/" + result.getId()))
+        return ResponseEntity.created(new URI("/api/privileges/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
