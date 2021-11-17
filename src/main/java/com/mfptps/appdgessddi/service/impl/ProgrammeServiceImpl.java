@@ -10,7 +10,6 @@ import com.mfptps.appdgessddi.repositories.ProgrammeRepository;
 import com.mfptps.appdgessddi.service.ProgrammeService;
 import com.mfptps.appdgessddi.service.dto.ProgrammeDTO;
 import com.mfptps.appdgessddi.service.mapper.ProgrammeMapper;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,9 +45,8 @@ public class ProgrammeServiceImpl implements ProgrammeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Programme> get(String code) {
-        return null;
-//repository.findByCode_programme(code);
+    public Page<Programme> get(String code, Pageable pageable) {
+        return repository.findByCode(code, pageable);
     }
 
     @Override

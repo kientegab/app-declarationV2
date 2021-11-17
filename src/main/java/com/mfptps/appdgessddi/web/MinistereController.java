@@ -1,18 +1,15 @@
 package com.mfptps.appdgessddi.web;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-
-import javax.validation.Valid;
-
 import com.mfptps.appdgessddi.entities.Ministere;
 import com.mfptps.appdgessddi.service.MinistereService;
 import com.mfptps.appdgessddi.service.dto.MinistereDTO;
 import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
-
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import javax.validation.Valid;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
@@ -66,13 +63,12 @@ public class MinistereController {
         return ResponseUtil.wrapOrNotFound(ministere);
     }
 
-    @GetMapping(path = "/ministeres/{id}")
-    public ResponseEntity<Ministere> getMinistereById(@PathVariable(name = "id") Long id) {
-        log.debug("Consultation du Ministere : {}", id);
-        Optional<Ministere> ministere = ministereService.get(id);
-        return ResponseUtil.wrapOrNotFound(ministere);
-    }
-
+//    @GetMapping(path = "/ministeres/{id}")
+//    public ResponseEntity<Ministere> getMinistereById(@PathVariable(name = "id") Long id) {
+//        log.debug("Consultation du Ministere : {}", id);
+//        Optional<Ministere> ministere = ministereService.get(id);
+//        return ResponseUtil.wrapOrNotFound(ministere);
+//    }
     @GetMapping(path = "/ministeres")
     public ResponseEntity<List<Ministere>> findAllMinisteres(Pageable pageable) {
         Page<Ministere> minsiteres = ministereService.findAll(pageable);

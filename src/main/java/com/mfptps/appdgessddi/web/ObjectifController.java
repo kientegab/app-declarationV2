@@ -1,10 +1,15 @@
 package com.mfptps.appdgessddi.web;
 
-import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.entities.Objectif;
 import com.mfptps.appdgessddi.service.ObjectifService;
 import com.mfptps.appdgessddi.service.dto.ObjectifDTO;
+import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -13,12 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -29,11 +28,12 @@ public class ObjectifController {
 
     @Value("${application.name}")
     private String applicationName;
-    private final ObjectifService objectifService ;
+    private final ObjectifService objectifService;
 
     public ObjectifController(ObjectifService objectifService) {
         this.objectifService = objectifService;
     }
+
     @PostMapping
     public ResponseEntity<Objectif> createObjectif(@Valid @RequestBody ObjectifDTO objectifDTO) throws URISyntaxException {
         Objectif objectif = objectifService.create(objectifDTO);
@@ -42,6 +42,7 @@ public class ObjectifController {
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, objectif.getId().toString()))
                 .body(objectif);
     }
+
     @PutMapping
     public ResponseEntity<Objectif> updateObjectif(@Valid @RequestBody Objectif objectif) throws URISyntaxException {
         log.debug("Mis à jour d un objectif : {}", objectif);
@@ -53,17 +54,32 @@ public class ObjectifController {
                 .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, objectif.getId().toString()))
                 .body(resultO);
     }
-    @GetMapping(path = "/{libelle}")
+
+    @GetMapping(path = "/libelle/{libelle}")
     public ResponseEntity<Objectif> getObjectifByLibelle(@PathVariable(name = "libelle") String libelle) {
         log.debug("Consultation d un objectif : {}", libelle);
         Optional<Objectif> objectifFound = objectifService.get(libelle);
         return ResponseUtil.wrapOrNotFound(objectifFound);
     }
+
     @GetMapping(path = "/{id}")
     public ResponseEntity<Objectif> getObjectifById(@PathVariable(name = "id") Long id) {
         log.debug("Consultation d un objectif : {}", id);
         Optional<Objectif> objectif = objectifService.get(id);
         return ResponseUtil.wrapOrNotFound(objectif);
+    }
+
+    /**
+     *
+     * @param type : field type of objectif
+     * @param pageable
+     * @return
+     */
+    @GetMapping(path = "/search/type/{type}")
+    public ResponseEntity<List<Objectif>> findObjectifsByType(@PathVariable(name = "type", required = true) String type, Pageable pageable) {
+        Page<Objectif> objectifs = objectifService.findByType(type, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), objectifs);
+        return ResponseEntity.ok().headers(headers).body(objectifs.getContent());
     }
 
     @GetMapping
