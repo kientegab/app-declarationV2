@@ -1,18 +1,13 @@
 package com.mfptps.appdgessddi.service.dto;
 
-import com.mfptps.appdgessddi.entities.Observations;
-import com.mfptps.appdgessddi.entities.Ponderation;
-
-import java.util.Date;
+import java.time.LocalDate;
 
 public class ExerciceDTO {
 
-    private String description ;
-    private String statut ;
-    private Date debut ;
-    private Date fin ;
-    private Observations observations ;
-    private Ponderation ponderation ;
+    private Long id;
+    private String description;
+    private LocalDate debut;
+    private LocalDate fin;
 
     public ExerciceDTO() {
     }
@@ -25,43 +20,28 @@ public class ExerciceDTO {
         this.description = description;
     }
 
-    public String getStatut() {
-        return statut;
+    public Long getId() {
+        return id;
     }
 
-    public void setStatut(String statut) {
-        this.statut = statut;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Date getDebut() {
+    public LocalDate getDebut() {
         return debut;
     }
 
-    public void setDebut(Date debut) {
+    public void setDebut(LocalDate debut) {
         this.debut = debut;
     }
 
-    public Date getFin() {
+    public LocalDate getFin() {
         return fin;
     }
 
-    public void setFin(Date fin) {
+    public void setFin(LocalDate fin) {
         this.fin = fin;
     }
 
-    public Observations getObservations() {
-        return observations;
-    }
-
-    public void setObservations(Observations observations) {
-        this.observations = observations;
-    }
-
-    public Ponderation getPonderation() {
-        return ponderation;
-    }
-
-    public void setPonderation(Ponderation ponderation) {
-        this.ponderation = ponderation;
-    }
 }

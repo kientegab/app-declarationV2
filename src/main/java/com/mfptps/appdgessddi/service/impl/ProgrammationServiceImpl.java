@@ -5,8 +5,11 @@
  */
 package com.mfptps.appdgessddi.service.impl;
 
+import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.entities.Tache;
+import com.mfptps.appdgessddi.enums.ExerciceStatus;
+import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.service.CustomException;
@@ -31,13 +34,16 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     private final ProgrammationRepository programmationRepository;
     private final TacheRepository tacheRepository;
+    private final ExerciceRepository exerciceRepository;
     private final ProgrammationMapper programmationMapper;
 
     public ProgrammationServiceImpl(ProgrammationRepository programmationRepository,
+            ExerciceRepository exerciceRepository,
             ProgrammationMapper programmationMapper,
             TacheRepository tacheRepository) {
         this.programmationRepository = programmationRepository;
         this.tacheRepository = tacheRepository;
+        this.exerciceRepository = exerciceRepository;
         this.programmationMapper = programmationMapper;
     }
 
@@ -54,6 +60,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         if (programmationMapped.checkPonderation() != 100) {
             throw new CustomException("L'ensemble des ponderations de vos taches n'atteint pas 100%.");
         }
+        Exercice exerciceEnAttente = exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
+        programmationMapped.setExercice(exerciceEnAttente);
         Programmation response = programmationRepository.save(programmationMapped);
 
         if (programmationDTO.isSingleton()) {//Activite with one Tache
