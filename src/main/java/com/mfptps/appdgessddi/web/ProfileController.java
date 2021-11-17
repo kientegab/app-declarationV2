@@ -104,7 +104,7 @@ public class ProfileController {
     @GetMapping("/profiles/{name}")
     public ResponseEntity<Profile> getProfile(@PathVariable String name) {
         log.debug("REST request to get Profile : {}", name);
-        Optional<Profile> profile = profileService.getProfilerWithActionsByName(name);
+        Optional<Profile> profile = profileService.getProfileWithPrivilegesByName(name);
         return ResponseUtil.wrapOrNotFound(profile);
     }
 

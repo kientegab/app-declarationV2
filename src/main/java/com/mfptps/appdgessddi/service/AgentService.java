@@ -50,11 +50,13 @@ public class AgentService {
         this.cacheManager = cacheManager;
     }
 
-    public Optional<Agent> activateRegistration(String key) {
+    public Optional<Agent> activateRegistration(String key, String password) {
         log.debug("Activating agent for activation key {}", key);
         return agentRepository.findOneByActivationKey(key)
             .map(agent -> {
                 // activate given agent for the registration key.
+                String encryptedPassword = passwordEncoder.encode(password);
+                agent.setPassword(encryptedPassword);
                 agent.setActif(true);
                 agent.setActivationKey(null);
                 this.clearAgentCaches(agent);
