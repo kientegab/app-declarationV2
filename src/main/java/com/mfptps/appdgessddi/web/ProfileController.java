@@ -53,7 +53,7 @@ public class ProfileController {
             throw new BadRequestAlertException("A new profile cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Profile result = profileService.save(profile);
-        return ResponseEntity.created(new URI("/security-service/profiles/" + result.getId()))
+        return ResponseEntity.created(new URI("/api/profiles/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
