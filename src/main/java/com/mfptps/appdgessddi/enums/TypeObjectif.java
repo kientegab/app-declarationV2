@@ -10,6 +10,12 @@ package com.mfptps.appdgessddi.enums;
  * @author Canisius <canisiushien@gmail.com>
  */
 public enum TypeObjectif {
-    STRATEGIQUE,
-    OPERATIONNEL;
+    STRATEGIQUE("STRATEGIQUE"),
+    OPERATIONNEL("OPERATIONNEL");
+
+    String label;
+
+    TypeObjectif(String _label) {
+        this.label = _label;
+    }
 }

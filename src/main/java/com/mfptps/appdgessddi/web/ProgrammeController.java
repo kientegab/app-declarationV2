@@ -5,15 +5,14 @@
  */
 package com.mfptps.appdgessddi.web;
 
-import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.entities.Programme;
 import com.mfptps.appdgessddi.service.ProgrammeService;
 import com.mfptps.appdgessddi.service.dto.ProgrammeDTO;
+import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,10 +89,11 @@ public class ProgrammeController {
      * @return
      */
     @GetMapping(path = "/{code}")
-    public ResponseEntity<Programme> getProgrammeByCode(@PathVariable(name = "code") String code) {
+    public ResponseEntity<List<Programme>> getProgrammeByCode(@PathVariable(name = "code", required = true) String code, Pageable pageable) {
         log.debug("Consultation du Programme : {}", code);
-        Optional<Programme> programmeFound = programmeService.get(code);
-        return ResponseUtil.wrapOrNotFound(programmeFound);
+        Page<Programme> programmes = programmeService.get(code, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), programmes);
+        return ResponseEntity.ok().headers(headers).body(programmes.getContent());
     }
 
     /**

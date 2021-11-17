@@ -1,24 +1,25 @@
 package com.mfptps.appdgessddi.service.impl;
 
 import com.mfptps.appdgessddi.entities.Objectif;
+import com.mfptps.appdgessddi.enums.TypeObjectif;
 import com.mfptps.appdgessddi.repositories.ObjectifRepository;
 import com.mfptps.appdgessddi.service.ObjectifService;
 import com.mfptps.appdgessddi.service.dto.ObjectifDTO;
 import com.mfptps.appdgessddi.service.mapper.ObjectiMapper;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 @Slf4j
 @Service
 @Transactional
 public class ObjectifServiceImpl implements ObjectifService {
 
-    private final ObjectifRepository objectifRepository ;
-    private final ObjectiMapper objectiMapper ;
+    private final ObjectifRepository objectifRepository;
+    private final ObjectiMapper objectiMapper;
 
     public ObjectifServiceImpl(ObjectifRepository objectifRepository, ObjectiMapper objectiMapper) {
         this.objectifRepository = objectifRepository;
@@ -28,7 +29,7 @@ public class ObjectifServiceImpl implements ObjectifService {
     @Override
     public Objectif create(ObjectifDTO objectifDTO) {
 
-        Objectif  objectifmapped = objectiMapper.toEntity(objectifDTO);
+        Objectif objectifmapped = objectiMapper.toEntity(objectifDTO);
         return objectifRepository.save(objectifmapped);
     }
 
@@ -59,5 +60,11 @@ public class ObjectifServiceImpl implements ObjectifService {
     @Override
     public void delete(Long id) {
         objectifRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Objectif> findByType(String type, Pageable pageable) {
+        TypeObjectif ype = TypeObjectif.valueOf(type);
+        return objectifRepository.findByType(ype, pageable);
     }
 }

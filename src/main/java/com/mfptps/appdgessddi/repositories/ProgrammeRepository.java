@@ -6,7 +6,8 @@
 package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.Programme;
-import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -15,5 +16,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface ProgrammeRepository extends JpaRepository<Programme, Long> {
 
-//    Optional<Programme> findByCode_programme(String code);
+    Page<Programme> findByCode(String code, Pageable pageable);//it return data where deleted = false
 }
