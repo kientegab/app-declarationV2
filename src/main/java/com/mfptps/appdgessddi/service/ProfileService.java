@@ -45,5 +45,5 @@ public interface ProfileService {
      */
     void delete(Long id);
     
-    Optional<Profile> getProfilerWithActionsByName(String name);
+    Optional<Profile> getProfileWithPrivilegesByName(String name);
 }

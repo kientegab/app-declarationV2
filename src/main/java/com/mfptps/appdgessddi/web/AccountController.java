@@ -14,6 +14,7 @@ import com.mfptps.appdgessddi.repositories.AgentRepository;
 import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.AgentService;
 import com.mfptps.appdgessddi.service.MailService;
+import com.mfptps.appdgessddi.service.dto.ActivatedPassword;
 import com.mfptps.appdgessddi.service.dto.AgentDTO;
 import com.mfptps.appdgessddi.service.dto.PasswordChangeDTO;
 import com.mfptps.appdgessddi.web.exceptions.InvalidPasswordException;
@@ -77,9 +78,12 @@ public class AccountController {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the agent
      *                          couldn't be activated.
      */
-    @GetMapping("/activate")
-    public void activateAccount(@RequestParam(value = "key") String key) {
-        Optional<Agent> agent = agentService.activateRegistration(key);
+    @PostMapping("/activate")
+    public void activateAccount(@RequestBody @Valid ActivatedPassword activatedPassword) {
+        if (!checkPasswordLength(activatedPassword.getPassword())) {
+            throw new InvalidPasswordException();
+        }
+        Optional<Agent> agent = agentService.activateRegistration(activatedPassword.getKey(), activatedPassword.getPassword());
         if (!agent.isPresent()) {
             throw new AccountControllerException("No agent was found for this activation key");
         }

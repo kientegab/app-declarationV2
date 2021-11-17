@@ -45,7 +45,7 @@ public class ProfileController {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new profile, or with status {@code 400 (Bad Request)} if the profile has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_CREATE_ROLE\")")
+    //@PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_CREATE_ROLE\")")
     @PostMapping("/profiles")
     public ResponseEntity<Profile> createProfile(@RequestBody Profile profile) throws URISyntaxException {
         log.debug("REST request to save Profile : {}", profile);
@@ -68,7 +68,7 @@ public class ProfileController {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/profiles")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_UPDATE_ROLE\")")
+    // @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_UPDATE_ROLE\")")
     public ResponseEntity<Profile> updateProfile(@RequestBody Profile profile) throws URISyntaxException {
         log.debug("REST request to update Profile : {}", profile);
         if (profile.getId() == null) {
@@ -87,7 +87,7 @@ public class ProfileController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of profiles in body.
      */
     @GetMapping("/profiles")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_GETALL_ROLE\")")
+    // @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_GETALL_ROLE\")")
     public ResponseEntity<List<Profile>> getAllProfiles(Pageable pageable) {
         log.debug("REST request to get a page of Profiles");
         Page<Profile> page = profileService.findAll(pageable);
@@ -104,7 +104,7 @@ public class ProfileController {
     @GetMapping("/profiles/{name}")
     public ResponseEntity<Profile> getProfile(@PathVariable String name) {
         log.debug("REST request to get Profile : {}", name);
-        Optional<Profile> profile = profileService.getProfilerWithActionsByName(name);
+        Optional<Profile> profile = profileService.getProfileWithPrivilegesByName(name);
         return ResponseUtil.wrapOrNotFound(profile);
     }
 
@@ -115,7 +115,7 @@ public class ProfileController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/profiles/{id}")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_DELETE_ROLE\")")
+    // @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_DELETE_ROLE\")")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
         log.debug("REST request to delete Profile : {}", id);
         if (id < 3) {
