@@ -5,10 +5,21 @@
  */
 package com.mfptps.appdgessddi.service;
 
+import com.mfptps.appdgessddi.entities.Commentaire;
+import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
+import java.util.List;
+
 /**
  *
  * @author Canisius <canisiushien@gmail.com>
  */
 public interface CommentaireService {
 
+    Commentaire create(CommentaireDTO commentaireDTO);
+
+    Commentaire update(Commentaire commentaire);
+
+    List<Commentaire> get(Long programmationId);
+
+    void delete(Long id);
 }

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "ponderation")
-@SQLDelete(sql = "UPDATE ponderation SET deleted = true WHERE id=?") // to manage softDeletion
+@SQLDelete(sql = "UPDATE ponderation SET deleted = true WHERE id=?") //
 @Where(clause = "deleted = false")
 @FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
 @Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
