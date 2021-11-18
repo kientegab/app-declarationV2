@@ -1,20 +1,34 @@
 package com.mfptps.appdgessddi.service.dto;
 
+import com.mfptps.appdgessddi.entities.TypeActivites;
+
 public class ActivitesDTO {
 
+    private Long id;
     private String code;
     private String description;
     private String libelle;
     private String status;
-    private Long typeActivitesId;
+    private TypeActivites typeActivites;
 
-    public Long getTypeActivitesId() {
-        return typeActivitesId;
+    public Long getId() {
+        return id;
     }
 
-    public void setTypeActivitesId(Long typeActivitesId) {
-        this.typeActivitesId = typeActivitesId;
+    public void setId(Long id) {
+        this.id = id;
     }
+
+    
+    public TypeActivites getTypeActivites() {
+        return typeActivites;
+    }
+
+    public void setTypeActivites(TypeActivites typeActivites) {
+        this.typeActivites = typeActivites;
+    }
+
+    
 
     public ActivitesDTO() {
 

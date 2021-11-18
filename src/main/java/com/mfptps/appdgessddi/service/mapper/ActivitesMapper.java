@@ -9,20 +9,21 @@ import org.mapstruct.Mapping;
 
 public interface ActivitesMapper {
 
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "code", target = "code")
     @Mapping(source = "libelle", target = "libelle")
     @Mapping(source = "description", target = "description")
-	@Mapping(source = "typeActivitesId", target = "typeActivites.id")
+    @Mapping(source = "typeActivites", target = "typeActivites")
     @Mapping(source = "status", target = "status")
     //@Mapping(source = "typeActivitesId", target = "typeActivites.id")
 
     Activites toEntity(ActivitesDTO activitesDTO);
-
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "code", target = "code")
     @Mapping(source = "libelle", target = "libelle")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "status", target = "status")
-    //@Mapping(source = "typeActivites.id", target = "typeActivitesId")
-   
+    @Mapping(source = "typeActivites", target = "typeActivites")
+
     ActivitesDTO toDto(Activites activites);
 }
