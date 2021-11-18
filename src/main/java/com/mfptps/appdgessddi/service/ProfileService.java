@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 import com.mfptps.appdgessddi.entities.Profile;
+import com.mfptps.appdgessddi.service.dto.ProfileDTO;
 
 /**
  * Service Interface for managing {@link ProfileService}.
@@ -27,7 +28,7 @@ public interface ProfileService {
      * @param pageable the pagination information.
      * @return the list of entities.
      */
-    Page<Profile> findAll(Pageable pageable);
+    Page<ProfileDTO> findAll(Pageable pageable);
 
 
     /**
