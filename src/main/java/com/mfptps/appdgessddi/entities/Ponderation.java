@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "ponderation")
-@SQLDelete(sql = "UPDATE ponderation SET deleted = true WHERE id=?") // to manage softDeletion
+@SQLDelete(sql = "UPDATE ponderation SET deleted = true WHERE id=?") //
 @Where(clause = "deleted = false")
 @FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
 @Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
@@ -22,7 +22,7 @@ public class Ponderation  extends CommonEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private double efficacité ;
+    private double efficacite ;
     private double efficience ;
     private double gouvernance ;
     private double impact ;
@@ -41,12 +41,12 @@ public class Ponderation  extends CommonEntity{
         this.id = id;
     }
 
-    public double getEfficacité() {
-        return efficacité;
+    public double getEfficacite() {
+        return efficacite;
     }
 
-    public void setEfficacité(double efficacité) {
-        this.efficacité = efficacité;
+    public void setEfficacite(double efficacite) {
+        this.efficacite = efficacite;
     }
 
     public double getEfficience() {
