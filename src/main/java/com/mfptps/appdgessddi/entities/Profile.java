@@ -5,6 +5,7 @@ import java.util.*;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
@@ -23,8 +24,8 @@ public class Profile extends CommonEntity {
     @Column(name = "native_profile")
     private boolean nativeProfile = false;
     
-    @JsonIgnore
-    @ManyToMany
+    // @JsonIgnoreProperties(allowGetters = true, value = {"privileges"})
+    @ManyToMany(fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "profile_privilege", 
             joinColumns = {@JoinColumn(name = "profile_id", referencedColumnName = "id")},
