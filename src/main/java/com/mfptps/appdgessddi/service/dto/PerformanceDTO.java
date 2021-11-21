@@ -1,26 +1,9 @@
-package com.mfptps.appdgessddi.entities;
+package com.mfptps.appdgessddi.service.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.hibernate.annotations.*;
+import com.mfptps.appdgessddi.entities.Performer;
 
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+public class PerformanceDTO {
 
-@ToString
-@EqualsAndHashCode(callSuper = true)
-@Entity
-@Table(name = "performance")
-@SQLDelete(sql = "UPDATE performance SET deleted = true WHERE id=?")
-@Where(clause = "deleted = false")
-@FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
-@Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
-public class Performance  extends CommonEntity{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     private double efficacité ;
     private double efficience ;
     private double gouvernance ;
@@ -28,15 +11,8 @@ public class Performance  extends CommonEntity{
     private double pgs ;
 
 
-    public Performance() {
-    }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public PerformanceDTO() {
     }
 
     public double getEfficacité() {

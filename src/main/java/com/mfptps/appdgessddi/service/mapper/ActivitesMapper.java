@@ -24,6 +24,7 @@ public interface ActivitesMapper {
     @Mapping(source = "description", target = "description")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "typeActivites", target = "typeActivites")
+    //@Mapping(source = "typeActivites.id", target = "typeActivitesId")
 
     ActivitesDTO toDto(Activites activites);
 }

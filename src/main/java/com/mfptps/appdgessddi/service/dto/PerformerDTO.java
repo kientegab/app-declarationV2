@@ -1,26 +1,14 @@
-package com.mfptps.appdgessddi.entities;
+package com.mfptps.appdgessddi.service.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.hibernate.annotations.*;
+import com.mfptps.appdgessddi.entities.Ministere;
+import com.mfptps.appdgessddi.entities.Observations;
+import com.mfptps.appdgessddi.entities.Performance;
+import com.mfptps.appdgessddi.entities.Structure;
 
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
-@ToString
-@EqualsAndHashCode(callSuper = true)
-@Entity
-@Table(name = "performer")
-@SQLDelete(sql = "UPDATE performer SET deleted = true WHERE id=?")
-@Where(clause = "deleted = false")
-@FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
-@Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
-public class Performer extends CommonEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class PerformerDTO {
+
     private String libelle ;
     private double moyenneEfficacite ;
     private  double moyenneEfficience ;
@@ -29,19 +17,10 @@ public class Performer extends CommonEntity{
     private double moyennePGS ;
     private double PGM ;
 
-    @ManyToOne
+
     private Performance performance;
 
-
-    public Performer() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public PerformerDTO() {
     }
 
     public String getLibelle() {

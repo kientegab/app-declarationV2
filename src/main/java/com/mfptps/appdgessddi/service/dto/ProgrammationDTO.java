@@ -6,6 +6,10 @@
 package com.mfptps.appdgessddi.service.dto;
 
 import com.mfptps.appdgessddi.entities.Activites;
+import com.mfptps.appdgessddi.entities.Objectif;
+import com.mfptps.appdgessddi.entities.Projet;
+import com.mfptps.appdgessddi.entities.SourceFinancement;
+import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.entities.Tache;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,17 +26,19 @@ public class ProgrammationDTO {
 
     private double cible;
 
-    private String observation;
+    private String observations;
 
     private boolean singleton;
 
-    private Long structureId;
+    private Structure structure;
 
-    private Long projetId;
+    private Projet projet;
 
-    private Long sourceFinancementId;
+    private SourceFinancement sourceFinancement;
 
     private Activites activite;
+
+    private Objectif objectif;//ObjectifOPeationel
 
     private List<Tache> taches = new ArrayList<>();
 
@@ -64,12 +70,12 @@ public class ProgrammationDTO {
         this.cible = cible;
     }
 
-    public String getObservation() {
-        return observation;
+    public String getObservations() {
+        return observations;
     }
 
-    public void setObservation(String observation) {
-        this.observation = observation;
+    public void setObservations(String observations) {
+        this.observations = observations;
     }
 
     public boolean isSingleton() {
@@ -80,36 +86,44 @@ public class ProgrammationDTO {
         this.singleton = singleton;
     }
 
-    public Long getStructureId() {
-        return structureId;
-    }
-
-    public void setStructureId(Long structureId) {
-        this.structureId = structureId;
-    }
-
-    public Long getProjetId() {
-        return projetId;
-    }
-
-    public void setProjetId(Long projetId) {
-        this.projetId = projetId;
-    }
-
-    public Long getSourceFinancementId() {
-        return sourceFinancementId;
-    }
-
-    public void setSourceFinancementId(Long sourceFinancementId) {
-        this.sourceFinancementId = sourceFinancementId;
-    }
-
     public Activites getActivite() {
         return activite;
     }
 
     public void setActivite(Activites activite) {
         this.activite = activite;
+    }
+
+    public Structure getStructure() {
+        return structure;
+    }
+
+    public void setStructure(Structure structure) {
+        this.structure = structure;
+    }
+
+    public Projet getProjet() {
+        return projet;
+    }
+
+    public void setProjet(Projet projet) {
+        this.projet = projet;
+    }
+
+    public SourceFinancement getSourceFinancement() {
+        return sourceFinancement;
+    }
+
+    public void setSourceFinancement(SourceFinancement sourceFinancement) {
+        this.sourceFinancement = sourceFinancement;
+    }
+
+    public Objectif getObjectif() {
+        return objectif;
+    }
+
+    public void setObjectif(Objectif objectif) {
+        this.objectif = objectif;
     }
 
     public List<Tache> getTaches() {
