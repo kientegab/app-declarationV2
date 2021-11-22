@@ -5,6 +5,7 @@
  */
 package com.mfptps.appdgessddi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,7 +40,7 @@ public class Programmation extends CommonEntity {
 
     private double cible;
 
-    private String observation;
+    private String observations;
 
     @Column(name = "valid_initial", nullable = false)
     private boolean validationInitial = true;
@@ -63,11 +64,15 @@ public class Programmation extends CommonEntity {
     @ManyToOne
     private Projet projet;
 
+    @JsonIgnoreProperties(value = {"parent"})
     @ManyToOne
     private Structure structure;
 
     @ManyToOne
     private Exercice exercice;
+
+    @ManyToOne
+    private Objectif objectif;//ObjectifOperationel
 
     //============== CONSTRUCTORS && GETTERS/SETTERS
     public Programmation() {
@@ -121,12 +126,12 @@ public class Programmation extends CommonEntity {
         this.cible = cible;
     }
 
-    public String getObservation() {
-        return observation;
+    public String getObservations() {
+        return observations;
     }
 
-    public void setObservation(String observation) {
-        this.observation = observation;
+    public void setObservations(String observations) {
+        this.observations = observations;
     }
 
     public boolean isValidationInitial() {
@@ -171,6 +176,14 @@ public class Programmation extends CommonEntity {
 
     public Activites getActivite() {
         return activite;
+    }
+
+    public Objectif getObjectif() {
+        return objectif;
+    }
+
+    public void setObjectif(Objectif objectif) {
+        this.objectif = objectif;
     }
 
     public void setActivite(Activites activite) {

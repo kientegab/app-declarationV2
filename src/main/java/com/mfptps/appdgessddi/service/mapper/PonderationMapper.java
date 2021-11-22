@@ -10,7 +10,7 @@ import org.mapstruct.Mappings;
 public interface PonderationMapper {
 
     @Mappings({
-            @Mapping(target = "efficacité", source = "efficacité"),
+            @Mapping(target = "efficacite", source = "efficacite"),
             @Mapping(target = "efficience", source = "efficience"),
             @Mapping(target = "gouvernance", source = "gouvernance"),
             @Mapping(target = "impact", source = "impact"),
@@ -19,7 +19,7 @@ public interface PonderationMapper {
     PonderationDTO toDto(Ponderation ponderation);
 
     @Mappings({
-            @Mapping(target = "efficacité", source = "efficacité"),
+            @Mapping(target = "efficacite", source = "efficacite"),
             @Mapping(target = "efficience", source = "efficience"),
             @Mapping(target = "gouvernance", source = "gouvernance"),
             @Mapping(target = "impact", source = "impact"),
