@@ -15,6 +15,7 @@ import java.util.*;
 
 import com.mfptps.appdgessddi.entities.Profile;
 import com.mfptps.appdgessddi.service.ProfileService;
+import com.mfptps.appdgessddi.service.dto.ProfileDTO;
 import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.*;
 
@@ -88,9 +89,9 @@ public class ProfileController {
      */
     @GetMapping("/profiles")
     // @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_GETALL_ROLE\")")
-    public ResponseEntity<List<Profile>> getAllProfiles(Pageable pageable) {
+    public ResponseEntity<List<ProfileDTO>> getAllProfiles(Pageable pageable) {
         log.debug("REST request to get a page of Profiles");
-        Page<Profile> page = profileService.findAll(pageable);
+        Page<ProfileDTO> page = profileService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

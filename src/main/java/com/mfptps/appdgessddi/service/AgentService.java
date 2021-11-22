@@ -235,8 +235,8 @@ public class AgentService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Agent> getAgentWithProfilesByMatricule(String matricule) {
-        return agentRepository.findOneWithProfilesByMatricule(matricule);
+    public Optional<AgentDTO> getAgentWithProfilesByMatricule(String matricule) {
+        return agentRepository.findOneWithProfilesByMatricule(matricule).map(AgentDTO::new);
     }
 
     /* @Transactional(readOnly = true)

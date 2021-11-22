@@ -163,7 +163,7 @@ public class AgentController {
         log.debug("REST request to get Agent : {}", login);
         return ResponseUtil.wrapOrNotFound(
             agentService.getAgentWithProfilesByMatricule(login)
-                .map(AgentDTO::new));
+                );
     }
 
     /**
