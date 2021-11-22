@@ -58,6 +58,9 @@ public class ExerciceServiceImpl implements ExerciceService {
         exerciceRepository.deleteById(id);
     }
 
+    /**
+     * The closing of an exercise implies the creation of a pending exercise
+     */
     @Override
     public void cloture() {
         Exercice exerciceToCloture = exerciceRepository.findByStatut(ExerciceStatus.ENCOURS).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
@@ -71,5 +74,25 @@ public class ExerciceServiceImpl implements ExerciceService {
         exerciceAVenir.setFin(exerciceToEncours.getFin().plusYears(1));
         exerciceAVenir.setStatut(ExerciceStatus.EN_ATTENTE);
         exerciceRepository.save(exerciceAVenir);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Optional<Exercice> getByStatutAttente() {
+        return exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE);
+    }
+
+    /**
+     *
+     * @param statut
+     * @param pageable
+     * @return
+     */
+    @Override
+    public Page<Exercice> findByStatut(ExerciceStatus statut, Pageable pageable) {
+        return exerciceRepository.findByStatut(statut, pageable);
     }
 }

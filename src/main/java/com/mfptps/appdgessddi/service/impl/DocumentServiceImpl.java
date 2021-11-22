@@ -109,9 +109,9 @@ public class DocumentServiceImpl implements DocumentService {
             return response;
         }
 
-        //Create a subFolder in user.home directory as name Structure ID and LIBELLE fields
+        //Create a subFolder in user.home directory as name Structure ID and SIGLE fields
         Structure structure = structureRepository.findStructureById(tache.getId()).orElseThrow(() -> new CustomException("Structure inexistante"));
-        Path path = this.initStoragePath(structure.getId().toString() + "_" + structure.getLibelle().replaceAll("[^a-zA-Z0-9\\S+]", "_"));
+        Path path = this.initStoragePath(structure.getId().toString() + "_" + structure.getSigle().replaceAll("[^a-zA-Z0-9\\S+]", "_"));
 
         // Initialization and saving data+files
         try {
