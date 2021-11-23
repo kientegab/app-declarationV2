@@ -21,6 +21,7 @@ import com.mfptps.appdgessddi.repositories.*;
 import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.dto.AgentDTO;
 import com.mfptps.appdgessddi.utils.RandomUtil;
+import com.mfptps.appdgessddi.web.exceptions.CustomException;
 
 /**
  * Bieve
@@ -38,16 +39,22 @@ public class AgentService {
 
     private final ProfileRepository profileRepository;
 
+    private final StructureRepository structureRepository;
+
+    private final AgentStructureRepository agentStructureRepository;
+
     private final CacheManager cacheManager;
     
     
 
     public AgentService(AgentRepository agentRepository, PasswordEncoder passwordEncoder,
-            ProfileRepository profileRepository, CacheManager cacheManager) {
+            ProfileRepository profileRepository, CacheManager cacheManager, StructureRepository structureRepository, AgentStructureRepository agentStructureRepository) {
         this.agentRepository = agentRepository;
         this.passwordEncoder = passwordEncoder;
         this.profileRepository = profileRepository;
         this.cacheManager = cacheManager;
+        this.structureRepository = structureRepository;
+        this.agentStructureRepository = agentStructureRepository;
     }
 
     public Optional<Agent> activateRegistration(String key, String password) {
@@ -79,7 +86,7 @@ public class AgentService {
     }
 
     public Optional<Agent> requestPasswordReset(String mail) {
-        return agentRepository.findOneByMatricule(mail)
+        return agentRepository.findOneByEmailIgnoreCase(mail)
             .filter(Agent::isActif)
             .map(agent -> {
                 agent.setResetKey(RandomUtil.generateResetKey());
@@ -112,9 +119,29 @@ public class AgentService {
         profileRepository.findByName("ROLE_USER").ifPresent(profiles::add);
         newAgent.setProfiles(profiles);
         agentRepository.save(newAgent);
-        // this.clearAgentCaches(newAgent);
+        if (null != agentDTO.getStructureId()) {
+            Structure structure = structureRepository.findById(agentDTO.getStructureId()).orElseThrow(() -> new CustomException("Structure with id = " + agentDTO.getStructureId() + " does not exist !" ));
+            newAgent.setStructure(structure);
+            AgentStructure agentStructure = new AgentStructure();
+            agentStructure.setAgent(newAgent);
+            agentStructure.setStructure(structure);
+            agentStructureRepository.save(agentStructure);
+        }
+        this.clearAgentCaches(newAgent);
         log.debug("Created Information for Agent: {}", newAgent);
         return newAgent;
+    }
+
+    public Agent affectationAgent(String matriculeOrMail, Long structureID) {
+        Structure structure = structureRepository.findById(structureID).orElseThrow(() -> new CustomException("Structure with id = " + structureID + " does not exist !" ));
+        Agent agent = agentRepository.findOneByMatriculeOrEmail(matriculeOrMail, matriculeOrMail).orElseThrow(() -> new CustomException("Agent with matricule or email " + matriculeOrMail + " does not exist !"));
+        agent.setStructure(structure);
+        AgentStructure entity = new AgentStructure();
+        entity.setAgent(agent);
+        entity.setStructure(structure);
+        agentStructureRepository.findByAgentIdAndActifTrue(agent.getId()).ifPresent(oldAffectation -> oldAffectation.setActif(false));;
+        agentStructureRepository.save(entity);
+        return agent;
     }
 
     private boolean removeNonActivatedAgent(Agent existingAgent) {
@@ -235,8 +262,8 @@ public class AgentService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Agent> getAgentWithProfilesByMatricule(String matricule) {
-        return agentRepository.findOneWithProfilesByMatricule(matricule);
+    public Optional<AgentDTO> getAgentWithProfilesByMatricule(String matricule) {
+        return agentRepository.findOneWithProfilesByMatricule(matricule).map(AgentDTO::new);
     }
 
     /* @Transactional(readOnly = true)
@@ -250,14 +277,14 @@ public class AgentService {
     }
 
     /**
-     * Not activated agents should be automatically deleted after 3 days.
+     * Not activated agents should be automatically deleted after 5 months.
      * <p>
      * This is scheduled to get fired everyday, at 01:00 (am).
      */
     @Scheduled(cron = "0 0 1 * * ?")
     public void removeNotActivatedAgents() {
         agentRepository
-            .findAllByActifIsFalseAndActivationKeyIsNotNullAndCreatedDateBefore(Instant.now().minus(3, ChronoUnit.DAYS))
+            .findAllByActifIsFalseAndActivationKeyIsNotNullAndCreatedDateBefore(Instant.now().minus(5, ChronoUnit.MONTHS))
             .forEach(agent -> {
                 log.debug("Deleting not activated agent {}", agent.getMatricule());
                 agentRepository.delete(agent);

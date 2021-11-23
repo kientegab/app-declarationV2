@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 
 import com.mfptps.appdgessddi.entities.Agent;
 import com.mfptps.appdgessddi.repositories.AgentRepository;
 import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.AgentService;
+import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.MailService;
 import com.mfptps.appdgessddi.service.dto.ActivatedPassword;
 import com.mfptps.appdgessddi.service.dto.AgentDTO;
@@ -113,6 +115,21 @@ public class AccountController {
     public AgentDTO getAccount() {
         return agentService.getAgentWithProfiles()
                 .orElseThrow(() -> new AccountControllerException("Agent could not be found"));
+    }
+
+
+    @GetMapping("/account/send-activated-notification/{email}")
+    public void sendActivatedLink(@PathVariable @Email String email) {
+        Optional<Agent> agent = agentRepository.findOneByEmailIgnoreCase(email);
+        if (!agent.isPresent()) {
+            throw new CustomException("the agent with this email " + email + " does not exist");
+        }
+        agent.ifPresent(ag -> {
+            if (ag.isActif()) {
+                throw new CustomException("the agent with this email " + email + " is activated");
+            }
+            mailService.sendActivationEmail(ag);
+        });
     }
 
     /**

@@ -79,6 +79,9 @@ public class Agent extends CommonEntity {
     @BatchSize(size = 20)
     private Set<Profile> profiles = new HashSet<>();
 
+    @ManyToOne(optional = true)
+    private Structure structure;
+
     public Agent() {
     }
 
@@ -176,6 +179,14 @@ public class Agent extends CommonEntity {
 
     public void setProfiles(Set<Profile> profiles) {
         this.profiles = profiles;
+    }
+
+    public Structure getStructure() {
+        return structure;
+    }
+
+    public void setStructure(Structure structure) {
+        this.structure = structure;
     }
 
     @Override
