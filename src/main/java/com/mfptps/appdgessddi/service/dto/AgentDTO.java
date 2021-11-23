@@ -36,6 +36,8 @@ public class AgentDTO {
 
     private boolean actif = false;
 
+    private Long structureId;
+
     private String createdBy;
 
     private Instant createdDate;
@@ -72,6 +74,10 @@ public class AgentDTO {
         this.privileges = actions.stream()
             .map(Privilege::getName)
             .collect(Collectors.toSet());
+        
+        if(null != agent.getStructure() && null != agent.getStructure().getId()) {
+            this.structureId = agent.getStructure().getId();
+        }
         
     }
 
@@ -178,6 +184,14 @@ public class AgentDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getStructureId() {
+        return structureId;
+    }
+
+    public void setStructureId(Long structureId) {
+        this.structureId = structureId;
     }
 
     @Override
