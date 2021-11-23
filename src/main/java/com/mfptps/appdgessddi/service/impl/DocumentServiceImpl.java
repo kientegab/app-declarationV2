@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -112,7 +113,6 @@ public class DocumentServiceImpl implements DocumentService {
         //Create a subFolder in user.home directory as name Structure ID and SIGLE fields
         Structure structure = structureRepository.findStructureById(tache.getId()).orElseThrow(() -> new CustomException("Structure inexistante"));
         Path path = this.initStoragePath(structure.getId().toString() + "_" + structure.getSigle().replaceAll("[^a-zA-Z0-9\\S+]", "_"));
-
         // Initialization and saving data+files
         try {
             String filename = StringUtils.cleanPath(documentFile.getOriginalFilename());// Normalize filename
@@ -160,6 +160,46 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void delete(Long id) {
         documentRepository.deleteById(id);
+    }
+
+    /**
+     *
+     * @param fileUri
+     * @return
+     */
+    @Override
+    public Resource download(String fileUri) {
+//        try {
+//            Document document = new Document();
+//            document = documentRepository.findByDeletedFalseAndChemin(fileUri).orElseThrow(
+//                    () -> new CustomException("Document introuvable."));
+//
+//            if (document.isEstConfidentiel()) {
+//                throw new CustomException("Ce document est confidentiel.");
+//            }
+//
+//            String url = document.getChemin();
+//            url = url.contains("C:") ? "file:///" + url.replace("\'", "/") : url;
+//            Resource resource = null;
+//            String operatingSystem = System.getProperty("os.name").toLowerCase();
+//
+//            if (operatingSystem.indexOf("win") >= 0) {
+//                resource = new UrlResource(url);
+//            } else if (operatingSystem.indexOf("nux") >= 0) {
+//                resource = new UrlResource("file:" + url);
+//            } else if (operatingSystem.indexOf("mac") >= 0) {
+//                resource = new UrlResource("file:" + url);
+//            }
+//
+//            if (resource.exists() || resource.isReadable()) {
+//                return resource;
+//            } else {
+//                throw new RuntimeException("Impossible de lire le fichier.");
+//            }
+//        } catch (MalformedURLException e) {
+//            throw new RuntimeException("Erreur : " + e.getMessage());
+//        }
+        throw new CustomException("Fonctionnalité en cours d'implementation ...");
     }
 
 }

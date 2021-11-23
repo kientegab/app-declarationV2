@@ -49,6 +49,7 @@ public class ExerciceServiceImpl implements ExerciceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Exercice> findAll(Pageable pageable) {
         return exerciceRepository.findAll(pageable);
     }
@@ -81,6 +82,7 @@ public class ExerciceServiceImpl implements ExerciceService {
      * @return
      */
     @Override
+    @Transactional(readOnly = true)
     public Optional<Exercice> getByStatutAttente() {
         return exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE);
     }
@@ -92,6 +94,7 @@ public class ExerciceServiceImpl implements ExerciceService {
      * @return
      */
     @Override
+    @Transactional(readOnly = true)
     public Page<Exercice> findByStatut(ExerciceStatus statut, Pageable pageable) {
         return exerciceRepository.findByStatut(statut, pageable);
     }

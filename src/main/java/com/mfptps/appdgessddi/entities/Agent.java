@@ -1,14 +1,11 @@
 package com.mfptps.appdgessddi.entities;
 
-import java.time.Instant;
-import java.util.*;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
 import com.fasterxml.jackson.annotation.*;
 import com.mfptps.appdgessddi.config.Constants;
-
+import java.time.Instant;
+import java.util.*;
+import javax.persistence.*;
+import javax.validation.constraints.*;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
@@ -18,6 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "agent")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Agent extends CommonEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
@@ -51,7 +49,6 @@ public class Agent extends CommonEntity {
     @NotNull
     @Column(nullable = false)
     private boolean actif = false;
-    
 
     @Size(max = 20)
     @Column(name = "activation_key", length = 20)
@@ -72,9 +69,11 @@ public class Agent extends CommonEntity {
     @JsonIgnore
     @ManyToMany
     @JoinTable(
-        name = "agent_profile",
-        joinColumns = {@JoinColumn(name = "agent_id", referencedColumnName = "id")},
-        inverseJoinColumns = {@JoinColumn(name = "profile_id", referencedColumnName = "id")})
+            name = "agent_profile",
+            joinColumns = {
+                @JoinColumn(name = "agent_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+                @JoinColumn(name = "profile_id", referencedColumnName = "id")})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 20)
     private Set<Profile> profiles = new HashSet<>();
@@ -95,7 +94,7 @@ public class Agent extends CommonEntity {
     }
 
     public void setMatricule(String matricule) {
-        this.matricule = StringUtils.lowerCase(matricule);;
+        this.matricule = StringUtils.lowerCase(matricule);
     }
 
     public String getEmail() {
@@ -188,18 +187,23 @@ public class Agent extends CommonEntity {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Agent other = (Agent) obj;
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
         return true;
     }
 
@@ -208,6 +212,5 @@ public class Agent extends CommonEntity {
         return "Agent [email=" + email + ", matricule=" + matricule + ", nom=" + nom + ", prenom=" + prenom + ", telephone="
                 + telephone + "]";
     }
-
 
 }

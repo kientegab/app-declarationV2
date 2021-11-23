@@ -40,11 +40,14 @@ public class Evaluation extends CommonEntity {
 
     private String observations;
 
-    private String statut;
+    private String statut;//EVALUEE, NON_EVALUEE. To be change by booleen evaluer
 
     //=============================== RELATIONSHIPS
     @ManyToOne
     private Periode periode;
+
+    @ManyToOne
+    private Programmation programmation;//added 22112021
 
     //=============================== CONSTRUCTORS && GETTER/SETTERS
     public Evaluation() {
