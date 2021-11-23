@@ -1,6 +1,7 @@
 package com.mfptps.appdgessddi.web;
 
 import com.mfptps.appdgessddi.entities.Exercice;
+import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.service.ExerciceService;
 import com.mfptps.appdgessddi.service.dto.ExerciceDTO;
 import com.mfptps.appdgessddi.utils.HeaderUtil;
@@ -75,6 +76,30 @@ public class ExerciceController {
         log.debug("Consultation d un exercice : {}", id);
         Optional<Exercice> actionFound = exerciceService.get(id);
         return ResponseUtil.wrapOrNotFound(actionFound);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping(path = "/statut/attente")
+    public ResponseEntity<Exercice> getExerciceENATTENTE() {
+        log.debug("Consultation de l'exercice en attente :");
+        Optional<Exercice> response = exerciceService.getByStatutAttente();
+        return ResponseUtil.wrapOrNotFound(response);
+    }
+
+    /**
+     *
+     * @param statut
+     * @param pageable
+     * @return
+     */
+    @GetMapping(path = "/statut/{statut}")
+    public ResponseEntity<List<Exercice>> findExerciceByStatut(@PathVariable(name = "statut", required = true) String statut, Pageable pageable) {
+        Page<Exercice> exercices = exerciceService.findByStatut(ExerciceStatus.valueOf(statut), pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), exercices);
+        return ResponseEntity.ok().headers(headers).body(exercices.getContent());
     }
 
     @GetMapping

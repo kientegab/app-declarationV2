@@ -1,6 +1,9 @@
 package com.mfptps.appdgessddi.entities;
 
+import com.mfptps.appdgessddi.enums.TypeStructure;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,9 +34,11 @@ public class Structure extends CommonEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String libelle;
+    private String sigle;//added 22112021
     private String description;
-    private String type;
-    private String statut;
+    @Enumerated(EnumType.STRING)
+    private TypeStructure type;//to be change on Enum : CENTRAL, DE MISSION, RATTACHEE, DECONCENTREE (20112021)
+    private String statut;//if Structure always exists or no (20112021)
     private String telephone;
     private String emailResp;
     private String emailStruct;
@@ -69,11 +74,19 @@ public class Structure extends CommonEntity {
         this.description = description;
     }
 
-    public String getType() {
+    public String getSigle() {
+        return sigle;
+    }
+
+    public void setSigle(String sigle) {
+        this.sigle = sigle;
+    }
+
+    public TypeStructure getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TypeStructure type) {
         this.type = type;
     }
 
