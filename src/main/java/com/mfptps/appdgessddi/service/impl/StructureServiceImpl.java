@@ -41,9 +41,10 @@ public class StructureServiceImpl implements StructureService {
         Structure structure = structureMapper.toEntity(structureDTO);
         Structure structureSaved = structureRepository.save(structure);
         MinistereStructure ministereStructure = new MinistereStructure();
-        Ministere ministere = new Ministere();
+        Ministere ministere = ministereRepository
+              .findById(structureDTO.getMinistere().getId())
+              .orElseThrow(()-> new CustomException("Ministere with id " + structureDTO.getMinistere().getId() + " does not exist!"));
 
-        ministere.setId(structureDTO.getMinistere().getId());
         ministereStructure.setMinistere(ministere);
         ministereStructure.setStructure(structureSaved);
         ministereStructure.setDateDebut(new Date());
