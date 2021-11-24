@@ -13,6 +13,7 @@ import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.service.CustomException;
+import com.mfptps.appdgessddi.service.EvaluationService;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
@@ -35,15 +36,18 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private final ProgrammationRepository programmationRepository;
     private final TacheRepository tacheRepository;
     private final ExerciceRepository exerciceRepository;
+    private final EvaluationService evaluationService;
     private final ProgrammationMapper programmationMapper;
 
     public ProgrammationServiceImpl(ProgrammationRepository programmationRepository,
             ExerciceRepository exerciceRepository,
             ProgrammationMapper programmationMapper,
-            TacheRepository tacheRepository) {
+            TacheRepository tacheRepository,
+            EvaluationService evaluationService) {
         this.programmationRepository = programmationRepository;
         this.tacheRepository = tacheRepository;
         this.exerciceRepository = exerciceRepository;
+        this.evaluationService = evaluationService;
         this.programmationMapper = programmationMapper;
     }
 
@@ -63,6 +67,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         Exercice exerciceEnAttente = exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
         programmationMapped.setExercice(exerciceEnAttente);
         Programmation response = programmationRepository.save(programmationMapped);
+        evaluationService.addEvaluation(programmationDTO.getPeriodes(), response);
 
         if (programmationDTO.isSingleton()) {//Activite with one Tache
             Tache tache = new Tache();

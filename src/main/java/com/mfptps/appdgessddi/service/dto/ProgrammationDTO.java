@@ -42,6 +42,12 @@ public class ProgrammationDTO {
 
     private List<Tache> taches = new ArrayList<>();
 
+    /**
+     * ex: [{"libelle":"T1", "valeur"=true}, {"libelle":"T2", "valeur"=false},
+     * {"libelle":"T3", "valeur"=true}, {"libelle":"T4", "valeur"=false}]
+     */
+    private List<PeriodesDTO> periodes = new ArrayList<>();
+
     //======================= CONSTRUCTORS && GETTERS/SETTERS
     public ProgrammationDTO() {
     }
@@ -132,6 +138,14 @@ public class ProgrammationDTO {
 
     public void setTaches(List<Tache> taches) {
         this.taches = taches;
+    }
+
+    public List<PeriodesDTO> getPeriodes() {
+        return periodes;
+    }
+
+    public void setPeriodes(List<PeriodesDTO> periodes) {
+        this.periodes = periodes;
     }
 
 }

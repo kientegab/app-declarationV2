@@ -8,23 +8,23 @@ package com.mfptps.appdgessddi.web;
 import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.service.PeriodeService;
 import com.mfptps.appdgessddi.utils.HeaderUtil;
-import com.mfptps.appdgessddi.utils.PaginationUtil;
+import com.mfptps.appdgessddi.utils.ResponseUtil;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  *
@@ -63,13 +63,23 @@ public class PeriodeController {
 
     /**
      *
-     * @param pageable
      * @return
      */
     @GetMapping
-    public ResponseEntity<List<Periode>> findByPeriodiciteActif(Pageable pageable) {
-        Page<Periode> liste = periodeService.findByPeriodiciteActif(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), liste);
-        return ResponseEntity.ok().headers(headers).body(liste.getContent());
+    public ResponseEntity<List<Periode>> findByPeriodiciteActif() {
+        List<Periode> liste = periodeService.findByPeriodiciteActif();
+        return ResponseEntity.ok().body(liste);
+    }
+
+    /**
+     *
+     * @param date
+     * @return
+     */
+    @GetMapping(path = "/{date}")
+    public ResponseEntity<Periode> getPeriodeByDate(@PathVariable(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date) {
+        log.debug("Consultation d'une Periode par date : {}", date);
+        Optional<Periode> data = periodeService.findByDateAndPeriodiciteActif(date);
+        return ResponseUtil.wrapOrNotFound(data);
     }
 }

@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.entities;
 
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +17,7 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 /**
@@ -40,7 +42,9 @@ public class Evaluation extends CommonEntity {
 
     private String observations;
 
-    private String statut;//EVALUEE, NON_EVALUEE. To be change by booleen evaluer
+    @Column(nullable = false)
+    @Type(type = "yes_no")
+    private boolean evaluer = false;//property String statut change to boolean evaluer. 23112021
 
     //=============================== RELATIONSHIPS
     @ManyToOne
@@ -85,12 +89,20 @@ public class Evaluation extends CommonEntity {
         this.observations = observations;
     }
 
-    public String getStatut() {
-        return statut;
+    public boolean isEvaluer() {
+        return evaluer;
     }
 
-    public void setStatut(String statut) {
-        this.statut = statut;
+    public void setEvaluer(boolean evaluer) {
+        this.evaluer = evaluer;
+    }
+
+    public Programmation getProgrammation() {
+        return programmation;
+    }
+
+    public void setProgrammation(Programmation programmation) {
+        this.programmation = programmation;
     }
 
     public Periode getPeriode() {

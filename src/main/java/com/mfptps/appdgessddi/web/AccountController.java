@@ -1,15 +1,5 @@
 package com.mfptps.appdgessddi.web;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.Email;
-
 import com.mfptps.appdgessddi.entities.Agent;
 import com.mfptps.appdgessddi.repositories.AgentRepository;
 import com.mfptps.appdgessddi.security.SecurityUtils;
@@ -22,8 +12,14 @@ import com.mfptps.appdgessddi.service.dto.PasswordChangeDTO;
 import com.mfptps.appdgessddi.web.exceptions.InvalidPasswordException;
 import com.mfptps.appdgessddi.web.vm.KeyAndPasswordVM;
 import com.mfptps.appdgessddi.web.vm.ManagedAgentVM;
-
 import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * REST controller for managing the current agent's account.
@@ -33,6 +29,7 @@ import java.util.*;
 public class AccountController {
 
     private static class AccountControllerException extends RuntimeException {
+
         private AccountControllerException(String message) {
             super(message);
         }
@@ -56,10 +53,10 @@ public class AccountController {
      * {@code POST  /register} : register the agent.
      *
      * @param managedAgentVM the managed agent View Model.
-     * @throws InvalidPasswordException  {@code 400 (Bad Request)} if the password
-     *                                   is incorrect.
-     * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the matricule
-     *                                   is already used.
+     * @throws InvalidPasswordException {@code 400 (Bad Request)} if the
+     * password is incorrect.
+     * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the
+     * matricule is already used.
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -78,7 +75,7 @@ public class AccountController {
      *
      * @param key the activation key.
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the agent
-     *                          couldn't be activated.
+     * couldn't be activated.
      */
     @PostMapping("/activate")
     public void activateAccount(@RequestBody @Valid ActivatedPassword activatedPassword) {
@@ -92,8 +89,8 @@ public class AccountController {
     }
 
     /**
-     * {@code GET  /authenticate} : check if the agent is authenticated, and return
-     * its matricule.
+     * {@code GET  /authenticate} : check if the agent is authenticated, and
+     * return its matricule.
      *
      * @param request the HTTP request.
      * @return the matricule if the agent is authenticated.
@@ -109,7 +106,7 @@ public class AccountController {
      *
      * @return the current agent.
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the agent
-     *                          couldn't be returned.
+     * couldn't be returned.
      */
     @GetMapping("/account")
     public AgentDTO getAccount() {
@@ -117,27 +114,47 @@ public class AccountController {
                 .orElseThrow(() -> new AccountControllerException("Agent could not be found"));
     }
 
-
-    @GetMapping("/account/send-activated-notification/{email}")
-    public void sendActivatedLink(@PathVariable @Email String email) {
-        Optional<Agent> agent = agentRepository.findOneByEmailIgnoreCase(email);
+    /**
+     * Agent account activation link resend function. ModifyBy Canisius 24112021
+     *
+     * @param id
+     */
+    @GetMapping("/account/send-activated-notification/{id}")
+    public void sendActivatedLink(@PathVariable(required = true) Long id) {
+        Optional<Agent> agent = agentRepository.findById(id);
         if (!agent.isPresent()) {
-            throw new CustomException("the agent with this email " + email + " does not exist");
+            throw new CustomException("the agent with this id " + id + " does not exist");
+        }
+        if (agent.get().getEmail() == null) {
+            throw new CustomException("Error on agent email !");
         }
         agent.ifPresent(ag -> {
             if (ag.isActif()) {
-                throw new CustomException("the agent with this email " + email + " is activated");
+                throw new CustomException("the agent with this id " + id + " is activated");
             }
             mailService.sendActivationEmail(ag);
         });
     }
+//    @GetMapping("/account/send-activated-notification/{email}")
+//    public void sendActivatedLink(@PathVariable @Email String email) {
+//        Optional<Agent> agent = agentRepository.findOneByEmailIgnoreCase(email);
+//        if (!agent.isPresent()) {
+//            throw new CustomException("the agent with this email " + email + " does not exist");
+//        }
+//        agent.ifPresent(ag -> {
+//            if (ag.isActif()) {
+//                throw new CustomException("the agent with this email " + email + " is activated");
+//            }
+//            mailService.sendActivationEmail(ag);
+//        });
+//    }
 
     /**
      * {@code POST  /account} : update the current agent information.
      *
      * @param agentDTO the current agent information.
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the agent
-     *                          matricule wasn't found.
+     * matricule wasn't found.
      */
     @PostMapping("/account")
     public void saveAccount(@Valid @RequestBody AgentDTO agentDTO) {
@@ -157,7 +174,7 @@ public class AccountController {
      *
      * @param passwordChangeDto current and new password.
      * @throws InvalidPasswordException {@code 400 (Bad Request)} if the new
-     *                                  password is incorrect.
+     * password is incorrect.
      */
     @PostMapping(path = "/account/change-password")
     public void changePassword(@RequestBody PasswordChangeDTO passwordChangeDto) {
@@ -168,14 +185,14 @@ public class AccountController {
     }
 
     /**
-     * {@code POST   /account/reset-password/finish} : Finish to reset the password
-     * of the agent.
+     * {@code POST   /account/reset-password/finish} : Finish to reset the
+     * password of the agent.
      *
      * @param keyAndPassword the generated key and the new password.
-     * @throws InvalidPasswordException {@code 400 (Bad Request)} if the password is
-     *                                  incorrect.
-     * @throws RuntimeException         {@code 500 (Internal Server Error)} if the
-     *                                  password could not be reset.
+     * @throws InvalidPasswordException {@code 400 (Bad Request)} if the
+     * password is incorrect.
+     * @throws RuntimeException {@code 500 (Internal Server Error)} if the
+     * password could not be reset.
      */
     @PostMapping(path = "/account/reset-password/finish")
     public void finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword) {

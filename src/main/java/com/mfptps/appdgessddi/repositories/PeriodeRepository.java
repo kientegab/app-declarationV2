@@ -6,8 +6,11 @@
 package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.Periode;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -21,5 +24,12 @@ public interface PeriodeRepository extends JpaRepository<Periode, Long> {
             + "WHERE pe.periodicite.id = pi.id "
             + "AND pi.actif = true "
             + "AND pi.deleted = false")
-    Page<Periode> findByPeriodiciteActif(Pageable pageable);
+    List<Periode> findByPeriodiciteActif();
+
+    @Query("SELECT pe FROM Periode pe, Periodicite pi "
+            + "WHERE pe.periodicite.id = pi.id "
+            + "AND :date BETWEEN pe.debut AND pe.fin "
+            + "AND pi.actif = true "
+            + "AND pi.deleted = false")
+    Optional<Periode> findByDatePeriodiciteActif(@NotBlank @NotNull Date date);
 }

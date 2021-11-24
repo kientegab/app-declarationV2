@@ -6,8 +6,9 @@
 package com.mfptps.appdgessddi.service;
 
 import com.mfptps.appdgessddi.entities.Periode;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -17,6 +18,8 @@ public interface PeriodeService {
 
     Periode create(Periode periode);
 
-    Page<Periode> findByPeriodiciteActif(Pageable pageable);
+    List<Periode> findByPeriodiciteActif();
+
+    Optional<Periode> findByDateAndPeriodiciteActif(Date date);
 
 }

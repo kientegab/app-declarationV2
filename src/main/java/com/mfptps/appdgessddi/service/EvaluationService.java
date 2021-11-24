@@ -6,6 +6,9 @@
 package com.mfptps.appdgessddi.service;
 
 import com.mfptps.appdgessddi.entities.Evaluation;
+import com.mfptps.appdgessddi.entities.Programmation;
+import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
+import java.util.List;
 
 /**
  *
@@ -14,4 +17,6 @@ import com.mfptps.appdgessddi.entities.Evaluation;
 public interface EvaluationService {
 
     Evaluation create(Evaluation evaluation);
+
+    void addEvaluation(List<PeriodesDTO> periodes, Programmation programmation);
 }

@@ -8,7 +8,6 @@ package com.mfptps.appdgessddi.config;
 import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
-import com.mfptps.appdgessddi.repositories.ParametreRepository;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
@@ -24,11 +23,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AppDataInitializer {
 
-    private final ParametreRepository parametreRepository;
     private final ExerciceRepository exerciceRepository;
 
-    public AppDataInitializer(ParametreRepository parametreRepository, ExerciceRepository exerciceRepository) {
-        this.parametreRepository = parametreRepository;
+    public AppDataInitializer(ExerciceRepository exerciceRepository) {
         this.exerciceRepository = exerciceRepository;
     }
 
@@ -55,6 +52,6 @@ public class AppDataInitializer {
         }
 
         log.info("End of data initialization");
-
     }
+
 }
