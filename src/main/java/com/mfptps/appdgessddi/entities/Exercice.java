@@ -30,6 +30,7 @@ public class Exercice extends CommonEntity {
     private Long id;
     private String description;
     //@Enumerated(EnumType.STRING)
+    @Convert(converter = ExerciceStatusConverter.class)
     @Column(nullable = false, length = 1)
     private ExerciceStatus statut;
     private LocalDate debut;

@@ -26,6 +26,7 @@ public class Ponderation  extends CommonEntity{
     private double efficience ;
     private double gouvernance ;
     private double impact ;
+    @Type(type="yes_no")
     private boolean actif ;
     @ManyToOne
     private Performance performance ;
