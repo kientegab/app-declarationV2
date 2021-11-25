@@ -33,7 +33,7 @@ public class AppDataInitializer {
     public void initialization() {
         log.info("Application data initialization");
         if (0 == exerciceRepository.count()
-                || !exerciceRepository.findByStatut(ExerciceStatus.ENCOURS).isPresent()
+                || !exerciceRepository.findByStatut(ExerciceStatus.EN_COURS).isPresent()
                 || !exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).isPresent()) {
             LocalDate dateDebut = LocalDate.of(LocalDate.now().getYear(), Month.JANUARY, 1);
             LocalDate dateFin = LocalDate.of(LocalDate.now().getYear(), Month.DECEMBER, 31);
@@ -42,7 +42,7 @@ public class AppDataInitializer {
 
             exerciceCourant.setDebut(dateDebut);
             exerciceCourant.setFin(dateFin);
-            exerciceCourant.setStatut(ExerciceStatus.ENCOURS);
+            exerciceCourant.setStatut(ExerciceStatus.EN_COURS);
 
             exerciceAVenir.setDebut(dateDebut.plusYears(1));
             exerciceAVenir.setFin(dateFin.plusYears(1));
