@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.Type;
 
 /**
  * This entity is similar to Activite
@@ -34,8 +35,11 @@ public class Programmation extends CommonEntity {
 
     private double coutReel;
 
+    @Column(nullable = false)
+    @Type(type = "yes_no")
     private boolean estProgramme = true;//If activite is programmed
 
+    @Type(type = "yes_no")
     private boolean singleton; //If this Programmation have just one Tache
 
     private double cible;

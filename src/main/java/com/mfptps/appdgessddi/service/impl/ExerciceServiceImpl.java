@@ -64,11 +64,11 @@ public class ExerciceServiceImpl implements ExerciceService {
      */
     @Override
     public void cloture() {
-        Exercice exerciceToCloture = exerciceRepository.findByStatut(ExerciceStatus.ENCOURS).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
+        Exercice exerciceToCloture = exerciceRepository.findByStatut(ExerciceStatus.EN_COURS).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
         Exercice exerciceToEncours = exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
 
         exerciceToCloture.setStatut(ExerciceStatus.CLOS);
-        exerciceToEncours.setStatut(ExerciceStatus.ENCOURS);
+        exerciceToEncours.setStatut(ExerciceStatus.EN_COURS);
 
         Exercice exerciceAVenir = new Exercice();
         exerciceAVenir.setDebut(exerciceToEncours.getDebut().plusYears(1));

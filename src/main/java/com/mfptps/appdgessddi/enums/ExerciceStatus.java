@@ -5,6 +5,7 @@
  */
 package com.mfptps.appdgessddi.enums;
 
+import com.mfptps.appdgessddi.utils.AppEnumUtil;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -18,9 +19,9 @@ import lombok.Getter;
  */
 @Getter
 public enum ExerciceStatus {
-    ENCOURS('C', "ENCOURS"),//value is the third character of label
-    EN_ATTENTE('A', "EN_ATTENTE"),
-    CLOS('O', "CLOS");
+    EN_COURS('C', AppEnumUtil.EN_COURS),//value is the third character of label
+    EN_ATTENTE('A', AppEnumUtil.EN_ATTENTE),
+    CLOS('O', AppEnumUtil.CLOS);
 
     protected String label;
     protected Character valueStatus;
