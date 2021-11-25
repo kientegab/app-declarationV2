@@ -9,9 +9,10 @@ import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.repositories.PeriodeRepository;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.PeriodeService;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,8 +39,14 @@ public class PeriodeServiceImpl implements PeriodeService {
     }
 
     @Override
-    public Page<Periode> findByPeriodiciteActif(Pageable pageable) {
-        return periodeRepository.findByPeriodiciteActif(pageable);
+    public List<Periode> findByPeriodiciteActif() {
+        return periodeRepository.findByPeriodiciteActif();
+    }
+
+    @Override
+    public Optional<Periode> findByDateAndPeriodiciteActif(Date date) {
+        //PREVIOUS A VALIDATOR_DATE
+        return periodeRepository.findByDatePeriodiciteActif(date);
     }
 
 }

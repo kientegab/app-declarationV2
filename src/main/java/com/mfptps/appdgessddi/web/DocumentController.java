@@ -11,8 +11,13 @@ import com.mfptps.appdgessddi.utils.ResponseMessage;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -46,12 +51,26 @@ public class DocumentController {
      * @param documentFile : file joined
      * @return
      */
-    @PostMapping
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ResponseMessage> createDocument(@Valid @RequestPart DocumentDTO documentDTO,
             @RequestPart MultipartFile documentFile) {
         log.debug("Jointure d'un Document à une Tache : {}", documentDTO);
 
         ResponseMessage message = documentService.create(documentDTO, documentFile);
         return ResponseEntity.status(HttpStatus.OK).body(message);
+    }
+
+    /**
+     *
+     * @param fileUri
+     * @return
+     */
+    @GetMapping("/{fileUri}")
+    public ResponseEntity<Resource> getFile(@PathVariable(name = "fileUri", required = true) String fileUri) {
+        log.debug("Lecture d'un Document : {}", fileUri);
+        Resource file = documentService.download(fileUri);
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
 }

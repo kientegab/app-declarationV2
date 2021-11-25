@@ -4,8 +4,10 @@ import com.mfptps.appdgessddi.entities.Ministere;
 import com.mfptps.appdgessddi.entities.Structure;
 
 public class StructureDTO {
-    private Long id ;
+
+    private Long id;
     private String libelle;
+    private String sigle;
     private String description;
     private String type;
     private String statut;
@@ -23,6 +25,14 @@ public class StructureDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getSigle() {
+        return sigle;
+    }
+
+    public void setSigle(String sigle) {
+        this.sigle = sigle;
     }
 
     public String getLibelle() {
