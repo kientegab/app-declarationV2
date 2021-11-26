@@ -1,8 +1,10 @@
 package com.mfptps.appdgessddi.entities;
 
 import com.mfptps.appdgessddi.enums.BaseStatus;
+import com.mfptps.appdgessddi.enums.convertes.BaseStatusConverter;
 import java.util.Date;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,7 +33,8 @@ public class Projet extends CommonEntity {
     @Column(nullable = true, updatable = true)
     private String description;
 
-    @Column(name = "projet_status")
+    @Column(nullable = false, length = 1)
+    @Convert(converter = BaseStatusConverter.class)
     private BaseStatus statut;
 
     private Date debut;

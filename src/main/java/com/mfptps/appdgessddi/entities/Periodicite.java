@@ -15,6 +15,7 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 /**
@@ -38,6 +39,7 @@ public class Periodicite extends CommonEntity {
     private String libelle;
 
     @Column(nullable = false)
+    @Type(type = "yes_no")
     private boolean actif;
     //========================
 

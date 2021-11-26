@@ -1,9 +1,10 @@
 package com.mfptps.appdgessddi.entities;
 
 import com.mfptps.appdgessddi.enums.TypeStructure;
+import com.mfptps.appdgessddi.enums.convertes.TypeStructureConverter;
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,8 +37,9 @@ public class Structure extends CommonEntity {
     private String libelle;
     private String sigle;//added 22112021
     private String description;
-    @Enumerated(EnumType.STRING)
-    private TypeStructure type;//to be change on Enum : CENTRAL, DE MISSION, RATTACHEE, DECONCENTREE (20112021)
+    @Column(nullable = false, length = 1)
+    @Convert(converter = TypeStructureConverter.class)
+    private TypeStructure type;
     private String statut;//if Structure always exists or no (20112021)
     private String telephone;
     private String emailResp;
