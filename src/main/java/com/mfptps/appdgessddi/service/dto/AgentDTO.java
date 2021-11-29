@@ -36,6 +36,8 @@ public class AgentDTO {
 
     private boolean actif = false;
 
+    private Long structureId;
+
     private String createdBy;
 
     private Instant createdDate;
@@ -44,7 +46,7 @@ public class AgentDTO {
 
     private Instant lastModifiedDate;
     
-    private Set<String> permissions;
+    private Set<String> privileges;
     
     private Set<String> profiles;
 
@@ -62,16 +64,20 @@ public class AgentDTO {
         this.createdDate = agent.getCreatedDate();
         this.lastModifiedBy = agent.getLastModifiedBy();
         this.lastModifiedDate = agent.getLastModifiedDate();
-        Set<Permission> actions = new HashSet<>();
+        Set<Privilege> actions = new HashSet<>();
         Set<String> prof = new HashSet<>();
         agent.getProfiles().stream().forEach(r -> {
             prof.add(r.getName());
-            actions.addAll(r.getPermissions());
+            actions.addAll(r.getPrivileges());
                 });
         this.profiles = prof;
-        this.permissions = actions.stream()
-            .map(Permission::getName)
+        this.privileges = actions.stream()
+            .map(Privilege::getName)
             .collect(Collectors.toSet());
+        
+        if(null != agent.getStructure() && null != agent.getStructure().getId()) {
+            this.structureId = agent.getStructure().getId();
+        }
         
     }
 
@@ -156,12 +162,12 @@ public class AgentDTO {
         this.telephone = telephone;
     }
 
-    public Set<String> getPermissions() {
-        return permissions;
+    public Set<String> getPrivileges() {
+        return privileges;
     }
 
-    public void setPermissions(Set<String> permissions) {
-        this.permissions = permissions;
+    public void setPrivileges(Set<String> privileges) {
+        this.privileges = privileges;
     }
 
     public Set<String> getProfiles() {
@@ -180,6 +186,14 @@ public class AgentDTO {
         this.email = email;
     }
 
+    public Long getStructureId() {
+        return structureId;
+    }
+
+    public void setStructureId(Long structureId) {
+        this.structureId = structureId;
+    }
+
     @Override
     public String toString() {
         return "AgentDTO{" +
@@ -193,7 +207,7 @@ public class AgentDTO {
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", profiles=" + profiles +
-            ", permissions=" + permissions +
+            ", privileges=" + privileges +
             "}";
     }
 }

@@ -16,6 +16,7 @@ public interface StructureService {
 
     Page<Structure> findAll(Pageable pageable);
 
+
     void delete(Long code);
 
     Structure changementMinistere(Long structure, Long ministereId);

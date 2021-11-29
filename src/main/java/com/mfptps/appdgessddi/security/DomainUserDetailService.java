@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.mfptps.appdgessddi.entities.Agent;
-import com.mfptps.appdgessddi.entities.Permission;
+import com.mfptps.appdgessddi.entities.Privilege;
 import com.mfptps.appdgessddi.repositories.AgentRepository;
 
 import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
@@ -62,10 +62,10 @@ public class DomainUserDetailService implements UserDetailsService {
         if (!agent.isActif()) {
             throw new UserNotActivatedException("Agent " + lowercaseMatricule + " was not activated");
         }
-        Set<Permission> permissions = new HashSet<>();
-        agent.getProfiles().stream().forEach(r -> permissions.addAll(r.getPermissions()));
-        List<GrantedAuthority> grantedProfiles = permissions.stream()
-            .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+        Set<Privilege> privileges = new HashSet<>();
+        agent.getProfiles().stream().forEach(r -> privileges.addAll(r.getPrivileges()));
+        List<GrantedAuthority> grantedProfiles = privileges.stream()
+            .map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
             .collect(Collectors.toList());
         return new org.springframework.security.core.userdetails.User(agent.getMatricule(),
             agent.getPassword(),

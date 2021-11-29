@@ -5,6 +5,7 @@
  */
 package com.mfptps.appdgessddi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.Type;
 
 /**
  * This entity is similar to Activite
@@ -33,13 +35,16 @@ public class Programmation extends CommonEntity {
 
     private double coutReel;
 
+    @Column(nullable = false)
+    @Type(type = "yes_no")
     private boolean estProgramme = true;//If activite is programmed
 
+    @Type(type = "yes_no")
     private boolean singleton; //If this Programmation have just one Tache
 
     private double cible;
 
-    private String observation;
+    private String observations;
 
     @Column(name = "valid_initial", nullable = false)
     private boolean validationInitial = true;
@@ -62,6 +67,16 @@ public class Programmation extends CommonEntity {
 
     @ManyToOne
     private Projet projet;
+
+    @JsonIgnoreProperties(value = {"parent"})
+    @ManyToOne
+    private Structure structure;
+
+    @ManyToOne
+    private Exercice exercice;
+
+    @ManyToOne
+    private Objectif objectif;//ObjectifOperationel
 
     //============== CONSTRUCTORS && GETTERS/SETTERS
     public Programmation() {
@@ -115,12 +130,12 @@ public class Programmation extends CommonEntity {
         this.cible = cible;
     }
 
-    public String getObservation() {
-        return observation;
+    public String getObservations() {
+        return observations;
     }
 
-    public void setObservation(String observation) {
-        this.observation = observation;
+    public void setObservations(String observations) {
+        this.observations = observations;
     }
 
     public boolean isValidationInitial() {
@@ -167,6 +182,14 @@ public class Programmation extends CommonEntity {
         return activite;
     }
 
+    public Objectif getObjectif() {
+        return objectif;
+    }
+
+    public void setObjectif(Objectif objectif) {
+        this.objectif = objectif;
+    }
+
     public void setActivite(Activites activite) {
         this.activite = activite;
     }
@@ -177,6 +200,22 @@ public class Programmation extends CommonEntity {
 
     public void setProjet(Projet projet) {
         this.projet = projet;
+    }
+
+    public Structure getStructure() {
+        return structure;
+    }
+
+    public void setStructure(Structure structure) {
+        this.structure = structure;
+    }
+
+    public Exercice getExercice() {
+        return exercice;
+    }
+
+    public void setExercice(Exercice exercice) {
+        this.exercice = exercice;
     }
 
     /**

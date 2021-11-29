@@ -1,11 +1,17 @@
 package com.mfptps.appdgessddi.web;
 
-
-import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.entities.Exercice;
+import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.service.ExerciceService;
 import com.mfptps.appdgessddi.service.dto.ExerciceDTO;
+import com.mfptps.appdgessddi.utils.HeaderUtil;
+import com.mfptps.appdgessddi.utils.PaginationUtil;
+import com.mfptps.appdgessddi.utils.ResponseUtil;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -14,12 +20,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -32,23 +32,23 @@ public class ExerciceController {
     private String applicationName;
     /*
      */
-    private final ExerciceService exerciceService ;
+    private final ExerciceService exerciceService;
 
     public ExerciceController(ExerciceService exerciceService) {
         this.exerciceService = exerciceService;
     }
 
+//    @PostMapping
+//    public ResponseEntity<Exercice> createExercice(@Valid @RequestBody ExerciceDTO exerciceDTO) throws URISyntaxException {
+//        Exercice exercice = exerciceService.create(exerciceDTO);
+//        log.debug("Création d'une exercice : {}", exerciceDTO);
+//        return ResponseEntity.created(new URI("/api/exercices/" + exercice.getId()))
+//                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, exercice.getId().toString()))
+//                .body(exercice);
+//    }
     @PostMapping
-    public ResponseEntity<Exercice> createExercice(@Valid @RequestBody ExerciceDTO exerciceDTO) throws URISyntaxException {
-        Exercice exercice = exerciceService.create(exerciceDTO);
-        log.debug("Création d'une exercice : {}", exerciceDTO);
-        return ResponseEntity.created(new URI("/api/exercices/" + exercice.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, exercice.getId().toString()))
-                .body(exercice);
-    }
-    @PutMapping
-    public ResponseEntity<Exercice> updateExercice(@Valid @RequestBody Exercice exercice) throws URISyntaxException {
-        log.debug("Mis à jour d un exercice : {}",exercice);
+    public ResponseEntity<Exercice> updateExercice(@Valid @RequestBody ExerciceDTO exercice) throws URISyntaxException {
+        log.debug("Mis à jour d un exercice : {}", exercice);
         if (exercice.getId() == null) {
             throw new BadRequestAlertException("Id invalide", ENTITY_NAME, "idnull");
         }
@@ -58,11 +58,48 @@ public class ExerciceController {
                 .body(resultE);
     }
 
+    /**
+     *
+     * @return
+     */
+    @GetMapping(path = "/cloture")
+    public ResponseEntity<Void> cloture() {
+        log.debug("Cloture de l'exercice en cours : {}");
+        exerciceService.cloture();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("MESSAGE", "Exercice cloturé");
+        return ResponseEntity.noContent().headers(headers).build();
+    }
+
     @GetMapping(path = "/{id}")
     public ResponseEntity<Exercice> getExerciceById(@PathVariable Long id) {
         log.debug("Consultation d un exercice : {}", id);
         Optional<Exercice> actionFound = exerciceService.get(id);
         return ResponseUtil.wrapOrNotFound(actionFound);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping(path = "/statut/attente")
+    public ResponseEntity<Exercice> getExerciceENATTENTE() {
+        log.debug("Consultation de l'exercice en attente :");
+        Optional<Exercice> response = exerciceService.getByStatutAttente();
+        return ResponseUtil.wrapOrNotFound(response);
+    }
+
+    /**
+     *
+     * @param statut
+     * @param pageable
+     * @return
+     */
+    @GetMapping(path = "/statut/{statut}")
+    public ResponseEntity<List<Exercice>> findExerciceByStatut(@PathVariable(name = "statut", required = true) String statut, Pageable pageable) {
+        Page<Exercice> exercices = exerciceService.findByStatut(ExerciceStatus.valueOf(statut), pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), exercices);
+        return ResponseEntity.ok().headers(headers).body(exercices.getContent());
     }
 
     @GetMapping
@@ -71,15 +108,14 @@ public class ExerciceController {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), exercices);
         return ResponseEntity.ok().headers(headers).body(exercices.getContent());
     }
-
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        log.debug("Suppression d un exercice : {}", id);
-        exerciceService.delete(id);
-        return ResponseEntity
-                .noContent()
-                .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
-                .build();
-    }
-
+//
+//    @DeleteMapping(path = "/{id}")
+//    public ResponseEntity<Void> delete(@PathVariable Long id) {
+//        log.debug("Suppression d un exercice : {}", id);
+//        exerciceService.delete(id);
+//        return ResponseEntity
+//                .noContent()
+//                .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
+//                .build();
+//    }
 }

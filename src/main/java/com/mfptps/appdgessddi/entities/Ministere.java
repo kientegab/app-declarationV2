@@ -2,17 +2,13 @@ package com.mfptps.appdgessddi.entities;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
 import org.hibernate.annotations.*;
 
 @Entity
 @Table(name = "ministere")
-@SQLDelete(sql="UPDATE ministere SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE ministere SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 @FilterDef(
         name = "deletedFilter",
@@ -22,7 +18,7 @@ import org.hibernate.annotations.*;
         name = "deletedFilter",
         condition = "deleted = :isDeleted"
 )
-public class Ministere  extends CommonEntity {
+public class Ministere extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -74,7 +70,7 @@ public class Ministere  extends CommonEntity {
     }
 
     public void setSigle(String sigle) {
-        this.sigle = sigle;
+        this.sigle = sigle.toUpperCase();
     }
 
     @Override

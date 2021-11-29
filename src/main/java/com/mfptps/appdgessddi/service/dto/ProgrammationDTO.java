@@ -6,6 +6,10 @@
 package com.mfptps.appdgessddi.service.dto;
 
 import com.mfptps.appdgessddi.entities.Activites;
+import com.mfptps.appdgessddi.entities.Objectif;
+import com.mfptps.appdgessddi.entities.Projet;
+import com.mfptps.appdgessddi.entities.SourceFinancement;
+import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.entities.Tache;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,17 +26,27 @@ public class ProgrammationDTO {
 
     private double cible;
 
-    private String observation;
+    private String observations;
 
     private boolean singleton;
 
-    private Long projetId;
+    private Structure structure;
 
-    private Long sourceFinancementId;
+    private Projet projet;
+
+    private SourceFinancement sourceFinancement;
 
     private Activites activite;
 
+    private Objectif objectif;//ObjectifOPeationel
+
     private List<Tache> taches = new ArrayList<>();
+
+    /**
+     * ex: [{"libelle":"T1", "valeur"=true}, {"libelle":"T2", "valeur"=false},
+     * {"libelle":"T3", "valeur"=true}, {"libelle":"T4", "valeur"=false}]
+     */
+    private List<PeriodesDTO> periodes = new ArrayList<>();
 
     //======================= CONSTRUCTORS && GETTERS/SETTERS
     public ProgrammationDTO() {
@@ -62,12 +76,12 @@ public class ProgrammationDTO {
         this.cible = cible;
     }
 
-    public String getObservation() {
-        return observation;
+    public String getObservations() {
+        return observations;
     }
 
-    public void setObservation(String observation) {
-        this.observation = observation;
+    public void setObservations(String observations) {
+        this.observations = observations;
     }
 
     public boolean isSingleton() {
@@ -78,22 +92,6 @@ public class ProgrammationDTO {
         this.singleton = singleton;
     }
 
-    public Long getProjetId() {
-        return projetId;
-    }
-
-    public void setProjetId(Long projetId) {
-        this.projetId = projetId;
-    }
-
-    public Long getSourceFinancementId() {
-        return sourceFinancementId;
-    }
-
-    public void setSourceFinancementId(Long sourceFinancementId) {
-        this.sourceFinancementId = sourceFinancementId;
-    }
-
     public Activites getActivite() {
         return activite;
     }
@@ -102,12 +100,52 @@ public class ProgrammationDTO {
         this.activite = activite;
     }
 
+    public Structure getStructure() {
+        return structure;
+    }
+
+    public void setStructure(Structure structure) {
+        this.structure = structure;
+    }
+
+    public Projet getProjet() {
+        return projet;
+    }
+
+    public void setProjet(Projet projet) {
+        this.projet = projet;
+    }
+
+    public SourceFinancement getSourceFinancement() {
+        return sourceFinancement;
+    }
+
+    public void setSourceFinancement(SourceFinancement sourceFinancement) {
+        this.sourceFinancement = sourceFinancement;
+    }
+
+    public Objectif getObjectif() {
+        return objectif;
+    }
+
+    public void setObjectif(Objectif objectif) {
+        this.objectif = objectif;
+    }
+
     public List<Tache> getTaches() {
         return taches;
     }
 
     public void setTaches(List<Tache> taches) {
         this.taches = taches;
+    }
+
+    public List<PeriodesDTO> getPeriodes() {
+        return periodes;
+    }
+
+    public void setPeriodes(List<PeriodesDTO> periodes) {
+        this.periodes = periodes;
     }
 
 }

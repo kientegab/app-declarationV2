@@ -1,19 +1,23 @@
 package com.mfptps.appdgessddi.service;
 
-
 import com.mfptps.appdgessddi.entities.Exercice;
+import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.service.dto.ExerciceDTO;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import java.util.Optional;
 
 public interface ExerciceService {
 
-    Exercice create(ExerciceDTO exerciceDTO);
+    Exercice update(ExerciceDTO exercice);
 
-    Exercice update(Exercice exercice);
+    void cloture();
 
     Optional<Exercice> get(Long id);
+
+    Optional<Exercice> getByStatutAttente();
+
+    Page<Exercice> findByStatut(ExerciceStatus statut, Pageable pageable);
 
     Page<Exercice> findAll(Pageable pageable);
 

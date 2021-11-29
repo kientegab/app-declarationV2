@@ -7,7 +7,7 @@ package com.mfptps.appdgessddi.repositories;
 
 import java.util.stream.Stream;
 
-import com.mfptps.appdgessddi.entities.Permission;
+import com.mfptps.appdgessddi.entities.Privilege;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,9 +16,9 @@ import org.springframework.data.jpa.repository.Query;
  *
  * @author bieve
  */
-public interface PermissionRepository extends JpaRepository<Permission, Long>{
+public interface PrivilegeRepository extends JpaRepository<Privilege, Long>{
     
-    @Query("SELECT u FROM Permission u")
-    Stream<Permission> streamAll();
+    @Query("SELECT u FROM Privilege u")
+    Stream<Privilege> streamAll();
     
 }

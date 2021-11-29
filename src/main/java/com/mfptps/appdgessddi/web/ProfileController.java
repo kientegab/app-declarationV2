@@ -15,6 +15,7 @@ import java.util.*;
 
 import com.mfptps.appdgessddi.entities.Profile;
 import com.mfptps.appdgessddi.service.ProfileService;
+import com.mfptps.appdgessddi.service.dto.ProfileDTO;
 import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.*;
 
@@ -45,7 +46,7 @@ public class ProfileController {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new profile, or with status {@code 400 (Bad Request)} if the profile has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_CREATE_ROLE\")")
+    //@PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_CREATE_ROLE\")")
     @PostMapping("/profiles")
     public ResponseEntity<Profile> createProfile(@RequestBody Profile profile) throws URISyntaxException {
         log.debug("REST request to save Profile : {}", profile);
@@ -53,7 +54,7 @@ public class ProfileController {
             throw new BadRequestAlertException("A new profile cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Profile result = profileService.save(profile);
-        return ResponseEntity.created(new URI("/security-service/profiles/" + result.getId()))
+        return ResponseEntity.created(new URI("/api/profiles/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
@@ -68,7 +69,7 @@ public class ProfileController {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/profiles")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_UPDATE_ROLE\")")
+    // @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_UPDATE_ROLE\")")
     public ResponseEntity<Profile> updateProfile(@RequestBody Profile profile) throws URISyntaxException {
         log.debug("REST request to update Profile : {}", profile);
         if (profile.getId() == null) {
@@ -87,10 +88,10 @@ public class ProfileController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of profiles in body.
      */
     @GetMapping("/profiles")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_GETALL_ROLE\")")
-    public ResponseEntity<List<Profile>> getAllProfiles(Pageable pageable) {
+    // @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_GETALL_ROLE\")")
+    public ResponseEntity<List<ProfileDTO>> getAllProfiles(Pageable pageable) {
         log.debug("REST request to get a page of Profiles");
-        Page<Profile> page = profileService.findAll(pageable);
+        Page<ProfileDTO> page = profileService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -104,7 +105,7 @@ public class ProfileController {
     @GetMapping("/profiles/{name}")
     public ResponseEntity<Profile> getProfile(@PathVariable String name) {
         log.debug("REST request to get Profile : {}", name);
-        Optional<Profile> profile = profileService.getProfilerWithActionsByName(name);
+        Optional<Profile> profile = profileService.getProfileWithPrivilegesByName(name);
         return ResponseUtil.wrapOrNotFound(profile);
     }
 
@@ -115,7 +116,7 @@ public class ProfileController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/profiles/{id}")
-    @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_DELETE_ROLE\")")
+    // @PreAuthorize("hasAnyAuthority(\"ROLE_ADMIN\", \"ROLE_MANAGER\", \"ROLE_DELETE_ROLE\")")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
         log.debug("REST request to delete Profile : {}", id);
         if (id < 3) {

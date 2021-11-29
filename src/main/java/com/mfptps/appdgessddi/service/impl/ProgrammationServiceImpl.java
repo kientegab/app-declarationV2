@@ -5,11 +5,15 @@
  */
 package com.mfptps.appdgessddi.service.impl;
 
+import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.entities.Tache;
+import com.mfptps.appdgessddi.enums.ExerciceStatus;
+import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.service.CustomException;
+import com.mfptps.appdgessddi.service.EvaluationService;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
@@ -31,13 +35,19 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     private final ProgrammationRepository programmationRepository;
     private final TacheRepository tacheRepository;
+    private final ExerciceRepository exerciceRepository;
+    private final EvaluationService evaluationService;
     private final ProgrammationMapper programmationMapper;
 
     public ProgrammationServiceImpl(ProgrammationRepository programmationRepository,
+            ExerciceRepository exerciceRepository,
             ProgrammationMapper programmationMapper,
-            TacheRepository tacheRepository) {
+            TacheRepository tacheRepository,
+            EvaluationService evaluationService) {
         this.programmationRepository = programmationRepository;
         this.tacheRepository = tacheRepository;
+        this.exerciceRepository = exerciceRepository;
+        this.evaluationService = evaluationService;
         this.programmationMapper = programmationMapper;
     }
 
@@ -54,7 +64,10 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         if (programmationMapped.checkPonderation() != 100) {
             throw new CustomException("L'ensemble des ponderations de vos taches n'atteint pas 100%.");
         }
+        Exercice exerciceEnAttente = exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
+        programmationMapped.setExercice(exerciceEnAttente);
         Programmation response = programmationRepository.save(programmationMapped);
+        evaluationService.addEvaluation(programmationDTO.getPeriodes(), response);
 
         if (programmationDTO.isSingleton()) {//Activite with one Tache
             Tache tache = new Tache();
@@ -85,8 +98,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
      * @return
      */
     @Override
-    public Page<Programmation> get(String libelle, Pageable pageable) {
-        return programmationRepository.findByActiviteLibelleContainingIgnoreCase(libelle, pageable);
+    public Page<Programmation> get(Long structureId, String libelle, Pageable pageable) {
+        return programmationRepository.findByLibelle(structureId, libelle, pageable);
     }
 
     /**
@@ -95,14 +108,14 @@ public class ProgrammationServiceImpl implements ProgrammationService {
      * @return
      */
     @Override
-    public Optional<Programmation> get(Long id) {
-        return programmationRepository.findById(id);
+    public Optional<Programmation> get(Long structureId, Long id) {
+        return programmationRepository.findById(structureId, id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Programmation> findAll(Pageable pageable) {
-        return programmationRepository.findAll(pageable);
+    public Page<Programmation> findAll(Long structureId, Pageable pageable) {
+        return programmationRepository.findAll(structureId, pageable);
     }
 
     /**

@@ -6,9 +6,8 @@
 package com.mfptps.appdgessddi.entities;
 
 import com.mfptps.appdgessddi.enums.TypeObjectif;
-
+import com.mfptps.appdgessddi.enums.convertes.TypeObjectifConverter;
 import javax.persistence.*;
-
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
@@ -23,14 +22,8 @@ import org.hibernate.annotations.Where;
 @Table(name = "objectif")
 @SQLDelete(sql = "UPDATE objectif SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
-@FilterDef(
-        name = "deletedFilter",
-        parameters = @ParamDef(name = "isDeleted", type = "boolean")
-)
-@Filter(
-        name = "deletedFilter",
-        condition = "deleted = :isDeleted"
-)
+@FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
+@Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
 public class Objectif extends CommonEntity {
 
     @Id
@@ -45,17 +38,18 @@ public class Objectif extends CommonEntity {
 
     private String description;
 
+    @Convert(converter = TypeObjectifConverter.class)
+    @Column(nullable = false, length = 1)
     private TypeObjectif type;
 
-   @ManyToOne
-   @JoinColumn(name = "objectif_id")
-   private Objectif parent;//to manage SousObjectif notion
     @ManyToOne
-   private Action action;//ObjectifOperationnel to Action
+    @JoinColumn(name = "objectif_id")
+    private Objectif parent;//to manage SousObjectif notion
+    @ManyToOne
+    private Action action;//ObjectifOperationnel to Action
 
 //    @OneToMany
 //    private Set<Action> actions;//this relationship can be move to entity Action
-
     public Objectif() {
 
     }
