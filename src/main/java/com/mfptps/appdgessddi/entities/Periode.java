@@ -16,6 +16,7 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 /**
@@ -40,6 +41,8 @@ public class Periode extends CommonEntity {
 
     private Date fin;
 
+    @Type(type="yes_no")
+    private boolean valeur ;
     //===============================RELATIONSHIPS
     @ManyToOne
     private Periodicite periodicite;
@@ -88,4 +91,13 @@ public class Periode extends CommonEntity {
         this.periodicite = periodicite;
     }
 
+    public boolean isValeur() {
+        return valeur;
+    }
+
+    public void setValeur(boolean valeur) {
+        this.valeur = valeur;
+    }
+
+    
 }
