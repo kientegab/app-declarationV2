@@ -1,6 +1,6 @@
 package com.mfptps.appdgessddi.enums;
 
-import com.mfptps.appdgessddi.utils.AppEnumUtil;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -10,8 +10,8 @@ import lombok.Getter;
 
 @Getter
 public enum TypeIndicateurObjectif {
-    IMPACT('P', AppEnumUtil.INDICATEUR_IMPACT),
-    EFFET('F', AppEnumUtil.INDICATEUR_EFFET);
+    IMPACT('P', AppUtil.INDICATEUR_IMPACT),
+    EFFET('F', AppUtil.INDICATEUR_EFFET);
 
     protected String label;
     protected Character valueStatus;

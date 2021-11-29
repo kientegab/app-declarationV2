@@ -5,7 +5,7 @@
  */
 package com.mfptps.appdgessddi.enums;
 
-import com.mfptps.appdgessddi.utils.AppEnumUtil;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,10 +19,10 @@ import lombok.Getter;
  */
 @Getter
 public enum TypeStructure {
-    CENTRALE('N', AppEnumUtil.STRUCTURE_CENTRALE),
-    DECONCENTREE('C', AppEnumUtil.STRUCTURE_DECONCENTREE),
-    RATTACHEE('T', AppEnumUtil.STRUCTURE_RATTACHEE),
-    DE_MISSION('M', AppEnumUtil.STRUCTURE_DE_MISSION);
+    CENTRALE('N', AppUtil.STRUCTURE_CENTRALE),
+    DECONCENTREE('C', AppUtil.STRUCTURE_DECONCENTREE),
+    RATTACHEE('T', AppUtil.STRUCTURE_RATTACHEE),
+    DE_MISSION('M', AppUtil.STRUCTURE_DE_MISSION);
 
     protected String label;
     protected Character valueStatus;

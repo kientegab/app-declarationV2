@@ -5,10 +5,10 @@
  */
 package com.mfptps.appdgessddi.web;
 
-import com.mfptps.appdgessddi.utils.PaginationUtil;
 import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.service.TacheService;
 import com.mfptps.appdgessddi.service.dto.TacheVM;
+import com.mfptps.appdgessddi.utils.PaginationUtil;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,6 +45,12 @@ public class TacheController {
         this.tacheService = tacheService;
     }
 
+    /**
+     *
+     * @param id : id of Programmation
+     * @param pageable
+     * @return
+     */
     @GetMapping(path = "/{id}")
     public ResponseEntity<List<Tache>> findTacheByProgrammation(@PathVariable(name = "id", required = true) Long id, Pageable pageable) {
         Page<Tache> taches = tacheService.get(id, pageable);
@@ -51,10 +58,28 @@ public class TacheController {
         return ResponseEntity.ok().headers(headers).body(taches.getContent());
     }
 
+    /**
+     *
+     * @param tache : VM object (fields libelle of tache and id of
+     * programmation)
+     * @param pageable
+     * @return
+     */
     @GetMapping(path = "/libelle")
     public ResponseEntity<List<Tache>> findTacheByLibelleAndProgrammation(@Valid @RequestBody TacheVM tache, Pageable pageable) {
         Page<Tache> taches = tacheService.get(tache.getLibelle(), tache.getProgrammationId(), pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), taches);
         return ResponseEntity.ok().headers(headers).body(taches.getContent());
+    }
+
+    /**
+     *
+     * @param taches : list of tache
+     * @return
+     */
+    @PostMapping
+    public ResponseEntity<List<Tache>> evaluerTaches(@RequestBody List<Tache> taches) {
+        List<Tache> response = tacheService.evaluer(taches);
+        return ResponseEntity.ok().body(response);
     }
 }

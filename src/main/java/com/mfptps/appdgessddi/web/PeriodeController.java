@@ -7,6 +7,7 @@ package com.mfptps.appdgessddi.web;
 
 import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.service.PeriodeService;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.HeaderUtil;
 import com.mfptps.appdgessddi.utils.ResponseUtil;
 import java.net.URI;
@@ -54,6 +55,7 @@ public class PeriodeController {
      */
     @PostMapping
     public ResponseEntity<Periode> createPeriode(@Valid @RequestBody Periode periode) throws URISyntaxException {
+        AppUtil.checkDebutBeforeFin(periode.getDebut(), periode.getFin());
         Periode dataSaved = periodeService.create(periode);
         log.debug("Création d'une Periode : {}", periode);
         return ResponseEntity.created(new URI("/api/periodes/" + dataSaved.getId()))

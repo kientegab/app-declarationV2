@@ -5,11 +5,14 @@
  */
 package com.mfptps.appdgessddi.utils;
 
+import com.mfptps.appdgessddi.service.CustomException;
+import java.util.Date;
+
 /**
  *
  * @author Canisius <canisiushien@gmail.com>
  */
-public class AppEnumUtil {
+public class AppUtil {
 
     /**
      * TYPE OF STRUCTURE
@@ -41,4 +44,14 @@ public class AppEnumUtil {
     public static final String TERMINEE = "TERMINEE";
     public static final String PAS_COMMENCEE = "PAS_COMMENCEE";
 
+    /**
+     *
+     * @param debut : startDate
+     * @param fin : endDate
+     */
+    public static void checkDebutBeforeFin(Date debut, Date fin) {
+        if (debut.after(fin)) {
+            throw new CustomException("Veuillez renseigner une date debut antérieure à la date de fin.");
+        }
+    }
 }

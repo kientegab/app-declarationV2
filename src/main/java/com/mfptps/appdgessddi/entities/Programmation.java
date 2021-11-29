@@ -228,4 +228,15 @@ public class Programmation extends CommonEntity {
                 .reduce(0D, (subtotal, element) -> subtotal + element);
         return total;
     }
+
+    /**
+     * Previous to check if sum of taches's valeur equals Porgrammation.cible
+     *
+     * @return
+     */
+    public double checkValeur() {
+        double total = this.taches.stream().map(tache -> tache.getValeur())
+                .reduce(0D, (subtotal, element) -> subtotal + element);
+        return total;
+    }
 }

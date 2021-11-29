@@ -5,7 +5,7 @@
  */
 package com.mfptps.appdgessddi.enums;
 
-import com.mfptps.appdgessddi.utils.AppEnumUtil;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -20,9 +20,9 @@ import lombok.Getter;
 @Getter
 public enum BaseStatus {
 
-    EN_COURS('C', AppEnumUtil.EN_COURS),
-    CLOTURE('O', AppEnumUtil.CLOS),
-    ANNULE('N', AppEnumUtil.ANNULE);
+    EN_COURS('C', AppUtil.EN_COURS),
+    CLOTURE('O', AppUtil.CLOS),
+    ANNULE('N', AppUtil.ANNULE);
 
     protected String label;
     protected Character valueStatus;

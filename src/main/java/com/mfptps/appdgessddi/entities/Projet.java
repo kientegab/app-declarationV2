@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
@@ -43,6 +44,7 @@ public class Projet extends CommonEntity {
 
     // ================= relationships
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Programme programme;
 
     //================== CONSTRUCTORS && GETTERS/SETTERS

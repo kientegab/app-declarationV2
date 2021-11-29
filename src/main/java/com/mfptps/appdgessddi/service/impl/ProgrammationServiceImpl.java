@@ -64,6 +64,9 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         if (programmationMapped.checkPonderation() != 100) {
             throw new CustomException("L'ensemble des ponderations de vos taches n'atteint pas 100%.");
         }
+//        if (!programmationDTO.isSingleton() && programmationMapped.checkValeur() != programmationDTO.getCible()) {
+//            throw new CustomException("La somme des valeurs de vos taches n'atteint pas la cible (" + programmationDTO.getCible() + ") de l'activité programmée.");
+//        }
         Exercice exerciceEnAttente = exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
         programmationMapped.setExercice(exerciceEnAttente);
         Programmation response = programmationRepository.save(programmationMapped);
