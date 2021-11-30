@@ -12,6 +12,7 @@ import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheEvaluerRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.service.CustomException;
+import com.mfptps.appdgessddi.service.EvaluationService;
 import com.mfptps.appdgessddi.service.TacheService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -32,14 +33,16 @@ public class TacheServiceImpl implements TacheService {
     private final TacheRepository tacheRepository;
     private final TacheEvaluerRepository tacheEvaluerRepository;
     private final ProgrammationRepository programmationRepository;
-    private boolean tacheAValeurCible, tacheSansValeurCible;
+    private final EvaluationService evaluationService;
 
     public TacheServiceImpl(TacheRepository tacheRepository,
             TacheEvaluerRepository tacheEvaluerRepository,
-            ProgrammationRepository programmationRepository) {
+            ProgrammationRepository programmationRepository,
+            EvaluationService evaluationService) {
         this.tacheRepository = tacheRepository;
         this.tacheEvaluerRepository = tacheEvaluerRepository;
         this.programmationRepository = programmationRepository;
+        this.evaluationService = evaluationService;
     }
 
     @Override
@@ -113,10 +116,11 @@ public class TacheServiceImpl implements TacheService {
                 .orElseThrow(() -> new CustomException("Programmation inexistante."));
         List<Tache> tachesdb = this.get(programmation.getId());
 
+        evaluationService.checkPeriodeEvaluation(programmation.getId());
+
         for (Tache t : taches) {
             for (Tache tdb : tachesdb) {
                 if (t.getId().equals(tdb.getId()) && (tdb.getValeur() != 1D) && !tdb.isExecute()) {//tache with valeur cible and not yet executee
-                    //A PRENDRE EN COMPTE : si fourchette de periodeProgrammation en vigeur
                     TacheEvaluer tacheEvaluer = new TacheEvaluer();
                     TacheEvaluer tacheEvaluerPrecedent = new TacheEvaluer();
                     tacheEvaluerPrecedent = tacheEvaluerRepository.findByIdAndActive(tdb.getId()).orElse(null);
@@ -128,7 +132,8 @@ public class TacheServiceImpl implements TacheService {
                 }
             }
         }
-        return null;//REVIEW
+        log.info("_________________________valeurActuelle = {} ", tacheEvaluerRepository.sumOfCumuleesTachesByProgrammation(programmation.getId()));
+        return tachesdb;
     }
 
     /**
@@ -142,14 +147,14 @@ public class TacheServiceImpl implements TacheService {
      */
     void evaluerTacheAValeurCible(TacheEvaluer aEvaluer, TacheEvaluer precedent, Tache t, Tache tdb) {
         if (precedent == null) {//the first insert of tacheEvaluer
-            aEvaluer.setTacheId(tdb.getId());
+            aEvaluer.setTache(tdb);
             aEvaluer.setValeurAtteinte(t.getValeur());
             aEvaluer.setValeurCumulee(t.getValeur());
             aEvaluer.setCumuleeActive(true);
             tacheEvaluerRepository.save(aEvaluer);
         } else {
             if (t.getValeur() != 0D) {
-                aEvaluer.setTacheId(tdb.getId());
+                aEvaluer.setTache(tdb);
                 aEvaluer.setValeurAtteinte(t.getValeur());
                 aEvaluer.setValeurCumulee(precedent.getValeurCumulee() + t.getValeur());
                 aEvaluer.setCumuleeActive(true);

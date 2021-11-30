@@ -19,4 +19,6 @@ public interface EvaluationService {
     Evaluation create(Evaluation evaluation);
 
     void addEvaluation(List<PeriodesDTO> periodes, Programmation programmation);
+
+    void checkPeriodeEvaluation(Long programmationId);
 }
