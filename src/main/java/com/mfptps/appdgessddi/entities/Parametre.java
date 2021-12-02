@@ -31,8 +31,8 @@ public class Parametre extends CommonEntity {
     private Long echeance;
     @Type(type = "yes_no")
     private boolean verrouille;
-    private Date dateDebutExercice;
-    private Date dateFinExercice;
+//    private Date dateDebutExercice;
+//    private Date dateFinExercice;
     private Date dateDebutSaisit;
     private Date dateFinSaisit;
 
@@ -61,22 +61,6 @@ public class Parametre extends CommonEntity {
 
     public void setVerrouille(boolean verrouille) {
         this.verrouille = verrouille;
-    }
-
-    public Date getDateDebutExercice() {
-        return dateDebutExercice;
-    }
-
-    public void setDateDebutExercice(Date dateDebutExercice) {
-        this.dateDebutExercice = dateDebutExercice;
-    }
-
-    public Date getDateFinExercice() {
-        return dateFinExercice;
-    }
-
-    public void setDateFinExercice(Date dateFinExercice) {
-        this.dateFinExercice = dateFinExercice;
     }
 
     public Date getDateDebutSaisit() {
