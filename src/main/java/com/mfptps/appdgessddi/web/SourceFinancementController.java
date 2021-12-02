@@ -5,9 +5,9 @@
  */
 package com.mfptps.appdgessddi.web;
 
-import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.entities.SourceFinancement;
 import com.mfptps.appdgessddi.service.SourceFinancementService;
+import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -56,6 +56,7 @@ public class SourceFinancementController {
      */
     @PostMapping
     public ResponseEntity<SourceFinancement> createSourceFinancement(@Valid @RequestBody SourceFinancement sourceFinancement) throws URISyntaxException {
+        AppUtil.checkDebutBeforeFin(sourceFinancement.getDebut(), sourceFinancement.getFin());
         SourceFinancement entitySaved = sourceFinancementService.create(sourceFinancement);
         log.debug("Création d'une SourceFinancement : {}", sourceFinancement);
         return ResponseEntity.created(new URI("/api/source-financements" + entitySaved.getId()))
@@ -75,6 +76,7 @@ public class SourceFinancementController {
         if (sourceFinancement.getId() == null) {
             throw new BadRequestAlertException("Id invalide", ENTITY_NAME, "idnull");
         }
+        AppUtil.checkDebutBeforeFin(sourceFinancement.getDebut(), sourceFinancement.getFin());
         SourceFinancement result = sourceFinancementService.update(sourceFinancement);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, sourceFinancement.getId().toString()))

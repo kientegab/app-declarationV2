@@ -36,6 +36,8 @@ public class ParametreController {
 
     @PostMapping
     public ResponseEntity<Parametre> createParametre(@Valid @RequestBody ParametreDTO parametreDTO) throws URISyntaxException {
+        AppUtil.checkDebutBeforeFin(parametreDTO.getDateDebutExercice(), parametreDTO.getDateFinExercice());
+        AppUtil.checkDebutBeforeFin(parametreDTO.getDateDebutSaisit(), parametreDTO.getDateFinSaisit());
         Parametre parametre = parametreService.create(parametreDTO);
         log.debug("Création d un parametre : {}", parametreDTO);
         return ResponseEntity.created(new URI("/api/parametres/" + parametre.getId()))
@@ -49,6 +51,8 @@ public class ParametreController {
         if (parametre.getId() == null) {
             throw new BadRequestAlertException("Id invalide", ENTITY_NAME, "idnull");
         }
+        AppUtil.checkDebutBeforeFin(parametre.getDateDebutExercice(), parametre.getDateFinExercice());
+        AppUtil.checkDebutBeforeFin(parametre.getDateDebutSaisit(), parametre.getDateFinSaisit());
         Parametre result = parametreService.update(parametre);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, parametre.getId().toString()))
