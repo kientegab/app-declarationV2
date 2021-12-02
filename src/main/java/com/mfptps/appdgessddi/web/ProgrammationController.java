@@ -78,6 +78,20 @@ public class ProgrammationController {
     }
 
     /**
+     * Previous to ?????????????????????????
+     *
+     * @param structureId
+     * @param pageable
+     * @return
+     */
+    @GetMapping(path = "/all/evaluation/{ids}")
+    public ResponseEntity<List<Programmation>> findAllProgrammationsToEvaluation(@PathVariable(name = "ids", required = true) Long structureId, Pageable pageable) {
+        Page<Programmation> programmations = programmationService.findAll(structureId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), programmations);
+        return ResponseEntity.ok().headers(headers).body(programmations.getContent());
+    }
+
+    /**
      *
      * @param structureId : id of Structure referency by ids in path
      * @param libelle : field libelle of Activite

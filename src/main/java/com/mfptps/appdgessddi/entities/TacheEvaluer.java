@@ -19,6 +19,7 @@ import lombok.ToString;
 import org.hibernate.annotations.Type;
 
 /**
+ * Records the valeur cible updates of taches during their evaluation.
  *
  * @author Canisius <canisiushien@gmail.com>
  */
@@ -36,13 +37,13 @@ public class TacheEvaluer extends CommonEntity {
     private Long id;
 
     @ManyToOne
-    private Tache tache;
+    private Tache tache;//Tache referency
 
     private double valeurAtteinte;//this is valeurCibleAtteinte
 
-    private double valeurCumulee;
+    private double valeurCumulee;//sum of previous valeurAtteinte saved of some tache
 
     @Type(type = "yes_no")
-    private boolean cumuleeActive;
+    private boolean cumuleeActive;//mark the last row of the calculated valeurCumulee 
 
 }

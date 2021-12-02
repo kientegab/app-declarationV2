@@ -48,6 +48,9 @@ public class Structure extends CommonEntity {
     @JoinColumn(nullable = true)
     private Structure parent;
 
+    @ManyToOne
+    private Ministere ministere;
+
     public Structure() {
 
     }
@@ -130,6 +133,14 @@ public class Structure extends CommonEntity {
 
     public void setParent(Structure parent) {
         this.parent = parent;
+    }
+
+    public Ministere getMinistere() {
+        return ministere;
+    }
+
+    public void setMinistere(Ministere ministere) {
+        this.ministere = ministere;
     }
 
     @Override
