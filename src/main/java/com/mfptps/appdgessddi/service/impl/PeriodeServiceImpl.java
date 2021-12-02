@@ -6,7 +6,9 @@
 package com.mfptps.appdgessddi.service.impl;
 
 import com.mfptps.appdgessddi.entities.Periode;
+import com.mfptps.appdgessddi.entities.Periodicite;
 import com.mfptps.appdgessddi.repositories.PeriodeRepository;
+import com.mfptps.appdgessddi.repositories.PeriodiciteRepository;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.PeriodeService;
 import java.util.Date;
@@ -25,16 +27,19 @@ public class PeriodeServiceImpl implements PeriodeService {
 
     private final PeriodeRepository periodeRepository;
 
-    public PeriodeServiceImpl(PeriodeRepository periodeRepository) {
+    private final PeriodiciteRepository periodiciteRepository;
+
+    public PeriodeServiceImpl(PeriodeRepository periodeRepository, PeriodiciteRepository periodiciteRepository) {
         this.periodeRepository = periodeRepository;
+        this.periodiciteRepository = periodiciteRepository;
     }
 
     @Override
     public Periode create(Periode periode) {
-        if (!periode.getPeriodicite().isActif()
-                && periode.getPeriodicite().isDeleted()) {
-            throw new CustomException("Opération interdite ! Veuillez selectionner une périodicité active.");
-        }
+        periodiciteRepository.findById(periode.getPeriodicite().getId())
+                .filter(Periodicite::isActif)
+                .orElseThrow(() -> new CustomException("Opération interdite ! Veuillez selectionner une périodicité active."));
+
         return periodeRepository.save(periode);
     }
 

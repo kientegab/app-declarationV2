@@ -5,7 +5,7 @@
  */
 package com.mfptps.appdgessddi.enums;
 
-import com.mfptps.appdgessddi.utils.AppEnumUtil;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,9 +19,9 @@ import lombok.Getter;
  */
 @Getter
 public enum ActiviteStatus {
-    PAS_COMMENCEE('S', AppEnumUtil.PAS_COMMENCEE),
-    EN_COURS('C', AppEnumUtil.EN_COURS),
-    TERMINEE('R', AppEnumUtil.TERMINEE);
+    PAS_COMMENCEE('S', AppUtil.PAS_COMMENCEE),
+    EN_COURS('C', AppUtil.EN_COURS),
+    TERMINEE('R', AppUtil.TERMINEE);
 
     protected String label;
     protected Character valueStatus;
