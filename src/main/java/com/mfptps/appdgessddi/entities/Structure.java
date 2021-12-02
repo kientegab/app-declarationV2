@@ -148,6 +148,7 @@ public class Structure extends CommonEntity {
         return "Structure{"
                 + "id=" + id
                 + ", libelle='" + libelle + '\''
+                + ", sigle='" + sigle + '\''
                 + ", description='" + description + '\''
                 + ", type='" + type + '\''
                 + ", statut='" + statut + '\''
