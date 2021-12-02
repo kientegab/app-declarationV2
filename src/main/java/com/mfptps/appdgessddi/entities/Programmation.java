@@ -38,8 +38,11 @@ public class Programmation extends CommonEntity {
     private boolean singleton; //If this Programmation have just one Tache
 
     private double cible;
+    
+    private double taux;
 
     private String observation;
+    
 
     @Column(name = "valid_initial", nullable = false)
     private boolean validationInitial = true;
