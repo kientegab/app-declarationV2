@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.Tache;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,6 +25,8 @@ public interface TacheRepository extends JpaRepository<Tache, Long> {
      * @return
      */
     Page<Tache> findByDeletedFalseAndProgrammationId(Long id, Pageable pageable);
+
+    List<Tache> findByDeletedFalseAndProgrammationId(Long id);
 
     /**
      *

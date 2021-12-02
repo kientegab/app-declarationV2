@@ -14,6 +14,7 @@ import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.EvaluationService;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -89,5 +90,18 @@ public class EvaluationServiceImpl implements EvaluationService {
 //            }
 //        }
         evaluationRepository.saveAll(evaluations);
+    }
+
+    /**
+     * Check if the current date is in the interval of the Activity realization
+     * periods
+     *
+     * @param programmationId
+     */
+    @Override
+    public void checkPeriodeEvaluation(Long programmationId) {
+        Date toDay = new Date();
+        evaluationRepository.findByProgrammationAndPeriode(programmationId, toDay)
+                .orElseThrow(() -> new CustomException("Opération interdite ! Rassurez-vous d'être dans la bonne période d'évaluation de l'activité."));
     }
 }

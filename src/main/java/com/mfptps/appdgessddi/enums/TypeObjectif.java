@@ -5,7 +5,7 @@
  */
 package com.mfptps.appdgessddi.enums;
 
-import com.mfptps.appdgessddi.utils.AppEnumUtil;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,8 +19,8 @@ import lombok.Getter;
  */
 @Getter
 public enum TypeObjectif {
-    STRATEGIQUE('R', AppEnumUtil.OBJECTIF_STRATEGIQUE),
-    OPERATIONNEL('E', AppEnumUtil.OBJECTIF_OPERATIONNEL);
+    STRATEGIQUE('R', AppUtil.OBJECTIF_STRATEGIQUE),
+    OPERATIONNEL('E', AppUtil.OBJECTIF_OPERATIONNEL);
 
     protected String label;
     protected Character valueStatus;

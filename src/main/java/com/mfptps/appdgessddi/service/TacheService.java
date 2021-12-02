@@ -34,6 +34,16 @@ public interface TacheService {
     List<Tache> update(List<Tache> taches);
 
     /**
+     * Task evaluation: only the execute and valeur fields can be modified. The
+     * pondeation field is calculated automatically after updating the valeur
+     * field
+     *
+     * @param taches
+     * @return
+     */
+    List<Tache> evaluer(List<Tache> taches);
+
+    /**
      * return a Tache (by libelle) not deleted of a Programmation
      *
      * @param libelle
@@ -51,5 +61,7 @@ public interface TacheService {
      * @return
      */
     Page<Tache> get(Long programmationId, Pageable pageable);
+
+    List<Tache> get(Long programmationId);
 
 }
