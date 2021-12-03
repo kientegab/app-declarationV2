@@ -76,8 +76,8 @@ public class IndicateurObjectifServiceImpl implements IndicateurObjectifService 
     }
 
     /**
-     * Objectif STRATEGIQUE ================================> indicateur IMPACT
-     * Objectif OPERATIONNEL ================================> indicateur EFFET
+     * Objectif STRATEGIQUE ================================> indicateur EFFET
+     * Objectif OPERATIONNEL ================================> indicateur IMPACT
      * Added by Canisius 02122021
      *
      * @param indicateur
@@ -85,12 +85,12 @@ public class IndicateurObjectifServiceImpl implements IndicateurObjectifService 
     void checktypeObjectif(IndicateurObjectif indicateur) {
         Objectif objectif = objectifRepository.findById(indicateur.getObjectif().getId()).orElseThrow(() -> new CustomException("Objectif inexistant."));
         if ((indicateur.getTypeIndicateur().getLabel() == null ? AppUtil.INDICATEUR_EFFET == null : indicateur.getTypeIndicateur().getLabel().equals(AppUtil.INDICATEUR_EFFET))
-                && !objectif.getType().getLabel().equals(AppUtil.OBJECTIF_OPERATIONNEL)) {
-            throw new CustomException("L'indicateur d'effet doit correspondre à un objectif opérationnel.");
+                && !objectif.getType().getLabel().equals(AppUtil.OBJECTIF_STRATEGIQUE)) {
+            throw new CustomException("L'indicateur d'effet doit correspondre à un objectif stratégique.");
         }
         if ((indicateur.getTypeIndicateur().getLabel() == null ? AppUtil.INDICATEUR_IMPACT == null : indicateur.getTypeIndicateur().getLabel().equals(AppUtil.INDICATEUR_IMPACT))
-                && !objectif.getType().getLabel().equals(AppUtil.OBJECTIF_STRATEGIQUE)) {
-            throw new CustomException("L'indicateur d'impact doit correspondre à un objectif stratégique.");
+                && !objectif.getType().getLabel().equals(AppUtil.OBJECTIF_OPERATIONNEL)) {
+            throw new CustomException("L'indicateur d'impact doit correspondre à un objectif opérationnel.");
         }
     }
 }

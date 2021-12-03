@@ -38,8 +38,8 @@ public class IndicateurObjectif extends CommonEntity {
     private String libelle;
 
     /**
-     * Objectif STRATEGIQUE is linked at indicateur IMPACT. Objectif
-     * OPERATIONNEL is linked at indicateur EFFET
+     * Objectif STRATEGIQUE is linked at indicateur EFFET . Objectif
+     * OPERATIONNEL is linked at indicateur IMPACT
      *
      */
     @Convert(converter = TypeIndicateurObjectifConverter.class)
