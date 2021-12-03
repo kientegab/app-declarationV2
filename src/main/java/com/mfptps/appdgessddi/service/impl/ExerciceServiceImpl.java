@@ -49,6 +49,7 @@ public class ExerciceServiceImpl implements ExerciceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Exercice> findAll(Pageable pageable) {
         return exerciceRepository.findAll(pageable);
     }
@@ -58,18 +59,43 @@ public class ExerciceServiceImpl implements ExerciceService {
         exerciceRepository.deleteById(id);
     }
 
+    /**
+     * The closing of an exercise implies the creation of a pending exercise
+     */
     @Override
     public void cloture() {
-        Exercice exerciceToCloture = exerciceRepository.findByStatut(ExerciceStatus.ENCOURS).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
+        Exercice exerciceToCloture = exerciceRepository.findByStatut(ExerciceStatus.EN_COURS).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
         Exercice exerciceToEncours = exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
 
         exerciceToCloture.setStatut(ExerciceStatus.CLOS);
-        exerciceToEncours.setStatut(ExerciceStatus.ENCOURS);
+        exerciceToEncours.setStatut(ExerciceStatus.EN_COURS);
 
         Exercice exerciceAVenir = new Exercice();
         exerciceAVenir.setDebut(exerciceToEncours.getDebut().plusYears(1));
         exerciceAVenir.setFin(exerciceToEncours.getFin().plusYears(1));
         exerciceAVenir.setStatut(ExerciceStatus.EN_ATTENTE);
         exerciceRepository.save(exerciceAVenir);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Exercice> getByStatutAttente() {
+        return exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE);
+    }
+
+    /**
+     *
+     * @param statut
+     * @param pageable
+     * @return
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Exercice> findByStatut(ExerciceStatus statut, Pageable pageable) {
+        return exerciceRepository.findByStatut(statut, pageable);
     }
 }

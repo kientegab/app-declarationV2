@@ -1,5 +1,9 @@
 package com.mfptps.appdgessddi.entities;
 
+import com.mfptps.appdgessddi.enums.TypeStructure;
+import com.mfptps.appdgessddi.enums.convertes.TypeStructureConverter;
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,9 +35,12 @@ public class Structure extends CommonEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String libelle;
+    private String sigle;//added 22112021
     private String description;
-    private String type;
-    private String statut;
+    @Column(nullable = false, length = 1)
+    @Convert(converter = TypeStructureConverter.class)
+    private TypeStructure type;
+    private String statut;//if Structure always exists or no (20112021)
     private String telephone;
     private String emailResp;
     private String emailStruct;
@@ -41,6 +48,8 @@ public class Structure extends CommonEntity {
     @JoinColumn(nullable = true)
     private Structure parent;
 
+//    @ManyToOne inutile
+//    private Ministere ministere;
     public Structure() {
 
     }
@@ -69,11 +78,19 @@ public class Structure extends CommonEntity {
         this.description = description;
     }
 
-    public String getType() {
+    public String getSigle() {
+        return sigle;
+    }
+
+    public void setSigle(String sigle) {
+        this.sigle = sigle;
+    }
+
+    public TypeStructure getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TypeStructure type) {
         this.type = type;
     }
 
@@ -122,6 +139,7 @@ public class Structure extends CommonEntity {
         return "Structure{"
                 + "id=" + id
                 + ", libelle='" + libelle + '\''
+                + ", sigle='" + sigle + '\''
                 + ", description='" + description + '\''
                 + ", type='" + type + '\''
                 + ", statut='" + statut + '\''

@@ -1,12 +1,15 @@
 package com.mfptps.appdgessddi.entities;
 
 import com.mfptps.appdgessddi.enums.BaseStatus;
+import com.mfptps.appdgessddi.enums.convertes.BaseStatusConverter;
 import java.util.Date;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
@@ -31,7 +34,8 @@ public class Projet extends CommonEntity {
     @Column(nullable = true, updatable = true)
     private String description;
 
-    @Column(name = "projet_status")
+    @Column(nullable = false, length = 1)
+    @Convert(converter = BaseStatusConverter.class)
     private BaseStatus statut;
 
     private Date debut;
@@ -40,6 +44,7 @@ public class Projet extends CommonEntity {
 
     // ================= relationships
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Programme programme;
 
     //================== CONSTRUCTORS && GETTERS/SETTERS

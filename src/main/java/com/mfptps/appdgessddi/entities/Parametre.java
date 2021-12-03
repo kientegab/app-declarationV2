@@ -1,14 +1,19 @@
 package com.mfptps.appdgessddi.entities;
 
-
+import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.*;
-
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.Date;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -18,17 +23,18 @@ import java.util.Date;
 @Where(clause = "deleted = false")
 @FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
 @Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
-public class Parametre  extends CommonEntity{
+public class Parametre extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Long echeance ;
-    private boolean verrouille ;
-    private Date dateDebutExercice ;
-    private Date dateFinExercice ;
-    private Date dateDebutSaisit ;
-    private Date dateFinSaisit ;
+    private Long echeance;
+    @Type(type = "yes_no")
+    private boolean verrouille;
+//    private Date dateDebutExercice;
+//    private Date dateFinExercice;
+    private Date dateDebutSaisit;
+    private Date dateFinSaisit;
 
     public Parametre() {
     }
@@ -55,22 +61,6 @@ public class Parametre  extends CommonEntity{
 
     public void setVerrouille(boolean verrouille) {
         this.verrouille = verrouille;
-    }
-
-    public Date getDateDebutExercice() {
-        return dateDebutExercice;
-    }
-
-    public void setDateDebutExercice(Date dateDebutExercice) {
-        this.dateDebutExercice = dateDebutExercice;
-    }
-
-    public Date getDateFinExercice() {
-        return dateFinExercice;
-    }
-
-    public void setDateFinExercice(Date dateFinExercice) {
-        this.dateFinExercice = dateFinExercice;
     }
 
     public Date getDateDebutSaisit() {

@@ -1,29 +1,33 @@
 package com.mfptps.appdgessddi.entities;
 
-import lombok.*;
-import org.hibernate.annotations.*;
-
-import javax.persistence.*;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name="action")
+@Table(name = "action")
 @SQLDelete(sql = "UPDATE action SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 @FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
 @Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
-public class Action  extends CommonEntity {
+public class Action extends CommonEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String code ;
-    private String libelle ;
-    private String description ;
+    private String code;
+    private String libelle;
+    private String description;
     @ManyToOne
-    private Objectif objectif ;
+    private Objectif objectif;//ObjectifSTRATEGIQUE
 
     public Action() {
     }

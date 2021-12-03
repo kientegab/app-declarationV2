@@ -8,7 +8,6 @@ package com.mfptps.appdgessddi.config;
 import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
-import com.mfptps.appdgessddi.repositories.ParametreRepository;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
@@ -24,11 +23,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AppDataInitializer {
 
-    private final ParametreRepository parametreRepository;
     private final ExerciceRepository exerciceRepository;
 
-    public AppDataInitializer(ParametreRepository parametreRepository, ExerciceRepository exerciceRepository) {
-        this.parametreRepository = parametreRepository;
+    public AppDataInitializer(ExerciceRepository exerciceRepository) {
         this.exerciceRepository = exerciceRepository;
     }
 
@@ -36,7 +33,7 @@ public class AppDataInitializer {
     public void initialization() {
         log.info("Application data initialization");
         if (0 == exerciceRepository.count()
-                || !exerciceRepository.findByStatut(ExerciceStatus.ENCOURS).isPresent()
+                || !exerciceRepository.findByStatut(ExerciceStatus.EN_COURS).isPresent()
                 || !exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).isPresent()) {
             LocalDate dateDebut = LocalDate.of(LocalDate.now().getYear(), Month.JANUARY, 1);
             LocalDate dateFin = LocalDate.of(LocalDate.now().getYear(), Month.DECEMBER, 31);
@@ -45,7 +42,7 @@ public class AppDataInitializer {
 
             exerciceCourant.setDebut(dateDebut);
             exerciceCourant.setFin(dateFin);
-            exerciceCourant.setStatut(ExerciceStatus.ENCOURS);
+            exerciceCourant.setStatut(ExerciceStatus.EN_COURS);
 
             exerciceAVenir.setDebut(dateDebut.plusYears(1));
             exerciceAVenir.setFin(dateFin.plusYears(1));
@@ -55,6 +52,6 @@ public class AppDataInitializer {
         }
 
         log.info("End of data initialization");
-
     }
+
 }

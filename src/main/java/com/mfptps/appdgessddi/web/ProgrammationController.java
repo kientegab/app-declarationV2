@@ -5,10 +5,10 @@
  */
 package com.mfptps.appdgessddi.web;
 
-import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
+import com.mfptps.appdgessddi.utils.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -72,6 +72,20 @@ public class ProgrammationController {
      */
     @GetMapping(path = "/all/{ids}")
     public ResponseEntity<List<Programmation>> findAllProgrammations(@PathVariable(name = "ids", required = true) Long structureId, Pageable pageable) {
+        Page<Programmation> programmations = programmationService.findAll(structureId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), programmations);
+        return ResponseEntity.ok().headers(headers).body(programmations.getContent());
+    }
+
+    /**
+     * Previous to ?????????????????????????
+     *
+     * @param structureId
+     * @param pageable
+     * @return
+     */
+    @GetMapping(path = "/all/evaluation/{ids}")
+    public ResponseEntity<List<Programmation>> findAllProgrammationsToEvaluation(@PathVariable(name = "ids", required = true) Long structureId, Pageable pageable) {
         Page<Programmation> programmations = programmationService.findAll(structureId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), programmations);
         return ResponseEntity.ok().headers(headers).body(programmations.getContent());

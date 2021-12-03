@@ -5,7 +5,7 @@
  */
 package com.mfptps.appdgessddi.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,19 +33,21 @@ public class Tache extends CommonEntity {
 
     private double ponderation;
 
-    private double valeur;
+    private double valeur;//this is valeurCible of the tache
 
     @Column(name = "est_execute", nullable = false)
     @Type(type = "yes_no")
     private boolean execute = false;//false means !execute.
 
     //================ relationships 
+    //@JsonIgnore//to avoid an infinite loop when return Programmation object. COMMENTED 29112021 when implementing evaluerTache
+    @JsonIgnoreProperties(value = {"sourceFinancement", "taches", "activite", "projet", "structure", "exercice", "objectif"})
     @ManyToOne
-    @JsonIgnore//to avoid an infinite loop when return Programmation object
     private Programmation programmation;
 
     //================ CONSTRUCTOR && GETTERS/SETTERS 
     public Tache() {
+        this.valeur = 1D;
     }
 
     public Long getId() {

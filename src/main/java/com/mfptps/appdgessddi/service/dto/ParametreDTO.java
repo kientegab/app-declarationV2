@@ -4,12 +4,12 @@ import java.util.Date;
 
 public class ParametreDTO {
 
-    private Long echeance ;
-    private boolean verrouille ;
-    private Date dateDebutExercice ;
-    private Date dateFinExercice ;
-    private Date dateDebutSaisit ;
-    private Date dateFinSaisit ;
+    private Long echeance;
+    private boolean verrouille;
+//    private Date dateDebutExercice ;
+//    private Date dateFinExercice ;
+    private Date dateDebutSaisit;
+    private Date dateFinSaisit;
 
     public ParametreDTO() {
     }
@@ -28,22 +28,6 @@ public class ParametreDTO {
 
     public void setVerrouille(boolean verrouille) {
         this.verrouille = verrouille;
-    }
-
-    public Date getDateDebutExercice() {
-        return dateDebutExercice;
-    }
-
-    public void setDateDebutExercice(Date dateDebutExercice) {
-        this.dateDebutExercice = dateDebutExercice;
-    }
-
-    public Date getDateFinExercice() {
-        return dateFinExercice;
-    }
-
-    public void setDateFinExercice(Date dateFinExercice) {
-        this.dateFinExercice = dateFinExercice;
     }
 
     public Date getDateDebutSaisit() {

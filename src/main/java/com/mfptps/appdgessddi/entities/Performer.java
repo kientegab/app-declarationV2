@@ -29,6 +29,10 @@ public class Performer extends CommonEntity{
     private double moyennePGS ;
     private double PGM ;
 
+    @ManyToOne
+    private Performance performance;
+
+
     public Performer() {
     }
 
@@ -94,5 +98,13 @@ public class Performer extends CommonEntity{
 
     public void setPGM(double PGM) {
         this.PGM = PGM;
+    }
+
+    public Performance getPerformance() {
+        return performance;
+    }
+
+    public void setPerformance(Performance performance) {
+        this.performance = performance;
     }
 }

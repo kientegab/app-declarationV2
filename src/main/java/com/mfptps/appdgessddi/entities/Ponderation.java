@@ -1,13 +1,19 @@
 package com.mfptps.appdgessddi.entities;
 
-
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.*;
-
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -17,18 +23,19 @@ import javax.persistence.Table;
 @Where(clause = "deleted = false")
 @FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
 @Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
-public class Ponderation  extends CommonEntity{
+public class Ponderation extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private double efficacité ;
-    private double efficience ;
-    private double gouvernance ;
-    private double impact ;
-    private boolean actif ;
+    private double efficacite;
+    private double efficience;
+    private double gouvernance;
+    private double impact;
+    @Type(type = "yes_no")
+    private boolean actif;
     @ManyToOne
-    private Performance performance ;
+    private Performance performance;
 
     public Ponderation() {
     }
@@ -41,12 +48,12 @@ public class Ponderation  extends CommonEntity{
         this.id = id;
     }
 
-    public double getEfficacité() {
-        return efficacité;
+    public double getEfficacite() {
+        return efficacite;
     }
 
-    public void setEfficacité(double efficacité) {
-        this.efficacité = efficacité;
+    public void setEfficacite(double efficacite) {
+        this.efficacite = efficacite;
     }
 
     public double getEfficience() {

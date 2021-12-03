@@ -34,13 +34,17 @@ public interface AgentRepository extends JpaRepository<Agent, Long>{
 
     Optional<Agent> findOneByMatricule(String matricule);
 
+    Optional<Agent> findOneByEmailIgnoreCase(String email);
+
     @EntityGraph(attributePaths = "profiles")
-    //@Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
+    @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
     Optional<Agent> findOneWithProfilesByMatricule(String matricule);
 
     @EntityGraph(attributePaths = "profiles")
-    //@Cacheable(cacheNames = USERS_BY_EMAIL_CACHE)
+    @Cacheable(cacheNames = USERS_BY_EMAIL_CACHE)
     Optional<Agent> findOneWithProfilesByEmailIgnoreCase(String email);
 
     Page<Agent> findAllByIdNotNullAndActifIsTrue(Pageable pageable);
+
+    Optional<Agent> findOneByMatriculeOrEmail(String matricule, String email);
 }

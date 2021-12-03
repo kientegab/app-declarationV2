@@ -13,9 +13,12 @@ import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.service.CustomException;
+import com.mfptps.appdgessddi.service.EvaluationService;
 import com.mfptps.appdgessddi.service.ProgrammationService;
+import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -35,15 +38,18 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private final ProgrammationRepository programmationRepository;
     private final TacheRepository tacheRepository;
     private final ExerciceRepository exerciceRepository;
+    private final EvaluationService evaluationService;
     private final ProgrammationMapper programmationMapper;
 
     public ProgrammationServiceImpl(ProgrammationRepository programmationRepository,
             ExerciceRepository exerciceRepository,
             ProgrammationMapper programmationMapper,
-            TacheRepository tacheRepository) {
+            TacheRepository tacheRepository,
+            EvaluationService evaluationService) {
         this.programmationRepository = programmationRepository;
         this.tacheRepository = tacheRepository;
         this.exerciceRepository = exerciceRepository;
+        this.evaluationService = evaluationService;
         this.programmationMapper = programmationMapper;
     }
 
@@ -54,15 +60,21 @@ public class ProgrammationServiceImpl implements ProgrammationService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = CustomException.class)
     public Programmation create(ProgrammationDTO programmationDTO) {
         Programmation programmationMapped = programmationMapper.toEntity(programmationDTO);
         log.debug("Sum of Ponderations = {} %", programmationMapped.checkPonderation());
         if (programmationMapped.checkPonderation() != 100) {
             throw new CustomException("L'ensemble des ponderations de vos taches n'atteint pas 100%.");
         }
+//        if (!programmationDTO.isSingleton() && programmationMapped.checkValeur() != programmationDTO.getCible()) {
+//            throw new CustomException("La somme des valeurs de vos taches n'atteint pas la cible (" + programmationDTO.getCible() + ") de l'activité programmée.");
+//        }
+        this.checkIfAllPeriodeNotFalse(programmationDTO.getPeriodes());
         Exercice exerciceEnAttente = exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
         programmationMapped.setExercice(exerciceEnAttente);
         Programmation response = programmationRepository.save(programmationMapped);
+        evaluationService.addEvaluation(programmationDTO.getPeriodes(), response);
 
         if (programmationDTO.isSingleton()) {//Activite with one Tache
             Tache tache = new Tache();
@@ -122,4 +134,20 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         programmationRepository.deleteById(id);
     }
 
+    /**
+     * Check if no period is checked
+     *
+     * @param periodes
+     */
+    void checkIfAllPeriodeNotFalse(List<PeriodesDTO> periodes) {
+        boolean exist = false;
+        for (PeriodesDTO p : periodes) {
+            if (p.isValeur()) {
+                exist = true;
+            }
+        }
+        if (!exist) {
+            throw new CustomException("Période(s) non spécifiée(s) ! Veuillez préciser la période de réalisation de l'activité");
+        }
+    }
 }

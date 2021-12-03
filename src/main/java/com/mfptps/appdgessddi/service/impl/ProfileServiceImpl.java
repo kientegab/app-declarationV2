@@ -13,6 +13,7 @@ import java.util.Optional;
 import com.mfptps.appdgessddi.entities.Profile;
 import com.mfptps.appdgessddi.repositories.ProfileRepository;
 import com.mfptps.appdgessddi.service.ProfileService;
+import com.mfptps.appdgessddi.service.dto.ProfileDTO;
 
 /**
  * Service Implementation for managing {@link Profile}.
@@ -37,9 +38,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Profile> findAll(Pageable pageable) {
+    public Page<ProfileDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Profiles");
-        return profileRepository.findAll(pageable);
+        return profileRepository.findAll(pageable).map(ProfileDTO::new);
     }
 
 

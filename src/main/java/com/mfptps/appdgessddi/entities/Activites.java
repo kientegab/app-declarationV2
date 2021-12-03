@@ -1,6 +1,7 @@
 package com.mfptps.appdgessddi.entities;
 
 import com.mfptps.appdgessddi.enums.ActiviteStatus;
+import com.mfptps.appdgessddi.enums.convertes.ActiviteStatusConverter;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -27,6 +28,8 @@ public class Activites extends CommonEntity {
     private String description;
     private String libelle;
 
+    @Convert(converter = ActiviteStatusConverter.class)
+    @Column(nullable = false, length = 1)
     private ActiviteStatus status;
 
     @ManyToOne
