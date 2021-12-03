@@ -5,6 +5,7 @@
  */
 package com.mfptps.appdgessddi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mfptps.appdgessddi.enums.TypeObjectif;
 import com.mfptps.appdgessddi.enums.convertes.TypeObjectifConverter;
 import javax.persistence.*;
@@ -45,6 +46,8 @@ public class Objectif extends CommonEntity {
     @ManyToOne
     @JoinColumn(name = "objectif_id")
     private Objectif parent;//to manage SousObjectif notion
+
+    @JsonIgnoreProperties(value = {"objectif"})
     @ManyToOne
     private Action action;//ObjectifOperationnel to Action
 

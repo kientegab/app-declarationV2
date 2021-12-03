@@ -5,10 +5,10 @@
  */
 package com.mfptps.appdgessddi.web;
 
-import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.entities.Projet;
 import com.mfptps.appdgessddi.service.ProjetService;
 import com.mfptps.appdgessddi.service.dto.ProjetDTO;
+import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -59,6 +59,7 @@ public class ProjetController {
      */
     @PostMapping
     public ResponseEntity<Projet> createProjet(@Valid @RequestBody ProjetDTO projetDto) throws URISyntaxException {
+        AppUtil.checkDebutBeforeFin(projetDto.getDebut(), projetDto.getFin());
         Projet projetSaved = projetService.create(projetDto);
         log.debug("Création du Projet : {}", projetDto);
         return ResponseEntity.created(new URI("/api/projets/" + projetSaved.getId()))
@@ -78,6 +79,7 @@ public class ProjetController {
         if (projet.getId() == null) {
             throw new BadRequestAlertException("Id invalide", ENTITY_NAME, "idnull");
         }
+        AppUtil.checkDebutBeforeFin(projet.getDebut(), projet.getFin());
         Projet result = projetService.update(projet);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, projet.getId().toString()))
