@@ -58,6 +58,7 @@ public class AgentDTO {
         this.matricule = agent.getMatricule();
         this.nom = agent.getNom();
         this.prenom = agent.getPrenom();
+        this.telephone = agent.getTelephone();
         this.email = agent.getEmail();
         this.actif = agent.isActif();
         this.createdBy = agent.getCreatedBy();
@@ -75,9 +76,9 @@ public class AgentDTO {
             .map(Privilege::getName)
             .collect(Collectors.toSet());
         
-        if(null != agent.getStructure() && null != agent.getStructure().getId()) {
-            this.structureId = agent.getStructure().getId();
-        }
+//        if(null != agent.getStructure() && null != agent.getStructure().getId()) {
+//            this.structureId = agent.getStructure().getId();
+//        }
         
     }
 

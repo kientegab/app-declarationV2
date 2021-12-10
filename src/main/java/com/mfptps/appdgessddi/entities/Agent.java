@@ -67,7 +67,7 @@ public class Agent extends CommonEntity {
     private String telephone;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "agent_profile",
             joinColumns = {
@@ -78,8 +78,8 @@ public class Agent extends CommonEntity {
     @BatchSize(size = 20)
     private Set<Profile> profiles = new HashSet<>();
 
-    @ManyToOne(optional = true)
-    private Structure structure;
+    /*@ManyToOne(optional = true)
+    private Structure structure;*/
 
     public Agent() {
     }
@@ -180,13 +180,13 @@ public class Agent extends CommonEntity {
         this.profiles = profiles;
     }
 
-    public Structure getStructure() {
-        return structure;
-    }
-
-    public void setStructure(Structure structure) {
-        this.structure = structure;
-    }
+//    public Structure getStructure() {
+//        return structure;
+//    }
+//
+//    public void setStructure(Structure structure) {
+//        this.structure = structure;
+//    }
 
     @Override
     public int hashCode() {

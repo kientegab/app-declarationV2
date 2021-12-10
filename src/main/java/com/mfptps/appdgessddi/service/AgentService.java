@@ -104,18 +104,29 @@ public class AgentService {
         newAgent.setPassword(encryptedPassword);
         newAgent.setNom(agentDTO.getNom());
         newAgent.setPrenom(agentDTO.getPrenom());
+        newAgent.setTelephone(agentDTO.getTelephone());
         newAgent.setEmail(agentDTO.getEmail());
         // new agent is not active
         newAgent.setActif(false);
         // new agent gets registration key
         newAgent.setActivationKey(RandomUtil.generateActivationKey());
         Set<Profile> profiles = new HashSet<>();
-        profileRepository.findByName("ROLE_USER").ifPresent(profiles::add);
-        newAgent.setProfiles(profiles);
+        if (agentDTO.getProfiles() != null) {
+            profiles = agentDTO.getProfiles().stream()
+                    .map(profileRepository::findByName)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toSet());
+            newAgent.setProfiles(profiles);
+        } else {
+            profiles.add(profileRepository.findByName("USER").get());
+            newAgent.setProfiles(profiles);
+        }
+
         agentRepository.save(newAgent);
         if (null != agentDTO.getStructureId()) {
             Structure structure = structureRepository.findById(agentDTO.getStructureId()).orElseThrow(() -> new CustomException("Structure with id = " + agentDTO.getStructureId() + " does not exist !"));
-            newAgent.setStructure(structure);
+//            newAgent.setStructure(structure);
             AgentStructure agentStructure = new AgentStructure();
             agentStructure.setAgent(newAgent);
             agentStructure.setStructure(structure);
@@ -129,7 +140,7 @@ public class AgentService {
     public Agent affectationAgent(String matriculeOrMail, Long structureID) {
         Structure structure = structureRepository.findById(structureID).orElseThrow(() -> new CustomException("Structure with id = " + structureID + " does not exist !"));
         Agent agent = agentRepository.findOneByMatriculeOrEmail(matriculeOrMail, matriculeOrMail).orElseThrow(() -> new CustomException("Agent with matricule or email " + matriculeOrMail + " does not exist !"));
-        agent.setStructure(structure);
+//        agent.setStructure(structure);
         AgentStructure entity = new AgentStructure();
         entity.setAgent(agent);
         entity.setStructure(structure);
@@ -154,6 +165,7 @@ public class AgentService {
         agent.setNom(agentDTO.getNom());
         agent.setPrenom(agentDTO.getPrenom());
         agent.setCreatedBy(agentDTO.getCreatedBy());
+        agent.setTelephone(agentDTO.getTelephone());
         String encryptedPassword = passwordEncoder.encode(password);
         agent.setPassword(encryptedPassword);
         agent.setResetKey(RandomUtil.generateResetKey());
