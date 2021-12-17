@@ -42,14 +42,13 @@ public class Programme extends CommonEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false, length = 2)
+    @Column(nullable = false, length = 5)
     private String code;
 
     @Column(nullable = false, updatable = true)
     private String libelle;
 
-    private String description;
-
+    //private String description;
     @Column(nullable = false, length = 1)
     @Convert(converter = BaseStatusConverter.class)
     private BaseStatus statut;
@@ -58,8 +57,7 @@ public class Programme extends CommonEntity {
 
     private Date fin;
 
-    private String details;
-
+    //private String details;
     public Programme() {
     }
 
@@ -87,14 +85,6 @@ public class Programme extends CommonEntity {
         this.libelle = libelle;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public BaseStatus getStatut() {
         return statut;
     }
@@ -117,14 +107,6 @@ public class Programme extends CommonEntity {
 
     public void setFin(Date fin) {
         this.fin = fin;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
     }
 
 }

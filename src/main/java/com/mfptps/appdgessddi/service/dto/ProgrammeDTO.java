@@ -17,22 +17,18 @@ public class ProgrammeDTO {
 
     @NotBlank
     @NotNull
-    @Size(max = 2)
+    @Size(max = 5)
     private String code;
 
     @NotBlank
     @NotNull
     private String libelle;
 
-    private String description;
-
     private String statut;
 
     private Date debut;
 
     private Date fin;
-
-    private String details;
 
     public ProgrammeDTO() {
     }
@@ -51,14 +47,6 @@ public class ProgrammeDTO {
 
     public void setLibelle(String libelle) {
         this.libelle = libelle;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getStatut() {
@@ -83,14 +71,6 @@ public class ProgrammeDTO {
 
     public void setFin(Date fin) {
         this.fin = fin;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
     }
 
 }

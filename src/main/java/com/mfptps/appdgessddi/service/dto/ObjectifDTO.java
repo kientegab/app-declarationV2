@@ -6,12 +6,9 @@ import com.mfptps.appdgessddi.enums.TypeObjectif;
 
 public class ObjectifDTO {
 
-
     private String code;
 
     private String libelle;
-
-    private String description;
 
     private TypeObjectif type;
 
@@ -36,14 +33,6 @@ public class ObjectifDTO {
 
     public void setLibelle(String libelle) {
         this.libelle = libelle;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public TypeObjectif getType() {

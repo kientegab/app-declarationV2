@@ -21,8 +21,6 @@ public class ProjetDTO {
     @NotBlank
     private String libelle;
 
-    @NotNull
-    @NotBlank
     private String description;
 
     private String statut;

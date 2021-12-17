@@ -18,20 +18,16 @@ public interface ProgrammeMapper {
 
     @Mapping(source = "code", target = "code")
     @Mapping(source = "libelle", target = "libelle")
-    @Mapping(source = "description", target = "description")
     @Mapping(source = "statut", target = "statut")
     @Mapping(source = "debut", target = "debut")
     @Mapping(source = "fin", target = "fin")
-    @Mapping(source = "details", target = "details")
     Programme toEntity(ProgrammeDTO programmeDTO);
 
     @Mapping(source = "code", target = "code")
     @Mapping(source = "libelle", target = "libelle")
-    @Mapping(source = "description", target = "description")
     @Mapping(source = "statut", target = "statut")
     @Mapping(source = "debut", target = "debut")
     @Mapping(source = "fin", target = "fin")
-    @Mapping(source = "details", target = "details")
     ProgrammeDTO toDto(Programme programme);
 
 }
