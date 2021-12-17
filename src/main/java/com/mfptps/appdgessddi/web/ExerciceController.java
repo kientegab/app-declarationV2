@@ -46,7 +46,7 @@ public class ExerciceController {
 //                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, exercice.getId().toString()))
 //                .body(exercice);
 //    }
-    @PostMapping
+    @PutMapping
     public ResponseEntity<Exercice> updateExercice(@Valid @RequestBody ExerciceDTO exercice) throws URISyntaxException {
         log.debug("Mis à jour d un exercice : {}", exercice);
         if (exercice.getId() == null) {

@@ -37,8 +37,7 @@ public class Objectif extends CommonEntity {
     @Column(nullable = false)
     private String libelle;
 
-    private String description;
-
+    //private String description;
     @Convert(converter = TypeObjectifConverter.class)
     @Column(nullable = false, length = 1)
     private TypeObjectif type;
@@ -79,14 +78,6 @@ public class Objectif extends CommonEntity {
 
     public void setLibelle(String libelle) {
         this.libelle = libelle;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public TypeObjectif getType() {

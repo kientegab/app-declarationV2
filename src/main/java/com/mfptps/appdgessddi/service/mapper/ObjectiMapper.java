@@ -10,20 +10,19 @@ import org.mapstruct.Mappings;
 public interface ObjectiMapper {
 
     @Mappings({
-            @Mapping(target = "code", source = "code"),
-            @Mapping(target = "libelle", source = "libelle"),
-            @Mapping(target = "description", source = "description"),
-            @Mapping(target = "type", source = "type"),
-            @Mapping(target = "parent", source = "parent"),
-            @Mapping(target = "action", source = "action")})
-      Objectif toEntity(ObjectifDTO objectifDTO);
+        @Mapping(target = "code", source = "code"),
+        @Mapping(target = "libelle", source = "libelle"),
+        @Mapping(target = "type", source = "type"),
+        @Mapping(target = "parent", source = "parent"),
+        @Mapping(target = "action", source = "action")})
+    Objectif toEntity(ObjectifDTO objectifDTO);
+
     @Mappings({
-            @Mapping(target = "code", source = "code"),
-            @Mapping(target = "libelle", source = "libelle"),
-            @Mapping(target = "description", source = "description"),
-            @Mapping(target = "type", source = "type"),
-            @Mapping(target = "parent", source = "parent"),
-            @Mapping(target = "action", source = "action")})
+        @Mapping(target = "code", source = "code"),
+        @Mapping(target = "libelle", source = "libelle"),
+        @Mapping(target = "type", source = "type"),
+        @Mapping(target = "parent", source = "parent"),
+        @Mapping(target = "action", source = "action")})
     ObjectifDTO toDto(Objectif objectif);
 
 }

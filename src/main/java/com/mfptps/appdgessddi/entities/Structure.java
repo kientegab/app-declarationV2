@@ -48,8 +48,6 @@ public class Structure extends CommonEntity {
     @JoinColumn(nullable = true)
     private Structure parent;
 
-//    @ManyToOne inutile
-//    private Ministere ministere;
     public Structure() {
 
     }
