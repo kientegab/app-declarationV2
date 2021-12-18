@@ -4,10 +4,10 @@
  */
 package com.mfptps.appdgessddi.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  *
@@ -15,9 +15,7 @@ import javax.validation.constraints.Size;
  */
 public class ProgrammeDTO {
 
-    @NotBlank
-    @NotNull
-    @Size(max = 5)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String code;
 
     @NotBlank

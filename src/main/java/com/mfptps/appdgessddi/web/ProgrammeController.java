@@ -101,6 +101,19 @@ public class ProgrammeController {
      * @param pageable
      * @return
      */
+    @GetMapping(path = "/encours")
+    public ResponseEntity<List<Programme>> getProgrammeENCOURS(Pageable pageable) {
+        log.debug("Consultation des Programmes en cours :");
+        Page<Programme> programmes = programmeService.getENCOURS(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), programmes);
+        return ResponseEntity.ok().headers(headers).body(programmes.getContent());
+    }
+
+    /**
+     *
+     * @param pageable
+     * @return
+     */
     @GetMapping
     public ResponseEntity<List<Programme>> findAllProgrammes(Pageable pageable) {
         Page<Programme> programmes = programmeService.findAll(pageable);

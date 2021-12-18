@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,6 +31,10 @@ public class Programmation extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(nullable = false, updatable = false)
+    private String code;
 
     private double coutPrevisionnel;
 
@@ -88,6 +93,14 @@ public class Programmation extends CommonEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public double getCoutPrevisionnel() {
