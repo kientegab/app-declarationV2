@@ -1,5 +1,7 @@
 package com.mfptps.appdgessddi.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,6 +25,8 @@ public class Action extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(updatable = false, nullable = false)
     private String code;
     private String libelle;
     private String description;

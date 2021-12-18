@@ -1,5 +1,6 @@
 package com.mfptps.appdgessddi.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mfptps.appdgessddi.enums.ActiviteStatus;
 import com.mfptps.appdgessddi.enums.convertes.ActiviteStatusConverter;
 import javax.persistence.*;
@@ -24,6 +25,8 @@ public class Activites extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(updatable = false, nullable = false)
     private String code;
     private String description;
     private String libelle;

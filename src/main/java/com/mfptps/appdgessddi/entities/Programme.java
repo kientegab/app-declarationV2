@@ -5,6 +5,7 @@
  */
 package com.mfptps.appdgessddi.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mfptps.appdgessddi.enums.BaseStatus;
 import com.mfptps.appdgessddi.enums.convertes.BaseStatusConverter;
 import java.util.Date;
@@ -42,13 +43,13 @@ public class Programme extends CommonEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false, length = 5)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(nullable = false, updatable = false)
     private String code;
 
     @Column(nullable = false, updatable = true)
     private String libelle;
 
-    //private String description;
     @Column(nullable = false, length = 1)
     @Convert(converter = BaseStatusConverter.class)
     private BaseStatus statut;
@@ -57,7 +58,6 @@ public class Programme extends CommonEntity {
 
     private Date fin;
 
-    //private String details;
     public Programme() {
     }
 

@@ -10,6 +10,7 @@ import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
+import com.mfptps.appdgessddi.repositories.ObjectifRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.service.CustomException;
@@ -18,6 +19,7 @@ import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private final ProgrammationRepository programmationRepository;
     private final TacheRepository tacheRepository;
     private final ExerciceRepository exerciceRepository;
+    private final ObjectifRepository objectifRepository;
     private final EvaluationService evaluationService;
     private final ProgrammationMapper programmationMapper;
 
@@ -45,10 +48,12 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             ExerciceRepository exerciceRepository,
             ProgrammationMapper programmationMapper,
             TacheRepository tacheRepository,
+            ObjectifRepository objectifRepository,
             EvaluationService evaluationService) {
         this.programmationRepository = programmationRepository;
         this.tacheRepository = tacheRepository;
         this.exerciceRepository = exerciceRepository;
+        this.objectifRepository = objectifRepository;
         this.evaluationService = evaluationService;
         this.programmationMapper = programmationMapper;
     }
@@ -65,14 +70,16 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         Programmation programmationMapped = programmationMapper.toEntity(programmationDTO);
         log.debug("Sum of Ponderations = {} %", programmationMapped.checkPonderation());
         if (programmationMapped.checkPonderation() != 100) {
-            throw new CustomException("L'ensemble des ponderations de vos taches n'atteint pas 100%.");
+            throw new CustomException("La somme des ponderations de vos taches doit être égale à 100%.");
         }
 //        if (!programmationDTO.isSingleton() && programmationMapped.checkValeur() != programmationDTO.getCible()) {
 //            throw new CustomException("La somme des valeurs de vos taches n'atteint pas la cible (" + programmationDTO.getCible() + ") de l'activité programmée.");
 //        }
         this.checkIfAllPeriodeNotFalse(programmationDTO.getPeriodes());
+        String code = AppUtil.codeGeneratorProgrammation(programmationRepository, objectifRepository, programmationMapped);
         Exercice exerciceEnAttente = exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
         programmationMapped.setExercice(exerciceEnAttente);
+        programmationMapped.setCode(code);
         Programmation response = programmationRepository.save(programmationMapped);
         evaluationService.addEvaluation(programmationDTO.getPeriodes(), response);
 
@@ -81,7 +88,6 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             tache.setValeur(programmationDTO.getCible());
             tache.setPonderation(100);
             tache.setLibelle(programmationDTO.getActivite().getLibelle());
-            tache.setDescription(programmationDTO.getActivite().getDescription());
             tache.setProgrammation(response);
             tacheRepository.save(tache);
         } else {//Activite with many Tache. Then we create those Taches linking ProgrammationId

@@ -22,6 +22,8 @@ public interface ProgrammeService {
 
     Page<Programme> get(String code, Pageable pageable);
 
+    Page<Programme> getENCOURS(Pageable pageable);
+
     Page<Programme> findAll(Pageable pageable);
 
     void delete(Long id);
