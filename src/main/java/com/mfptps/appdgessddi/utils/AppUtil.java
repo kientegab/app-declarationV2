@@ -147,14 +147,8 @@ public class AppUtil {
         String codeGenerated = "";
         Objectif objectif = objectifRepository.findByIdAndType(programmation.getObjectif().getId(), TypeObjectif.OPERATIONNEL)
                 .orElseThrow(() -> new CustomException("Veuillez rattacher l'objectif approprié à cette programmation."));
-        if (objectif.getParent() != null) {//subObjectifOperationnel ENCOURS D'IMPLEMENTATION
-//            Objectif parent = repository.findById(objectif.getParent().getId())
-//                    .orElseThrow(() -> new CustomException("Sous objectif mal référencé."));
-//            long count = repository.countObjectifSubOperationnel(parent.getId(), TypeObjectif.OPERATIONNEL);
-//            codeGenerated = "" + parent.getCode() + "." + (count + 1L);
-//            return codeGenerated;
-        }
-        codeGenerated = "" + objectif.getCode() + "." + (repository.countProgrammationByStrucutre(programmation.getStructure().getId()) + 1L);
+        long count = repository.countProgrammationByStrucutreAndObjectif(programmation.getStructure().getId(), objectif.getId());
+        codeGenerated = "" + objectif.getCode() + "." + (count + 1L);
         return codeGenerated;
     }
 }

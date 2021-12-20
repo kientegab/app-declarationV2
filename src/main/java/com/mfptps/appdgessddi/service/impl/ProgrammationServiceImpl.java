@@ -69,9 +69,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     public Programmation create(ProgrammationDTO programmationDTO) {
         Programmation programmationMapped = programmationMapper.toEntity(programmationDTO);
         log.debug("Sum of Ponderations = {} %", programmationMapped.checkPonderation());
-        if (programmationMapped.checkPonderation() != 100) {
-            throw new CustomException("La somme des ponderations de vos taches doit être égale à 100%.");
-        }
+
 //        if (!programmationDTO.isSingleton() && programmationMapped.checkValeur() != programmationDTO.getCible()) {
 //            throw new CustomException("La somme des valeurs de vos taches n'atteint pas la cible (" + programmationDTO.getCible() + ") de l'activité programmée.");
 //        }
@@ -91,6 +89,9 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             tache.setProgrammation(response);
             tacheRepository.save(tache);
         } else {//Activite with many Tache. Then we create those Taches linking ProgrammationId
+            if (programmationMapped.checkPonderation() != 100) {
+                throw new CustomException("La somme des ponderations de vos taches doit être égale à 100%.");
+            }
             for (Tache tache : programmationDTO.getTaches()) {
                 log.debug("Tache info {}", tache);
                 tache.setProgrammation(response);

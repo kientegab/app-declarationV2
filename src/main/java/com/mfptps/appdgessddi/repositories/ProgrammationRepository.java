@@ -39,10 +39,12 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND UPPER(a.libelle) LIKE CONCAT('%',UPPER(:libelle),'%')")
     Page<Programmation> findByLibelle(Long structureId, String libelle, Pageable pageable);
 
-    @Query("SELECT COUNT(*) FROM Programmation p, Structure s "
+    @Query("SELECT COUNT(*) FROM Programmation p, Structure s, Objectif o "
             + "WHERE p.structure.id = s.id "
-            + "AND s.id = :structureId")
-    long countProgrammationByStrucutre(long structureId);
+            + "AND s.id = :structureId "
+            + "AND p.objectif.id = o.id "
+            + "AND o.id = :objectifId")
+    long countProgrammationByStrucutreAndObjectif(long structureId, long objectifId);
 
     //Page<Programmation> findByActiviteLibelleContainingIgnoreCase(String libelle, Pageable pageable);
 }
