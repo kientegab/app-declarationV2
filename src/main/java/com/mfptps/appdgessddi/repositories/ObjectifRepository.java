@@ -27,7 +27,8 @@ public interface ObjectifRepository extends JpaRepository<Objectif, Long> {
     @Query("SELECT COUNT(*) FROM Objectif o, Action a "
             + "WHERE o.action.id = a.id "
             + "AND a.id = :actionId "
-            + "AND o.type = :typeObjectif")
+            + "AND o.type = :typeObjectif "
+            + "AND o.parent = null")//can be ameliorate
     long countObjectifOperationnel(long actionId, TypeObjectif typeObjectif);
 
     @Query("SELECT COUNT(*) FROM Objectif o "
