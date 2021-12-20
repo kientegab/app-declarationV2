@@ -5,6 +5,9 @@
  */
 package com.mfptps.appdgessddi.service;
 
+import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroupByType;
+import java.util.List;
+
 /**
  *
  * @author Canisius <canisiushien@gmail.com>
@@ -13,4 +16,5 @@ public interface StatisticParameterService {
 
     long nbStructuresByMinistere(long ministereId);
 
+    List<CountStructureGroupByType> nbStructuresByGroupType(long ministereId);
 }

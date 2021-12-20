@@ -6,6 +6,8 @@
 package com.mfptps.appdgessddi.web;
 
 import com.mfptps.appdgessddi.service.StatisticParameterService;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroupByType;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +38,21 @@ public class StatisticParameterController {
      */
     @GetMapping(path = "/structure/{id}")
     public ResponseEntity<Long> countStructuresByMinistere(@PathVariable(name = "id") Long id) {
-        log.debug("Nombre de structures de niveau 1 du Ministere : {}", id);
+        log.debug("Nombre de structures (de niveau 1) du Ministere : {}", id);
         long counter = statisticParameterService.nbStructuresByMinistere(id);
         return new ResponseEntity<Long>(counter, HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param id : id of Ministere
+     * @return
+     */
+    @GetMapping(path = "/structure/type/{id}")
+    public ResponseEntity<List<CountStructureGroupByType>> countStructuresByMinistereAndByGroupType(@PathVariable(name = "id") Long id) {
+        log.debug("Nombre de structures (de niveau 1 et groupées par type) du Ministere : {}", id);
+        List<CountStructureGroupByType> response = statisticParameterService.nbStructuresByGroupType(id);
+        return ResponseEntity.ok().body(response);
     }
 
 }
