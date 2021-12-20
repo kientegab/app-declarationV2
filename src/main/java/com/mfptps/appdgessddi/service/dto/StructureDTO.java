@@ -8,6 +8,7 @@ public class StructureDTO {
     private Long id;
     private String libelle;
     private String sigle;
+    private Integer niveau;
     private String description;
     private String type;
     private String statut;
@@ -33,6 +34,14 @@ public class StructureDTO {
 
     public void setSigle(String sigle) {
         this.sigle = sigle;
+    }
+
+    public Integer getNiveau() {
+        return niveau;
+    }
+
+    public void setNiveau(Integer niveau) {
+        this.niveau = niveau;
     }
 
     public String getLibelle() {
