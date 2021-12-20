@@ -36,6 +36,7 @@ public class Structure extends CommonEntity {
     private Long id;
     private String libelle;
     private String sigle;//added 22112021
+    private Integer niveau;//added 20122021
     private String description;
     @Column(nullable = false, length = 1)
     @Convert(converter = TypeStructureConverter.class)
@@ -82,6 +83,14 @@ public class Structure extends CommonEntity {
 
     public void setSigle(String sigle) {
         this.sigle = sigle;
+    }
+
+    public Integer getNiveau() {
+        return niveau;
+    }
+
+    public void setNiveau(Integer niveau) {
+        this.niveau = niveau;
     }
 
     public TypeStructure getType() {
@@ -138,6 +147,7 @@ public class Structure extends CommonEntity {
                 + "id=" + id
                 + ", libelle='" + libelle + '\''
                 + ", sigle='" + sigle + '\''
+                + ", niveau='" + niveau + '\''
                 + ", description='" + description + '\''
                 + ", type='" + type + '\''
                 + ", statut='" + statut + '\''
