@@ -115,7 +115,7 @@ public class ProgrammationController {
      */
     @GetMapping(path = "/{ids}/{idp}")
     public ResponseEntity<Programmation> getProgrammationById(@PathVariable(name = "ids", required = true) Long structureId, @PathVariable(name = "idp", required = true) Long id) {
-        log.debug("Consultation du Programmation : {}", id);
+        log.debug("Consultation de la Programmation : {}", id);
         Optional<Programmation> programmation = programmationService.get(structureId, id);
         return ResponseUtil.wrapOrNotFound(programmation);
     }
