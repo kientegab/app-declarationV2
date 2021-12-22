@@ -51,14 +51,14 @@ public class Programmation extends CommonEntity {
 
     private String observations;
 
-    @Column(name = "valid_initial", nullable = false)
-    private boolean validationInitial = true;
+    @Column(name = "valid_initial")
+    private boolean validationInitial;//For validation RESP_STRUC
 
     @Column(name = "valid_interne")
-    private boolean validationInterne;
+    private boolean validationInterne;//For validation RESP_DGESS
 
     @Column(name = "valid_final")
-    private boolean validationFinal;
+    private boolean validationFinal;//For validation CASEM
 
     //============= relationships 
     @ManyToOne
@@ -67,6 +67,8 @@ public class Programmation extends CommonEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "programmation"/*, cascade = CascadeType.PERSIST*/)
     private List<Tache> taches;
 
+//    @OneToMany(mappedBy = "programmation")
+//    private List<Evaluation> evaluations;
     @ManyToOne
     private Activites activite;
 
@@ -190,6 +192,14 @@ public class Programmation extends CommonEntity {
     public void setTaches(List<Tache> taches) {
         this.taches = taches;
     }
+//
+//    public List<Evaluation> getEvaluations() {
+//        return evaluations;
+//    }
+//
+//    public void setEvaluations(List<Evaluation> evaluations) {
+//        this.evaluations = evaluations;
+//    }
 
     public Activites getActivite() {
         return activite;
