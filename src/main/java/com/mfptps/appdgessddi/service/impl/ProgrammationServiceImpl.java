@@ -157,4 +157,36 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             throw new CustomException("Période(s) non spécifiée(s) ! Veuillez préciser la période de réalisation de l'activité");
         }
     }
+
+    @Override
+    public Optional<Programmation> validationInitial(Long structureId, Long programmationId) {
+        return programmationRepository.findById(structureId, programmationId)
+                .filter(programmation -> !programmation.isValidationInitial())
+                .map(programmation -> {
+                    programmation.setValidationInitial(true);
+                    return programmation;
+                });
+    }
+
+    @Override
+    public Optional<Programmation> validationInterne(Long programmationId) {
+        return programmationRepository.findById(programmationId)
+                .filter(programmation -> !programmation.isValidationInterne())
+                .map(programmation -> {
+                    programmation.setValidationInterne(true);
+                    return programmation;
+                });
+        //.orElseThrow(() -> new CustomException("Programmation d'id " + programmationId + " inexistente"));
+
+    }
+
+    @Override
+    public Optional<Programmation> validationFinal(Long programmationId) {
+        return programmationRepository.findById(programmationId)
+                .filter(programmation -> !programmation.isValidationFinal())
+                .map(programmation -> {
+                    programmation.setValidationFinal(true);
+                    return programmation;
+                });
+    }
 }

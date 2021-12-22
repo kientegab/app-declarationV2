@@ -27,5 +27,11 @@ public interface ProgrammationService {
 
     Page<Programmation> findAll(Long structureId, Pageable pageable);
 
+    Optional<Programmation> validationInitial(Long structureId, Long programmationId);
+
+    Optional<Programmation> validationInterne(Long programmationId);
+
+    Optional<Programmation> validationFinal(Long programmationId);
+
     void delete(Long id);
 }
