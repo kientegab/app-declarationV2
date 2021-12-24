@@ -13,9 +13,12 @@ import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.ObjectifRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
+import com.mfptps.appdgessddi.security.SecurityUtils;
+import com.mfptps.appdgessddi.service.CommentaireService;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.EvaluationService;
 import com.mfptps.appdgessddi.service.ProgrammationService;
+import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
@@ -42,19 +45,22 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private final ExerciceRepository exerciceRepository;
     private final ObjectifRepository objectifRepository;
     private final EvaluationService evaluationService;
+    private final CommentaireService commentaireService;
     private final ProgrammationMapper programmationMapper;
 
     public ProgrammationServiceImpl(ProgrammationRepository programmationRepository,
             ExerciceRepository exerciceRepository,
-            ProgrammationMapper programmationMapper,
             TacheRepository tacheRepository,
             ObjectifRepository objectifRepository,
-            EvaluationService evaluationService) {
+            EvaluationService evaluationService,
+            CommentaireService commentaireService,
+            ProgrammationMapper programmationMapper) {
         this.programmationRepository = programmationRepository;
         this.tacheRepository = tacheRepository;
         this.exerciceRepository = exerciceRepository;
         this.objectifRepository = objectifRepository;
         this.evaluationService = evaluationService;
+        this.commentaireService = commentaireService;
         this.programmationMapper = programmationMapper;
     }
 
@@ -134,11 +140,15 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     /**
      *
-     * @param id : id of Programmation
+     * @param structureId
+     * @param programmationId
      */
     @Override
-    public void delete(Long id) {
-        programmationRepository.deleteById(id);
+    public void delete(Long structureId, Long programmationId) {
+        int count = programmationRepository.deleteById(structureId, programmationId);
+        if (count <= 0) {
+            throw new CustomException("Programmation d'id " + programmationId + " non trouvée ou a deja été supprimée.");
+        }
     }
 
     /**
@@ -158,35 +168,49 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         }
     }
 
+    /**
+     *
+     * @param structureId
+     * @param programmationId
+     * @return
+     */
     @Override
-    public Optional<Programmation> validationInitial(Long structureId, Long programmationId) {
-        return programmationRepository.findById(structureId, programmationId)
-                .filter(programmation -> !programmation.isValidationInitial())
+    public Optional<Programmation> validationInitialeOrInterne(Long structureId, Long programmationId) {
+        Optional<Programmation> response = programmationRepository.findById(programmationId)
                 .map(programmation -> {
-                    programmation.setValidationInitial(true);
+                    if (SecurityUtils.isCurrentUserInRole("RESP_STRUCT") && (programmation.getStructure().getId() == structureId)) {
+                        programmation.setValidationInitial(true);
+                    } else if (SecurityUtils.isCurrentUserInRole("RESP_DGESS") && programmation.isValidationInitial()) {
+                        programmation.setValidationInterne(true);
+                    }
                     return programmation;
                 });
+        if (!response.isPresent()) {
+            throw new CustomException("Programmation d'id " + programmationId + " inexistante");
+        }
+        return response;
     }
 
+    /**
+     *
+     * @param commentaireDTO
+     */
     @Override
-    public Optional<Programmation> validationInterne(Long programmationId) {
-        return programmationRepository.findById(programmationId)
-                .filter(programmation -> !programmation.isValidationInterne())
-                .map(programmation -> {
-                    programmation.setValidationInterne(true);
-                    return programmation;
-                });
-        //.orElseThrow(() -> new CustomException("Programmation d'id " + programmationId + " inexistente"));
-
+    public void rejetDgessOrCasem(CommentaireDTO commentaireDTO) {
+        try {
+            Optional<Programmation> programmation = programmationRepository.findById(commentaireDTO.getProgrammationId())
+                    .map(p -> {
+                        p.setValidationInitial(false);
+                        p.setValidationInterne(false);
+                        commentaireService.create(commentaireDTO);
+                        return p;
+                    });
+            if (programmation.isEmpty()) {
+                throw new CustomException("Programmation d'id " + commentaireDTO.getProgrammationId() + " inexistante");
+            }
+        } catch (Exception e) {
+            throw new CustomException("Une erreur s'est produite lors du rejet de la programmation. " + e);
+        }
     }
 
-    @Override
-    public Optional<Programmation> validationFinal(Long programmationId) {
-        return programmationRepository.findById(programmationId)
-                .filter(programmation -> !programmation.isValidationFinal())
-                .map(programmation -> {
-                    programmation.setValidationFinal(true);
-                    return programmation;
-                });
-    }
 }

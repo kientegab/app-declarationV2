@@ -17,7 +17,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 
 /**
  * This entity is similar to Activite
@@ -26,6 +30,10 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = "programmation")
+//@SQLDelete(sql = "UPDATE programmation SET deleted = true WHERE id=?")
+@Where(clause = "deleted = false")
+@FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
+@Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
 public class Programmation extends CommonEntity {
 
     @Id
