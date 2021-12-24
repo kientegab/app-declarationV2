@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.service;
 
 import com.mfptps.appdgessddi.entities.Programmation;
+import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -27,11 +28,9 @@ public interface ProgrammationService {
 
     Page<Programmation> findAll(Long structureId, Pageable pageable);
 
-    Optional<Programmation> validationInitial(Long structureId, Long programmationId);
+    Optional<Programmation> validationInitialeOrInterne(Long structureId, Long programmationId);
 
-    Optional<Programmation> validationInterne(Long programmationId);
+    void rejetDgessOrCasem(CommentaireDTO commentaireDTO);
 
-    Optional<Programmation> validationFinal(Long programmationId);
-
-    void delete(Long id);
+    void delete(Long structureId, Long programmationId);
 }
