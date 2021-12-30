@@ -1,15 +1,16 @@
 package com.mfptps.appdgessddi.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mfptps.appdgessddi.entities.Objectif;
-
 
 public class ActionDTO {
 
-    private String code ;
-    private String libelle ;
-    private String description ;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String code;
+    private String libelle;
+    private String description;
 
-    private Objectif objectif ;
+    private Objectif objectif;
 
     public ActionDTO() {
     }

@@ -1,10 +1,12 @@
 package com.mfptps.appdgessddi.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mfptps.appdgessddi.entities.TypeActivites;
 
 public class ActivitesDTO {
 
     private Long id;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String code;
     private String description;
     private String libelle;
@@ -19,7 +21,6 @@ public class ActivitesDTO {
         this.id = id;
     }
 
-    
     public TypeActivites getTypeActivites() {
         return typeActivites;
     }
@@ -27,8 +28,6 @@ public class ActivitesDTO {
     public void setTypeActivites(TypeActivites typeActivites) {
         this.typeActivites = typeActivites;
     }
-
-    
 
     public ActivitesDTO() {
 

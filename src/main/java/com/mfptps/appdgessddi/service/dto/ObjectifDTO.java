@@ -1,11 +1,14 @@
 package com.mfptps.appdgessddi.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mfptps.appdgessddi.entities.Action;
 import com.mfptps.appdgessddi.entities.Objectif;
+import com.mfptps.appdgessddi.entities.Programme;
 import com.mfptps.appdgessddi.enums.TypeObjectif;
 
 public class ObjectifDTO {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String code;
 
     private String libelle;
@@ -14,7 +17,9 @@ public class ObjectifDTO {
 
     private Objectif parent;
 
-    private Action action;
+    private Action action;//to manage objectifs operationnels
+
+    private Programme programme;//to manage objectifs strategiques
 
     public ObjectifDTO() {
     }
@@ -58,4 +63,13 @@ public class ObjectifDTO {
     public void setAction(Action action) {
         this.action = action;
     }
+
+    public Programme getProgramme() {
+        return programme;
+    }
+
+    public void setProgramme(Programme programme) {
+        this.programme = programme;
+    }
+
 }

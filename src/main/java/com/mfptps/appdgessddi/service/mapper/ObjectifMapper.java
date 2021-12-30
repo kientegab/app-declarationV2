@@ -7,14 +7,15 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
-public interface ObjectiMapper {
+public interface ObjectifMapper {
 
     @Mappings({
         @Mapping(target = "code", source = "code"),
         @Mapping(target = "libelle", source = "libelle"),
         @Mapping(target = "type", source = "type"),
         @Mapping(target = "parent", source = "parent"),
-        @Mapping(target = "action", source = "action")})
+        @Mapping(target = "action", source = "action"),
+        @Mapping(target = "programme", source = "programme")})
     Objectif toEntity(ObjectifDTO objectifDTO);
 
     @Mappings({
@@ -22,7 +23,8 @@ public interface ObjectiMapper {
         @Mapping(target = "libelle", source = "libelle"),
         @Mapping(target = "type", source = "type"),
         @Mapping(target = "parent", source = "parent"),
-        @Mapping(target = "action", source = "action")})
+        @Mapping(target = "action", source = "action"),
+        @Mapping(target = "programme", source = "programme")})
     ObjectifDTO toDto(Objectif objectif);
 
 }

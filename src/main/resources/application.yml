@@ -97,16 +97,16 @@ spring:
       enabled: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:h2:file:./target/h2db/db/dgess;DB_CLOSE_DELAY=-1
-    username: dgess
-    password:
+    url: jdbc:postgresql://localhost:5432/dgessdb
+    username: postgres
+    password: admin
     hikari:
       poolName: Hikari
       auto-commit: false
-  h2:
-    console:
-      enable: true
-      path: /h2-console
+#  h2:
+#    console:
+#      enable: true
+#      path: /h2-console
 
 ---
 logging:
@@ -121,14 +121,15 @@ spring:
   main:
     banner-mode: off
   jpa:
-    hibernate.ddl-auto: none
- 
+    hibernate.ddl-auto: update
+    show-sql: true
+    database: postgresql
   # spring.jpa.hibernate.ddl-auto=create
   datasource:
     initialization-mode: always
     platform: postgres
-    url: jdbc:postgresql:localhost:5432/evaluationDB
-    username: admin
-    password:
+    url: jdbc:postgresql:localhost:5432/dgessdb
+    username: postgres
+    password: admin
     hikari:
       auto-commit: false
