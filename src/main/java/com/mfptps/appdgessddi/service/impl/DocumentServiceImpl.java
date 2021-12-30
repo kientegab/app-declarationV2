@@ -60,6 +60,7 @@ public class DocumentServiceImpl implements DocumentService {
             StructureRepository structureRepository,
             ProgrammationRepository programmationRepository,
             DocumentMapper documentMapper) {
+    	
         this.documentRepository = documentRepository;
         this.tacheRepository = tacheRepository;
         this.structureRepository = structureRepository;
