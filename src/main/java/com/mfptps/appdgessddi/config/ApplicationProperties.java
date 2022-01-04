@@ -71,7 +71,7 @@ public class ApplicationProperties {
                 private String base64Secret;
                 private int tokenValidityInSeconds;
                 private int tokenValidityInSecondsForRememberMe;
-                
+
                 public String getSecret() {
                     return secret;
                 }
@@ -131,6 +131,7 @@ public class ApplicationProperties {
             this.baseUrl = baseUrl;
         }
     }
+
     public static class Cache {
 
         private final Ehcache ehcache = new Ehcache();
@@ -162,5 +163,5 @@ public class ApplicationProperties {
             }
         }
 
-        }
+    }
 }

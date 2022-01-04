@@ -32,6 +32,18 @@ public class AppUtil {
     public static final String STRUCTURE_DECONCENTREE = "DECONCENTREE";
     public static final String STRUCTURE_RATTACHEE = "RATTACHEE";
     public static final String STRUCTURE_DE_MISSION = "DE_MISSION";
+    public static final String STRUCTURE_INTERNE = "INTERNE";
+
+    /**
+     * BASIC MINISTERE AND STRUCTURE DATAS
+     */
+    public static final String BASIC_MINISTERE_CODE = "00-TEST";
+    public static final String BASIC_MINISTERE_LABEL = "Ministere en charge de la fonction publique - TEST";
+    public static final String BASIC_MINISTERE_SIGLE = "MFP - TEST";
+
+    public static final String BASIC_STRUCTURE_LABEL = "Structure de Test";
+    public static final String BASIC_STRUCTURE_SIGLE = "STRUC - TEST";
+    public static final String BASIC_STRUCTURE_TELEPHONE = "00.00.00.00";
 
     /**
      * TYPE OF OBJECTIF

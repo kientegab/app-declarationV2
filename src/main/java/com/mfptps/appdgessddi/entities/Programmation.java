@@ -57,6 +57,8 @@ public class Programmation extends CommonEntity {
 
     private double cible;
 
+    private double taux;
+
     private String observations;
 
     @Column(name = "valid_initial")
@@ -151,6 +153,14 @@ public class Programmation extends CommonEntity {
 
     public void setCible(double cible) {
         this.cible = cible;
+    }
+
+    public double getTaux() {
+        return taux;
+    }
+
+    public void setTaux(double taux) {
+        this.taux = taux;
     }
 
     public String getObservations() {
