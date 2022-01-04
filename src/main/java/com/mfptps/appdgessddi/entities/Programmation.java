@@ -48,16 +48,16 @@ public class Programmation extends CommonEntity {
 
     private double coutReel;
 
-    @Column(nullable = false)
-    @Type(type = "yes_no")
     private boolean estProgramme = true;//If activite is programmed
 
-    @Type(type = "yes_no")
     private boolean singleton; //If this Programmation have just one Tache
 
     private double cible;
+    
+    private double taux;
 
-    private String observations;
+    private String observation;
+    
 
     @Column(name = "valid_initial")
     private boolean validationInitial;//For validation RESP_STRUC
@@ -83,15 +83,11 @@ public class Programmation extends CommonEntity {
     @ManyToOne
     private Projet projet;
 
-    @JsonIgnoreProperties(value = {"parent"})
     @ManyToOne
     private Structure structure;
 
     @ManyToOne
     private Exercice exercice;
-
-    @ManyToOne
-    private Objectif objectif;//ObjectifOperationel
 
     //============== CONSTRUCTORS && GETTERS/SETTERS
     public Programmation() {
@@ -153,12 +149,12 @@ public class Programmation extends CommonEntity {
         this.cible = cible;
     }
 
-    public String getObservations() {
-        return observations;
+    public String getObservation() {
+        return observation;
     }
 
-    public void setObservations(String observations) {
-        this.observations = observations;
+    public void setObservation(String observation) {
+        this.observation = observation;
     }
 
     public boolean isValidationInitial() {
@@ -213,14 +209,6 @@ public class Programmation extends CommonEntity {
         return activite;
     }
 
-    public Objectif getObjectif() {
-        return objectif;
-    }
-
-    public void setObjectif(Objectif objectif) {
-        this.objectif = objectif;
-    }
-
     public void setActivite(Activites activite) {
         this.activite = activite;
     }
@@ -256,17 +244,6 @@ public class Programmation extends CommonEntity {
      */
     public double checkPonderation() {
         double total = this.taches.stream().map(tache -> tache.getPonderation())
-                .reduce(0D, (subtotal, element) -> subtotal + element);
-        return total;
-    }
-
-    /**
-     * Previous to check if sum of taches's valeur equals Porgrammation.cible
-     *
-     * @return
-     */
-    public double checkValeur() {
-        double total = this.taches.stream().map(tache -> tache.getValeur())
                 .reduce(0D, (subtotal, element) -> subtotal + element);
         return total;
     }
