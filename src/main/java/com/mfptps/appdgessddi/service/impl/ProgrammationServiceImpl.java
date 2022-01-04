@@ -177,16 +177,16 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     @Override
     public Optional<Programmation> validationInitialeOrInterne(Long structureId, Long programmationId) {
         Optional<Programmation> response = programmationRepository.findById(programmationId)
-                .map(programmation -> {
-                    if (SecurityUtils.isCurrentUserInRole("RESP_STRUCT") && (programmation.getStructure().getId() == structureId)) {
+                .map(programmation -> {//try ROLE_RESP_STRUCT insead of RESP_STRUCT belown
+                    if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_STRUCT") && (programmation.getStructure().getId() == structureId)) {
                         programmation.setValidationInitial(true);
-                    } else if (SecurityUtils.isCurrentUserInRole("RESP_DGESS") && programmation.isValidationInitial()) {
+                    } else if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") && programmation.isValidationInitial()) {
                         programmation.setValidationInterne(true);
                     }
                     return programmation;
                 });
         if (!response.isPresent()) {
-            throw new CustomException("Programmation d'id " + programmationId + " inexistante");
+            throw new CustomException("La programmation d'id " + programmationId + " est inexistante ou déjà validée");
         }
         return response;
     }
@@ -199,6 +199,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     public void rejetDgessOrCasem(CommentaireDTO commentaireDTO) {
         try {
             Optional<Programmation> programmation = programmationRepository.findById(commentaireDTO.getProgrammationId())
+                    .filter(p -> p.isValidationInitial())
                     .map(p -> {
                         p.setValidationInitial(false);
                         p.setValidationInterne(false);
@@ -206,7 +207,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                         return p;
                     });
             if (programmation.isEmpty()) {
-                throw new CustomException("Programmation d'id " + commentaireDTO.getProgrammationId() + " inexistante");
+                throw new CustomException("La programmation d'id " + commentaireDTO.getProgrammationId() + " est inexistante, ou déjà invalidée");
             }
         } catch (Exception e) {
             throw new CustomException("Une erreur s'est produite lors du rejet de la programmation. " + e);
