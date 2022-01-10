@@ -6,11 +6,23 @@
 package com.mfptps.appdgessddi.config;
 
 import com.mfptps.appdgessddi.entities.Exercice;
+import com.mfptps.appdgessddi.entities.Ministere;
+import com.mfptps.appdgessddi.entities.MinistereStructure;
+import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.enums.ExerciceStatus;
+import com.mfptps.appdgessddi.enums.TypeStructure;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
+import com.mfptps.appdgessddi.repositories.MinistereRepository;
+import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
+import com.mfptps.appdgessddi.repositories.StructureRepository;
+import com.mfptps.appdgessddi.service.AgentService;
+import com.mfptps.appdgessddi.service.CustomException;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -25,13 +37,30 @@ public class AppDataInitializer {
 
     private final ExerciceRepository exerciceRepository;
 
-    public AppDataInitializer(ExerciceRepository exerciceRepository) {
+    private final MinistereRepository ministereRepository;
+
+    private final StructureRepository structureRepository;
+
+    private final MinistereStructureRepository ministereStructureRepository;
+
+    private final AgentService agentService;
+
+    public AppDataInitializer(ExerciceRepository exerciceRepository,
+            MinistereRepository ministereRepository,
+            StructureRepository structureRepository,
+            MinistereStructureRepository ministereStructureRepository,
+            AgentService agentService) {
         this.exerciceRepository = exerciceRepository;
+        this.ministereRepository = ministereRepository;
+        this.structureRepository = structureRepository;
+        this.ministereStructureRepository = ministereStructureRepository;
+        this.agentService = agentService;
     }
 
     @PostConstruct
     public void initialization() {
         log.info("Application data initialization");
+        //save Exercices
         if (0 == exerciceRepository.count()
                 || !exerciceRepository.findByStatut(ExerciceStatus.EN_COURS).isPresent()
                 || !exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).isPresent()) {
@@ -51,7 +80,48 @@ public class AppDataInitializer {
             exerciceRepository.saveAll(Arrays.asList(exerciceCourant, exerciceAVenir));
         }
 
+        //save Basic Ministere and Structure
+        Optional<Ministere> basicExisting = ministereRepository.findByCode(AppUtil.BASIC_MINISTERE_CODE);
+        if (basicExisting.isEmpty()) {
+            this.recordBasicMinistereAndStrucuture();
+        }
+
         log.info("End of data initialization");
+    }
+
+    /**
+     *
+     */
+    void recordBasicMinistereAndStrucuture() {
+        try {
+            Ministere ministere = new Ministere();
+            Structure structure = new Structure();
+            MinistereStructure ministereStructure = new MinistereStructure();
+
+            ministere.setCode(AppUtil.BASIC_MINISTERE_CODE);
+            ministere.setLibelle(AppUtil.BASIC_MINISTERE_LABEL);
+            ministere.setSigle(AppUtil.BASIC_MINISTERE_SIGLE);
+            ministereRepository.save(ministere);
+
+            structure.setLibelle(AppUtil.BASIC_STRUCTURE_LABEL);
+            structure.setSigle(AppUtil.BASIC_STRUCTURE_SIGLE);
+            structure.setNiveau(1);
+            structure.setType(TypeStructure.CENTRALE);
+            structure.setTelephone(AppUtil.BASIC_STRUCTURE_TELEPHONE);
+            structure.setStatut("ACTIF");
+            structureRepository.save(structure);
+
+            ministereStructure.setMinistere(ministere);
+            ministereStructure.setStructure(structure);
+            ministereStructure.setDateDebut(new Date());
+            ministereStructureRepository.save(ministereStructure);
+
+            //Join system users to new basic structure
+            agentService.affectationAgent("admin", structure.getId());
+            agentService.affectationAgent("user", structure.getId());
+        } catch (Exception e) {
+            throw new CustomException("Une erreur s'est produite lors de l'initialisation des ministère et structure de base.");
+        }
     }
 
 }

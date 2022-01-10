@@ -22,7 +22,8 @@ public enum TypeStructure {
     CENTRALE('N', AppUtil.STRUCTURE_CENTRALE),
     DECONCENTREE('C', AppUtil.STRUCTURE_DECONCENTREE),
     RATTACHEE('T', AppUtil.STRUCTURE_RATTACHEE),
-    DE_MISSION('M', AppUtil.STRUCTURE_DE_MISSION);
+    DE_MISSION('M', AppUtil.STRUCTURE_DE_MISSION),
+    INTERNE('E', AppUtil.STRUCTURE_INTERNE);
 
     protected String label;
     protected Character valueStatus;

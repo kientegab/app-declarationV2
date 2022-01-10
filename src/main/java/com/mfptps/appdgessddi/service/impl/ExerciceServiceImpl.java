@@ -30,11 +30,14 @@ public class ExerciceServiceImpl implements ExerciceService {
     @Override
     public Exercice update(ExerciceDTO exercice) {
         Exercice data = exerciceRepository.findById(exercice.getId()).orElseThrow(() -> new CustomException("Exercice inexistant"));
+//        if (data.getStatut().equals(AppUtil.CLOS)) {
+//            throw new CustomException("Modification interdite !");
+//        }
         if (exercice.getDebut() != null) {
             data.setDebut(exercice.getDebut());
         }
         if (exercice.getFin() != null) {
-            data.setDebut(exercice.getFin());
+            data.setFin(exercice.getFin());
         }
         if (exercice.getDescription() != null && !exercice.getDescription().isEmpty()) {
             data.setDescription(exercice.getDescription());
@@ -51,7 +54,7 @@ public class ExerciceServiceImpl implements ExerciceService {
     @Override
     @Transactional(readOnly = true)
     public Page<Exercice> findAll(Pageable pageable) {
-        return exerciceRepository.findAll(pageable);
+        return exerciceRepository.findAllByOrderByDebutDesc(pageable);//findAll(pageable);
     }
 
     @Override

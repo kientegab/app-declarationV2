@@ -5,6 +5,7 @@
  */
 package com.mfptps.appdgessddi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -50,6 +51,7 @@ public class Evaluation extends CommonEntity {
     @ManyToOne
     private Periode periode;
 
+    @JsonIgnoreProperties(value = {"sourceFinancement", "taches", "activite", "projet", "structure", "exercice", "objectif", "action", "programme"})
     @ManyToOne
     private Programmation programmation;//added 22112021
 

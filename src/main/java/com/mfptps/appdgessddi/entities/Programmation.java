@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +17,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 
 /**
  * This entity is similar to Activite
@@ -25,11 +30,19 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = "programmation")
+//@SQLDelete(sql = "UPDATE programmation SET deleted = true WHERE id=?")
+@Where(clause = "deleted = false")
+@FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
+@Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
 public class Programmation extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(nullable = false, updatable = false)
+    private String code;
 
     private double coutPrevisionnel;
 
@@ -44,16 +57,18 @@ public class Programmation extends CommonEntity {
 
     private double cible;
 
+    private double taux;
+
     private String observations;
 
-    @Column(name = "valid_initial", nullable = false)
-    private boolean validationInitial = true;
+    @Column(name = "valid_initial")
+    private boolean validationInitial;//For validation RESP_STRUC
 
     @Column(name = "valid_interne")
-    private boolean validationInterne;
+    private boolean validationInterne;//For validation RESP_DGESS
 
     @Column(name = "valid_final")
-    private boolean validationFinal;
+    private boolean validationFinal;//For validation CASEM
 
     //============= relationships 
     @ManyToOne
@@ -62,6 +77,8 @@ public class Programmation extends CommonEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "programmation"/*, cascade = CascadeType.PERSIST*/)
     private List<Tache> taches;
 
+//    @OneToMany(mappedBy = "programmation")
+//    private List<Evaluation> evaluations;
     @ManyToOne
     private Activites activite;
 
@@ -88,6 +105,14 @@ public class Programmation extends CommonEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public double getCoutPrevisionnel() {
@@ -128,6 +153,14 @@ public class Programmation extends CommonEntity {
 
     public void setCible(double cible) {
         this.cible = cible;
+    }
+
+    public double getTaux() {
+        return taux;
+    }
+
+    public void setTaux(double taux) {
+        this.taux = taux;
     }
 
     public String getObservations() {
@@ -177,6 +210,14 @@ public class Programmation extends CommonEntity {
     public void setTaches(List<Tache> taches) {
         this.taches = taches;
     }
+//
+//    public List<Evaluation> getEvaluations() {
+//        return evaluations;
+//    }
+//
+//    public void setEvaluations(List<Evaluation> evaluations) {
+//        this.evaluations = evaluations;
+//    }
 
     public Activites getActivite() {
         return activite;

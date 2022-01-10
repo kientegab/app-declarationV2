@@ -36,7 +36,7 @@ public interface ProgrammationMapper {
 //        @Mapping(target = "sourceFinancement", source = "sourceFinancement"),
 //        @Mapping(target = "objectif", source = "objectif"),
 //        @Mapping(target = "activite", source = "activite"),
-//        @Mapping(target = "taches", source = "taches")})
+//        @Mapping(target = "taches", source = "taches")})don't forgot code field
     Programmation toEntity(ProgrammationDTO programmationDTO);
 
 }

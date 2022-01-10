@@ -4,10 +4,10 @@
  */
 package com.mfptps.appdgessddi.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  *
@@ -15,24 +15,18 @@ import javax.validation.constraints.Size;
  */
 public class ProgrammeDTO {
 
-    @NotBlank
-    @NotNull
-    @Size(max = 2)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String code;
 
     @NotBlank
     @NotNull
     private String libelle;
 
-    private String description;
-
     private String statut;
 
     private Date debut;
 
     private Date fin;
-
-    private String details;
 
     public ProgrammeDTO() {
     }
@@ -51,14 +45,6 @@ public class ProgrammeDTO {
 
     public void setLibelle(String libelle) {
         this.libelle = libelle;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getStatut() {
@@ -83,14 +69,6 @@ public class ProgrammeDTO {
 
     public void setFin(Date fin) {
         this.fin = fin;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
     }
 
 }

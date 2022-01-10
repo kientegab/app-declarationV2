@@ -132,7 +132,7 @@ public class TacheServiceImpl implements TacheService {
                 }
             }
         }
-        log.info("_________________________valeurActuelle = {} ", tacheEvaluerRepository.sumOfCumuleesTachesByProgrammation(programmation.getId()));
+        //log.info("_________________________valeurActuelle = {} ", tacheEvaluerRepository.sumOfCumuleesTachesByProgrammation(programmation.getId()));
         return tachesdb;
     }
 

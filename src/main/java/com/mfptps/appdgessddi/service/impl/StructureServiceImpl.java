@@ -11,6 +11,7 @@ import com.mfptps.appdgessddi.service.StructureService;
 import com.mfptps.appdgessddi.service.dto.StructureDTO;
 import com.mfptps.appdgessddi.service.mapper.StructureMapper;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,15 +37,29 @@ public class StructureServiceImpl implements StructureService {
         this.structureMapper = structureMapper;
     }
 
+    /**
+     * ModifyBY Canisius . Add constraintes 14122021
+     *
+     * @param structureDTO
+     * @return
+     */
     @Override
     public Structure create(StructureDTO structureDTO) {
         Structure structure = structureMapper.toEntity(structureDTO);
+        Ministere ministere = ministereRepository
+                .findById(structureDTO.getMinistere().getId())
+                .orElseThrow(() -> new CustomException("Le Ministère d'id " + structureDTO.getMinistere().getId() + " est inexistant."));
+
+        if (structureDTO.getParent() != null) {
+            MinistereStructure ministereStructureChecked = ministereStructureRepository
+                    .findByStructureIdAndStatutIsTrue(structureDTO.getParent().getId())
+                    .orElseThrow(() -> new CustomException("La structure parente n'est pas rattachée à un ministère."));
+            if (ministere.getId() != ministereStructureChecked.getMinistere().getId()) {
+                throw new CustomException("Veuillez selectionner le ministère approprié (" + structureDTO.getParent().getSigle() + " => " + ministereStructureChecked.getMinistere().getSigle() + ").");
+            }
+        }
         Structure structureSaved = structureRepository.save(structure);
         MinistereStructure ministereStructure = new MinistereStructure();
-        Ministere ministere = ministereRepository
-              .findById(structureDTO.getMinistere().getId())
-              .orElseThrow(()-> new CustomException("Ministere with id " + structureDTO.getMinistere().getId() + " does not exist!"));
-
         ministereStructure.setMinistere(ministere);
         ministereStructure.setStructure(structureSaved);
         ministereStructure.setDateDebut(new Date());
@@ -54,6 +69,11 @@ public class StructureServiceImpl implements StructureService {
 
     @Override
     public Structure update(Structure structure) {
+        if (structure.getParent() != null) {
+            ministereStructureRepository
+                    .findByStructureIdAndStatutIsTrue(structure.getParent().getId())
+                    .orElseThrow(() -> new CustomException("La structure parente n'est pas rattachée à un ministère."));
+        }
         return structureRepository.save(structure);
     }
 
@@ -74,7 +94,15 @@ public class StructureServiceImpl implements StructureService {
         structureRepository.deleteById(id);
     }
 
+    /**
+     * Modify by Canisius. 14122021
+     *
+     * @param structureId
+     * @param ministereId
+     * @return
+     */
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public Structure changementMinistere(Long structureId, Long ministereId) {
         //Check if exists Objects Ministere and Structure
         Structure existStructure = structureRepository.findById(structureId)
@@ -100,6 +128,21 @@ public class StructureServiceImpl implements StructureService {
         ministereStructureRepository.save(existMinistereStructure);
         MinistereStructure response = ministereStructureRepository.save(ministereStructure);
 
+        this.updateSubStructures(existStructure, existMinistere);//change also all subStructures
+
         return structureRepository.findById(response.getStructure().getId()).get();
+    }
+
+    /**
+     * Recursivity. added 14122021
+     *
+     * @param structureParent
+     * @param ministere
+     */
+    void updateSubStructures(Structure structureParent, Ministere ministere) {
+        List<Structure> subStructures = structureRepository.findByParentId(structureParent.getId());
+        for (Structure s : subStructures) {
+            this.changementMinistere(s.getId(), ministere.getId());
+        }
     }
 }

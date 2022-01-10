@@ -6,10 +6,12 @@
 package com.mfptps.appdgessddi.service.impl;
 
 import com.mfptps.appdgessddi.entities.Programme;
+import com.mfptps.appdgessddi.enums.BaseStatus;
 import com.mfptps.appdgessddi.repositories.ProgrammeRepository;
 import com.mfptps.appdgessddi.service.ProgrammeService;
 import com.mfptps.appdgessddi.service.dto.ProgrammeDTO;
 import com.mfptps.appdgessddi.service.mapper.ProgrammeMapper;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,7 +37,9 @@ public class ProgrammeServiceImpl implements ProgrammeService {
 
     @Override
     public Programme create(ProgrammeDTO programmeDTO) {
-        return repository.save(programmeMapper.toEntity(programmeDTO));
+        Programme programme = programmeMapper.toEntity(programmeDTO);
+        programme.setCode(AppUtil.codeGeneratorProgramme(repository));
+        return repository.save(programme);
     }
 
     @Override
@@ -58,6 +62,11 @@ public class ProgrammeServiceImpl implements ProgrammeService {
     @Override
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public Page<Programme> getENCOURS(Pageable pageable) {
+        return repository.findByStatut(BaseStatus.EN_COURS, pageable);
     }
 
 }

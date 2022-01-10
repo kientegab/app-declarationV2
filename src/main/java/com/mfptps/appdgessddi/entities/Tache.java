@@ -29,8 +29,6 @@ public class Tache extends CommonEntity {
 
     private String libelle;
 
-    private String description;
-
     private double ponderation;
 
     private double valeur;//this is valeurCible of the tache
@@ -64,14 +62,6 @@ public class Tache extends CommonEntity {
 
     public void setLibelle(String libelle) {
         this.libelle = libelle;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public double getPonderation() {

@@ -19,6 +19,7 @@ import lombok.Getter;
  */
 @Getter
 public enum ActiviteStatus {
+
     PAS_COMMENCEE('S', AppUtil.PAS_COMMENCEE),
     EN_COURS('C', AppUtil.EN_COURS),
     TERMINEE('R', AppUtil.TERMINEE);

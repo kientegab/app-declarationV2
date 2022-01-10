@@ -5,6 +5,7 @@
  */
 package com.mfptps.appdgessddi.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mfptps.appdgessddi.entities.Activites;
 import com.mfptps.appdgessddi.entities.Objectif;
 import com.mfptps.appdgessddi.entities.Projet;
@@ -19,6 +20,9 @@ import java.util.List;
  * @author Canisius <canisiushien@gmail.com>
  */
 public class ProgrammationDTO {
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String code;
 
     private double coutPrevisionnel;
 
@@ -50,6 +54,14 @@ public class ProgrammationDTO {
 
     //======================= CONSTRUCTORS && GETTERS/SETTERS
     public ProgrammationDTO() {
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public double getCoutPrevisionnel() {

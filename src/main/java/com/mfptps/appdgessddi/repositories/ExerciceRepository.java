@@ -12,4 +12,6 @@ public interface ExerciceRepository extends JpaRepository<Exercice, Long> {
     Optional<Exercice> findByStatut(ExerciceStatus statut);
 
     Page<Exercice> findByStatut(ExerciceStatus exerciceStatus, Pageable pageable);
+
+    Page<Exercice> findAllByOrderByDebutDesc(Pageable pageable);
 }
