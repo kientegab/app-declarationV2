@@ -18,6 +18,9 @@ public class ChangeMinistereDTO {
     private Long structureId;
 
     @NotNull
+    private Long structureParentId;
+
+    @NotNull
     private Long ministereId;
 
     public ChangeMinistereDTO() {
@@ -29,6 +32,14 @@ public class ChangeMinistereDTO {
 
     public void setStructureId(long structureId) {
         this.structureId = structureId;
+    }
+
+    public Long getStructureParentId() {
+        return structureParentId;
+    }
+
+    public void setStructureParentId(Long structureParentId) {
+        this.structureParentId = structureParentId;
     }
 
     public long getMinistereId() {

@@ -16,6 +16,8 @@ public interface MinistereStructureRepository extends JpaRepository<MinistereStr
 
     Page<MinistereStructure> findAllByStatutIsTrue(Pageable pageable);
 
+    Page<MinistereStructure> findByMinistereIdAndStatutIsTrue(long ministereId, Pageable pageable);
+
     @Query("SELECT COUNT(*) FROM MinistereStructure ms "
             + "WHERE ms.ministere.id = :id "
             + "AND ms.structure.niveau = 1 "

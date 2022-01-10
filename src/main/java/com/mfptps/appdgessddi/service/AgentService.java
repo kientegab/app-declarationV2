@@ -319,15 +319,16 @@ public class AgentService {
      */
     public Long getStructureOfAgent(String matriculeOrLogin) {
         Long response = -2L;//agent attached to no structure. This is an exception in the process of saving agent
-        Optional<Agent> a = Optional.ofNullable(agentRepository.findAgentSystemByMatricule(matriculeOrLogin));
-        if (a.isPresent()) {
-            response = -1L;//if is it an agent system
+        Optional<AgentStructure> as = Optional.ofNullable(agentStructureRepository.findOneByAgentMatriculeOrAgentEmail(matriculeOrLogin, matriculeOrLogin));
+        if (as.isPresent()) {
+            response = as.get().getStructure().getId();
         } else {
-            Optional<AgentStructure> as = Optional.ofNullable(agentStructureRepository.findOneByAgentMatriculeOrAgentEmail(matriculeOrLogin, matriculeOrLogin));
-            if (as.isPresent()) {
-                response = as.get().getStructure().getId();
+            Optional<Agent> a = Optional.ofNullable(agentRepository.findAgentSystemByMatricule(matriculeOrLogin));
+            if (a.isPresent()) {
+                response = -1L;//if is it an agent system no joined to structure
             }
         }
+
         return response;
     }
 }

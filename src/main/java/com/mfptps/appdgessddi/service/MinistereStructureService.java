@@ -20,4 +20,6 @@ public interface MinistereStructureService {
     void delete(Long code);
 
     Page<StructureDTO> findAllBeta(Pageable pageable);
+
+    Page<StructureDTO> findAllStructureByMinistere(long ministereId, Pageable pageable);
 }
