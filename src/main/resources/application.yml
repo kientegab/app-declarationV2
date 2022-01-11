@@ -130,6 +130,6 @@ spring:
     platform: postgres
     url: jdbc:postgresql:localhost:5432/dgessdb
     username: postgres
-    password: admin #admin
+    password: admin #rootPostgresql
     hikari:
       auto-commit: false

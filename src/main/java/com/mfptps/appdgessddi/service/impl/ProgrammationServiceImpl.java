@@ -177,10 +177,11 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     @Override
     public Optional<Programmation> validationInitialeOrInterne(Long structureId, Long programmationId) {
         Optional<Programmation> response = programmationRepository.findById(programmationId)
-                .map(programmation -> {//try ROLE_RESP_STRUCT insead of RESP_STRUCT belown
-                    if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_STRUCT") && (programmation.getStructure().getId() == structureId)) {
+                .map(programmation -> {
+                    if ((SecurityUtils.isCurrentUserInRole("ROLE_RESP_STRUCT") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) && (programmation.getStructure().getId() == structureId)) {
                         programmation.setValidationInitial(true);
-                    } else if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") && programmation.isValidationInitial()) {
+                    }
+                    if ((SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) && programmation.isValidationInitial()) {
                         programmation.setValidationInterne(true);
                     }
                     return programmation;
@@ -207,7 +208,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                         return p;
                     });
             if (programmation.isEmpty()) {
-                throw new CustomException("La programmation d'id " + commentaireDTO.getProgrammationId() + " est inexistante, ou déjà invalidée");
+                throw new CustomException("La programmation d'id " + commentaireDTO.getProgrammationId() + " est inexistante, ou déjà rejetée");
             }
         } catch (Exception e) {
             throw new CustomException("Une erreur s'est produite lors du rejet de la programmation. " + e);
