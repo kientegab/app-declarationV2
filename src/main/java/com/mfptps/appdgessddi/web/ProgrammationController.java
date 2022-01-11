@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.web;
 
 import com.mfptps.appdgessddi.entities.Programmation;
+import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,9 +49,12 @@ public class ProgrammationController {
     private String applicationName;
 
     private final ProgrammationService programmationService;
+    private final ProgrammationRepository repository;
 
-    public ProgrammationController(ProgrammationService programmationService) {
+    public ProgrammationController(ProgrammationService programmationService,
+            ProgrammationRepository repository) {
         this.programmationService = programmationService;
+        this.repository = repository;
     }
 
     /**
@@ -117,8 +122,8 @@ public class ProgrammationController {
      * @param programmationId: id of Programmation referency by idp in path
      * @return
      */
-    //@PreAuthorize("hasAnyAuthority(\"RESP_STRUC\",\"RESP_DGESS\")")
     @PutMapping(path = "/validation/{ids}/{idp}")
+    @PreAuthorize("hasAnyAuthority('ROLE_RESP_STRUCT', 'ROLE_RESP_DGESS', 'ROLE_ADMIN')")
     public ResponseEntity<Programmation> validationProgrammation(
             @PathVariable(name = "ids", required = true) Long structureId,
             @PathVariable(name = "idp", required = true) Long programmationId) {
@@ -133,7 +138,7 @@ public class ProgrammationController {
      * @return
      */
     @PutMapping(path = "/rejet")
-    //@PreAuthorize("hasAnyAuthority(\"RESP_DGESS\")")
+    @PreAuthorize("hasAnyAuthority('ROLE_RESP_DGESS','ROLE_ADMIN')")
     public ResponseEntity<String> rejetProgrammation(@Valid @RequestBody CommentaireDTO commentaireDTO) {
         log.debug("Rejet de la Programmation : {}", commentaireDTO.getProgrammationId());
         programmationService.rejetDgessOrCasem(commentaireDTO);

@@ -1,6 +1,7 @@
 package com.mfptps.appdgessddi.service.impl;
 
 import com.mfptps.appdgessddi.entities.MinistereStructure;
+import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
 import com.mfptps.appdgessddi.service.MinistereStructureService;
 import com.mfptps.appdgessddi.service.dto.MinistereStructureDTO;
 import com.mfptps.appdgessddi.service.dto.StructureDTO;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
 
 @Service
 @Transactional
@@ -55,6 +55,13 @@ public class MinistereStructureImpl implements MinistereStructureService {
     @Override
     public Page<StructureDTO> findAllBeta(Pageable pageable) {
         Page<StructureDTO> responseMapped = ministereStructureRepository.findAllByStatutIsTrue(pageable).map(ministereStructureMapper::toStructureDTO);
+        return responseMapped;
+    }
+
+    @Override
+    public Page<StructureDTO> findAllStructureByMinistere(long ministereId, Pageable pageable) {
+        Page<StructureDTO> responseMapped = ministereStructureRepository
+                .findByMinistereIdAndStatutIsTrue(ministereId, pageable).map(ministereStructureMapper::toStructureDTO);
         return responseMapped;
     }
 
