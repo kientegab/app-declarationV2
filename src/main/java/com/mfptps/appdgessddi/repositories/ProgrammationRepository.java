@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.Programmation;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,4 +54,15 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "WHERE p.id = :programmationId "
             + "AND p.structure.id = :structureId")
     int deleteById(@Param("structureId") Long structureId, @Param("programmationId") Long programmationId);
+
+    @Query("SELECT p FROM Programmation p, Structure s, Exercice e "
+            + "WHERE p.deleted = false "
+            + "AND p.structure.id = s.id AND s.id = :structureId "
+            + "AND p.exercice.id = e.id AND e.id = :exerciceId "
+            + "GROUP BY p.objectif.id")
+    List<Programmation> findByStructureAndExercice(long structureId, long exerciceId);
+
+//    @Query("SELECT new com.mfptps.appdgessddi.service.reportentities.ObjectifsOperationnelsRE(s.type, COUNT(s.type)) "
+//            + "FROM Programmation ")
+//    List<ObjectifsOperationnelsRE> findtoPa(long structureId, long exerciceId);
 }

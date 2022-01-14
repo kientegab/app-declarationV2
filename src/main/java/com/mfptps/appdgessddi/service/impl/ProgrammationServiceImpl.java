@@ -6,12 +6,16 @@
 package com.mfptps.appdgessddi.service.impl;
 
 import com.mfptps.appdgessddi.entities.Exercice;
+import com.mfptps.appdgessddi.entities.Ministere;
 import com.mfptps.appdgessddi.entities.Programmation;
+import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
+import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
 import com.mfptps.appdgessddi.repositories.ObjectifRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
+import com.mfptps.appdgessddi.repositories.StructureRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.CommentaireService;
@@ -22,10 +26,24 @@ import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
+import com.mfptps.appdgessddi.service.reportentities.ProgrammeDataRE;
+import com.mfptps.appdgessddi.service.reportentities.ProgrammeRE;
 import com.mfptps.appdgessddi.utils.AppUtil;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -44,6 +62,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private final TacheRepository tacheRepository;
     private final ExerciceRepository exerciceRepository;
     private final ObjectifRepository objectifRepository;
+    private final MinistereStructureRepository ministereStructureRepository;
+    private final StructureRepository structureRepository;
     private final EvaluationService evaluationService;
     private final CommentaireService commentaireService;
     private final ProgrammationMapper programmationMapper;
@@ -52,6 +72,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             ExerciceRepository exerciceRepository,
             TacheRepository tacheRepository,
             ObjectifRepository objectifRepository,
+            MinistereStructureRepository ministereStructureRepository,
+            StructureRepository structureRepository,
             EvaluationService evaluationService,
             CommentaireService commentaireService,
             ProgrammationMapper programmationMapper) {
@@ -59,6 +81,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         this.tacheRepository = tacheRepository;
         this.exerciceRepository = exerciceRepository;
         this.objectifRepository = objectifRepository;
+        this.ministereStructureRepository = ministereStructureRepository;
+        this.structureRepository = structureRepository;
         this.evaluationService = evaluationService;
         this.commentaireService = commentaireService;
         this.programmationMapper = programmationMapper;
@@ -212,6 +236,56 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             }
         } catch (Exception e) {
             throw new CustomException("Une erreur s'est produite lors du rejet de la programmation. " + e);
+        }
+    }
+
+    @Override
+    public void imprimerProgrammeActivites(long structureId, long exerciceId, OutputStream outputStream) {
+        try {
+            Ministere ministere = this.ministereStructureRepository.findByStructureIdAndStatutIsTrue(structureId)
+                    .get()
+                    .getMinistere();
+            log.info("________________ MinistereLib : {}", ministere);
+
+            Structure structure = this.structureRepository.findById(structureId).get();
+            log.info("________________ structure : {}", structure);
+
+            Structure structureParent = new Structure();
+            if (structure.getParent() != null) {
+                structureParent = this.structureRepository.findById(structure.getParent().getId()).get();
+                log.info("________________ structureParent : {}", structureParent);
+            }
+
+            InputStream logoStream = AppUtil.getAppDefaultLogo();
+
+            String titre = "PROGRAMME D'ACTIVITES";
+
+            List<Programmation> programmationList = programmationRepository.findByStructureAndExercice(structureId, exerciceId);
+            List<ProgrammeDataRE> donneesProgrammation = new ArrayList<>();
+
+            log.info("__________________ pa : {} ", donneesProgrammation);
+//            ProgrammeRE dataFE = new ProgrammeRE(ministere.getLibelle(),
+//                    structureParent.getLibelle(), structure.getLibelle(), structure.getTelephone(), titre, logoStream,
+//                    donneesProgrammation);
+//            log.info("__________________ dataFE : {} ", dataFE);
+
+            List<ProgrammeRE> stats = new ArrayList<>();
+
+            InputStream reportStream = this.getClass().getResourceAsStream("/programmeActivites.jasper");
+
+            Map<String, Object> parameters = new HashMap<>();
+
+//            stats.add(dataFE);
+            JRDataSource datasource = new JRBeanCollectionDataSource(stats);
+
+            JasperReport japerReport = (JasperReport) JRLoader.loadObject(reportStream);
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(japerReport, parameters, datasource);
+
+            JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+
+        } catch (Exception e) {
+            log.error("Error when exporting data from", e);
         }
     }
 
