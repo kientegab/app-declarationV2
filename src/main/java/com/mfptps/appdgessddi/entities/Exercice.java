@@ -30,7 +30,6 @@ public class Exercice extends CommonEntity {
     private Long id;
 
     private String description;
-
     @Convert(converter = ExerciceStatusConverter.class)
     @Column(nullable = false, length = 1)
     private ExerciceStatus statut;
@@ -39,7 +38,7 @@ public class Exercice extends CommonEntity {
 
     private LocalDate fin;
     @ManyToOne
-    private Observations observations;
+    private Observations observation;
 
     @ManyToOne
     private Ponderation ponderation;
@@ -88,12 +87,12 @@ public class Exercice extends CommonEntity {
         this.fin = fin;
     }
 
-    public Observations getObservations() {
-        return observations;
+    public Observations getObservation() {
+        return observation;
     }
 
-    public void setObservations(Observations observations) {
-        this.observations = observations;
+    public void setObservations(Observations observation) {
+        this.observation = observation;
     }
 
     public Ponderation getPonderation() {

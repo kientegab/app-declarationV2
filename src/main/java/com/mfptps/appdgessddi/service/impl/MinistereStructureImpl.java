@@ -59,6 +59,13 @@ public class MinistereStructureImpl implements MinistereStructureService {
     }
 
     @Override
+    public Page<StructureDTO> findAllStructureByMinistere(long ministereId, Pageable pageable) {
+        Page<StructureDTO> responseMapped = ministereStructureRepository
+                .findByMinistereIdAndStatutIsTrue(ministereId, pageable).map(ministereStructureMapper::toStructureDTO);
+        return responseMapped;
+    }
+
+    @Override
     public void delete(Long code) {
         ministereStructureRepository.deleteById(code);
 

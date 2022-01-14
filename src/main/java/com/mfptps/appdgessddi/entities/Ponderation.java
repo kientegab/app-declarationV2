@@ -28,12 +28,12 @@ public class Ponderation extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private double efficacite;
-    private double efficience;
-    private double gouvernance;
-    private double impact;
-    @Type(type = "yes_no")
-    private boolean actif;
+    private double efficacite ;
+    private double efficience ;
+    private double gouvernance ;
+    private double impact ;
+    @Type(type="yes_no")
+    private boolean actif ;
     @ManyToOne
     private Performance performance;
 

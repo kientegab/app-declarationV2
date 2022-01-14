@@ -1,13 +1,11 @@
 package com.mfptps.appdgessddi.web;
 
-import com.mfptps.appdgessddi.entities.Action;
-import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.entities.Structure;
-import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.service.MinistereStructureService;
 import com.mfptps.appdgessddi.service.StructureService;
 import com.mfptps.appdgessddi.service.dto.ChangeMinistereDTO;
 import com.mfptps.appdgessddi.service.dto.StructureDTO;
+import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -86,6 +84,18 @@ public class StructureController {
         return ResponseEntity.ok().headers(headers).body(structure.getContent());
     }
 
+    /**
+     *
+     * @param id : id of ministere
+     * @return
+     */
+    @GetMapping(path = "/structures/ministere/{id}")
+    public ResponseEntity<List<StructureDTO>> findAllStructureByMinistere(@PathVariable Long id, Pageable pageable) {
+        Page<StructureDTO> structure = ministereStructureService.findAllStructureByMinistere(id, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), structure);
+        return ResponseEntity.ok().headers(headers).body(structure.getContent());
+    }
+
     @GetMapping(path = "/structures/{id}")
     public ResponseEntity<Structure> getStructureById(@PathVariable Long id) {
         log.debug("Consultation d une structure : {}", id);
@@ -102,7 +112,7 @@ public class StructureController {
     @PostMapping(path = "/structures/change-ministere")
     public ResponseEntity<Structure> changeMinistere(@Valid @RequestBody ChangeMinistereDTO changeMinistereDTO) throws URISyntaxException {
         log.debug("Changement de ministere : {}", changeMinistereDTO);
-        Structure result = structureService.changementMinistere(changeMinistereDTO.getStructureId(), changeMinistereDTO.getMinistereId());
+        Structure result = structureService.changementMinistere(changeMinistereDTO);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
                 .body(result);

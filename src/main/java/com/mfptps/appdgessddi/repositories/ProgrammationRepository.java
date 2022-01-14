@@ -10,7 +10,9 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
@@ -39,5 +41,16 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND UPPER(a.libelle) LIKE CONCAT('%',UPPER(:libelle),'%')")
     Page<Programmation> findByLibelle(Long structureId, String libelle, Pageable pageable);
 
-    //Page<Programmation> findByActiviteLibelleContainingIgnoreCase(String libelle, Pageable pageable);
+    @Query("SELECT COUNT(*) FROM Programmation p, Structure s, Objectif o "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id = :structureId "
+            + "AND p.objectif.id = o.id "
+            + "AND o.id = :objectifId")
+    long countProgrammationByStrucutreAndObjectif(long structureId, long objectifId);
+
+    @Modifying
+    @Query("UPDATE Programmation p SET p.deleted = true "
+            + "WHERE p.id = :programmationId "
+            + "AND p.structure.id = :structureId")
+    int deleteById(@Param("structureId") Long structureId, @Param("programmationId") Long programmationId);
 }

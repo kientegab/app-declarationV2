@@ -5,6 +5,8 @@
  */
 package com.mfptps.appdgessddi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mfptps.appdgessddi.enums.TypeObjectif;
 import com.mfptps.appdgessddi.enums.convertes.TypeObjectifConverter;
 import javax.persistence.*;
@@ -30,13 +32,12 @@ public class Objectif extends CommonEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false, length = 10)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(nullable = false, updatable = false)
     private String code;
 
     @Column(nullable = false)
     private String libelle;
-
-    private String description;
 
     @Convert(converter = TypeObjectifConverter.class)
     @Column(nullable = false, length = 1)
@@ -45,8 +46,13 @@ public class Objectif extends CommonEntity {
     @ManyToOne
     @JoinColumn(name = "objectif_id")
     private Objectif parent;//to manage SousObjectif notion
+
+    @JsonIgnoreProperties(value = {"objectif"})
     @ManyToOne
     private Action action;//ObjectifOperationnel to Action
+
+    @ManyToOne
+    private Programme programme;//If is it an ObjectifStrategique
 
 //    @OneToMany
 //    private Set<Action> actions;//this relationship can be move to entity Action
@@ -78,14 +84,6 @@ public class Objectif extends CommonEntity {
         this.libelle = libelle;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public TypeObjectif getType() {
         return type;
     }
@@ -109,4 +107,13 @@ public class Objectif extends CommonEntity {
     public void setAction(Action action) {
         this.action = action;
     }
+
+    public Programme getProgramme() {
+        return programme;
+    }
+
+    public void setProgramme(Programme programme) {
+        this.programme = programme;
+    }
+
 }

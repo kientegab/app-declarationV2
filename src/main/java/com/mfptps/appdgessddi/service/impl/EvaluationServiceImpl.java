@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -103,5 +105,10 @@ public class EvaluationServiceImpl implements EvaluationService {
         Date toDay = new Date();
         evaluationRepository.findByProgrammationAndPeriode(programmationId, toDay)
                 .orElseThrow(() -> new CustomException("Opération interdite ! Rassurez-vous d'être dans la bonne période d'évaluation de l'activité."));
+    }
+
+    @Override
+    public Page<Evaluation> findAllByProgrammation(Long progammationId, Pageable pageable) {
+        return evaluationRepository.findByProgrammationId(progammationId, pageable);
     }
 }

@@ -1,6 +1,7 @@
 package com.mfptps.appdgessddi.service;
 
 import com.mfptps.appdgessddi.entities.Structure;
+import com.mfptps.appdgessddi.service.dto.ChangeMinistereDTO;
 import com.mfptps.appdgessddi.service.dto.StructureDTO;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -16,8 +17,7 @@ public interface StructureService {
 
     Page<Structure> findAll(Pageable pageable);
 
-
     void delete(Long code);
 
-    Structure changementMinistere(Long structure, Long ministereId);
+    Structure changementMinistere(ChangeMinistereDTO changeMinistereDTO);
 }

@@ -5,24 +5,24 @@
  */
 package com.mfptps.appdgessddi.repositories;
 
+import com.mfptps.appdgessddi.entities.Agent;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-
-import com.mfptps.appdgessddi.entities.Agent;
-
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
  * @author bieve
  */
-public interface AgentRepository extends JpaRepository<Agent, Long>{
-    
+public interface AgentRepository extends JpaRepository<Agent, Long> {
+
     String USERS_BY_LOGIN_CACHE = "usersByMatricule";
     String USERS_BY_EMAIL_CACHE = "usersByEmail";
 
@@ -47,4 +47,16 @@ public interface AgentRepository extends JpaRepository<Agent, Long>{
     Page<Agent> findAllByIdNotNullAndActifIsTrue(Pageable pageable);
 
     Optional<Agent> findOneByMatriculeOrEmail(String matricule, String email);
+
+    /**
+     * return user created by system. 08122021
+     *
+     * @param matricule
+     * @return
+     */
+    @Query("SELECT a FROM Agent a "
+            + "WHERE a.actif = true "
+            + "AND a.matricule = :matricule "
+            + "AND a.createdBy = 'system' ")
+    Agent findAgentSystemByMatricule(@Param("matricule") String matricule);
 }

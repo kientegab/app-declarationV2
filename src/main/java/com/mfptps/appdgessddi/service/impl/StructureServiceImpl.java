@@ -8,6 +8,7 @@ import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
 import com.mfptps.appdgessddi.repositories.StructureRepository;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.StructureService;
+import com.mfptps.appdgessddi.service.dto.ChangeMinistereDTO;
 import com.mfptps.appdgessddi.service.dto.StructureDTO;
 import com.mfptps.appdgessddi.service.mapper.StructureMapper;
 import java.util.Date;
@@ -36,15 +37,29 @@ public class StructureServiceImpl implements StructureService {
         this.structureMapper = structureMapper;
     }
 
+    /**
+     * ModifyBY Canisius . Add constraintes 14122021
+     *
+     * @param structureDTO
+     * @return
+     */
     @Override
     public Structure create(StructureDTO structureDTO) {
         Structure structure = structureMapper.toEntity(structureDTO);
+        Ministere ministere = ministereRepository
+                .findById(structureDTO.getMinistere().getId())
+                .orElseThrow(() -> new CustomException("Le Ministère d'id " + structureDTO.getMinistere().getId() + " est inexistant."));
+
+        if (structureDTO.getParent() != null) {
+            MinistereStructure ministereStructureChecked = ministereStructureRepository
+                    .findByStructureIdAndStatutIsTrue(structureDTO.getParent().getId())
+                    .orElseThrow(() -> new CustomException("La structure parente n'est pas rattachée à un ministère."));
+            if (ministere.getId() != ministereStructureChecked.getMinistere().getId()) {
+                throw new CustomException("Veuillez selectionner le ministère approprié (" + structureDTO.getParent().getSigle() + " => " + ministereStructureChecked.getMinistere().getSigle() + ").");
+            }
+        }
         Structure structureSaved = structureRepository.save(structure);
         MinistereStructure ministereStructure = new MinistereStructure();
-        Ministere ministere = ministereRepository
-              .findById(structureDTO.getMinistere().getId())
-              .orElseThrow(()-> new CustomException("Ministere with id " + structureDTO.getMinistere().getId() + " does not exist!"));
-
         ministereStructure.setMinistere(ministere);
         ministereStructure.setStructure(structureSaved);
         ministereStructure.setDateDebut(new Date());
@@ -54,6 +69,11 @@ public class StructureServiceImpl implements StructureService {
 
     @Override
     public Structure update(Structure structure) {
+        if (structure.getParent() != null) {
+            ministereStructureRepository
+                    .findByStructureIdAndStatutIsTrue(structure.getParent().getId())
+                    .orElseThrow(() -> new CustomException("La structure parente n'est pas rattachée à un ministère."));
+        }
         return structureRepository.save(structure);
     }
 
@@ -74,23 +94,39 @@ public class StructureServiceImpl implements StructureService {
         structureRepository.deleteById(id);
     }
 
+    /**
+     * Modify by Canisius. 14122021
+     *
+     * @param structureId
+     * @param ministereId
+     * @return
+     */
     @Override
-    public Structure changementMinistere(Long structureId, Long ministereId) {
+    @Transactional(rollbackFor = RuntimeException.class)
+    public Structure changementMinistere(ChangeMinistereDTO changeMinistereDTO) {
         //Check if exists Objects Ministere and Structure
-        Structure existStructure = structureRepository.findById(structureId)
-                .orElseThrow(() -> new CustomException("Structure inexistante."));
-        Ministere existMinistere = ministereRepository.findById(ministereId)
+        Optional<Structure> existStructure = structureRepository.findById(changeMinistereDTO.getStructureId())
+                .map(s -> {
+                    if (changeMinistereDTO.getStructureParentId() != null) {//tenir compte des sous structures
+                        s.setParent(structureRepository.findById(changeMinistereDTO.getStructureParentId()).get());
+                    }
+                    return s;
+                });
+        if (!existStructure.isPresent()) {
+            throw new CustomException("La Structure d'id " + changeMinistereDTO.getStructureId() + " est inexistante.");
+        }
+        Ministere existMinistere = ministereRepository.findById(changeMinistereDTO.getMinistereId())
                 .orElseThrow(() -> new CustomException("Ministere inexistant."));
 
         //find MinistereStructure element from bd
         MinistereStructure existMinistereStructure = ministereStructureRepository
-                .findByStructureIdAndStatutIsTrue(existStructure.getId()).get();
+                .findByStructureIdAndStatutIsTrue(existStructure.get().getId()).get();
 
         //New line to be add as MinistereStructure object
         MinistereStructure ministereStructure = new MinistereStructure();
         Date date = new Date();
         ministereStructure.setMinistere(existMinistere);
-        ministereStructure.setStructure(existStructure);
+        ministereStructure.setStructure(existStructure.get());
         ministereStructure.setDateDebut(date);
 
         //update (set to disable) old MinistereStructure object
@@ -100,6 +136,20 @@ public class StructureServiceImpl implements StructureService {
         ministereStructureRepository.save(existMinistereStructure);
         MinistereStructure response = ministereStructureRepository.save(ministereStructure);
 
+        //this.updateSubStructures(existStructure.get(), existMinistere);//change also all subStructures
         return structureRepository.findById(response.getStructure().getId()).get();
     }
+
+    /**
+     * Recursivity. added 14122021
+     *
+     * @param structureParent
+     * @param ministere
+     */
+//    void updateSubStructures(Structure structureParent, Ministere ministere) {
+//        List<Structure> subStructures = structureRepository.findByParentId(structureParent.getId());
+//        for (Structure s : subStructures) {
+//            this.changementMinistere(s.getId(), ministere.getId());
+//        }
+//    }
 }

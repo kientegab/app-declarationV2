@@ -40,7 +40,7 @@ public class Periodicite extends CommonEntity {
 
     @Column(nullable = false)
     @Type(type = "yes_no")
-    private boolean actif;
+    private boolean actif = true;
     //========================
 
     public Periodicite() {
