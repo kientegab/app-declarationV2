@@ -17,6 +17,7 @@ import com.mfptps.appdgessddi.repositories.ObjectifRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammeRepository;
 import com.mfptps.appdgessddi.service.CustomException;
+import java.io.InputStream;
 import java.util.Date;
 
 /**
@@ -24,6 +25,8 @@ import java.util.Date;
  * @author Canisius <canisiushien@gmail.com>
  */
 public class AppUtil {
+
+    private static InputStream logoStream;
 
     /**
      * TYPE OF STRUCTURE
@@ -66,6 +69,23 @@ public class AppUtil {
     public static final String ANNULE = "ANNULE";
     public static final String TERMINEE = "TERMINEE";
     public static final String PAS_COMMENCEE = "PAS_COMMENCEE";
+
+    /**
+     * ALL ROLE/PRIVILEGES OF USERS
+     */
+    public static final String FS = "ROLE_FOCAL_STRUCT";
+    public static final String AGT_D = "ROLE_AGT_DGESS";
+    public static final String DD = "ROLE_DIR_DGESS";
+    public static final String RD = "ROLE_RESP_DGESS";
+    public static final String RS = "ROLE_RESP_STRUCT";
+    public static final String DM = "ROLE_DIRCAB_MIN";
+    public static final String RM = "ROLE_RESP_MIN";
+    public static final String SM = "ROLE_SG_MIN";
+    public static final String AD = "ROLE_AGT_DDII";
+    public static final String RDDII = "ROLE_RESP_DDII";
+    public static final String ADMIN = "ROLE_ADMIN";
+    public static final String DAF = "ROLE_DAF";
+    public static final String DRH = "ROLE_DRH";
 
     /**
      *
@@ -162,5 +182,18 @@ public class AppUtil {
         long count = repository.countProgrammationByStrucutreAndObjectif(programmation.getStructure().getId(), objectif.getId());
         codeGenerated = "" + objectif.getCode() + "." + (count + 1L);
         return codeGenerated;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static InputStream getAppDefaultLogo() {
+        try {
+            logoStream = AppUtil.class.getResourceAsStream("/logo.png");
+            return logoStream;
+        } catch (Exception e) {
+            throw new CustomException("Erreur lors du chargement du logo..." + e);
+        }
     }
 }

@@ -11,10 +11,13 @@ import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.utils.*;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,6 +67,7 @@ public class ProgrammationController {
      * @throws URISyntaxException
      */
     @PostMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.FS + "\",\"" + AppUtil.RS + "\",\"" + AppUtil.RD + "\",\"" + AppUtil.DD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Programmation> createProgrammation(@Valid @RequestBody ProgrammationDTO programmationDTO) throws URISyntaxException {
         Programmation saved = programmationService.create(programmationDTO);
         log.debug("Programmation d'une activité : {}", programmationDTO);
@@ -123,7 +127,7 @@ public class ProgrammationController {
      * @return
      */
     @PutMapping(path = "/validation/{ids}/{idp}")
-    @PreAuthorize("hasAnyAuthority('ROLE_RESP_STRUCT', 'ROLE_RESP_DGESS', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RS + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Programmation> validationProgrammation(
             @PathVariable(name = "ids", required = true) Long structureId,
             @PathVariable(name = "idp", required = true) Long programmationId) {
@@ -138,7 +142,7 @@ public class ProgrammationController {
      * @return
      */
     @PutMapping(path = "/rejet")
-    @PreAuthorize("hasAnyAuthority('ROLE_RESP_DGESS','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<String> rejetProgrammation(@Valid @RequestBody CommentaireDTO commentaireDTO) {
         log.debug("Rejet de la Programmation : {}", commentaireDTO.getProgrammationId());
         programmationService.rejetDgessOrCasem(commentaireDTO);
@@ -162,5 +166,22 @@ public class ProgrammationController {
                 .noContent()
                 .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, programmationId.toString()))
                 .build();
+    }
+
+    /**
+     *
+     * @param response
+     * @param structureId
+     * @param exerciceId
+     * @throws IOException
+     */
+    @GetMapping(value = "print/{ids}/{ide}")
+    public void imprimer(HttpServletResponse response,
+            @PathVariable("ids") long structureId,
+            @PathVariable("ide") long exerciceId) throws IOException {
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"PA_" + structureId + ".pdf\""));
+        OutputStream outStream = response.getOutputStream();
+        programmationService.imprimerProgrammeActivites(structureId, exerciceId, outStream);
     }
 }
