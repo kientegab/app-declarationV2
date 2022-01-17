@@ -1,6 +1,7 @@
 package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.MinistereStructure;
+import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroupByType;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,12 @@ public interface MinistereStructureRepository extends JpaRepository<MinistereStr
     Page<MinistereStructure> findAllByStatutIsTrue(Pageable pageable);
 
     Page<MinistereStructure> findByMinistereIdAndStatutIsTrue(long ministereId, Pageable pageable);
+
+    @Query("SELECT ms.structure FROM MinistereStructure ms "
+            + "WHERE ms.ministere.id = :ministereId "
+            // + "AND ms.structure.niveau = 1 "
+            + "AND ms.statut IS TRUE")
+    List<Structure> findAllStructuresByMinistere(long ministereId);
 
     @Query("SELECT COUNT(*) FROM MinistereStructure ms "
             + "WHERE ms.ministere.id = :id "

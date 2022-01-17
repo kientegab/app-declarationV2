@@ -62,7 +62,4 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "GROUP BY p.objectif.id")
     List<Programmation> findByStructureAndExercice(long structureId, long exerciceId);
 
-//    @Query("SELECT new com.mfptps.appdgessddi.service.reportentities.ObjectifsOperationnelsRE(s.type, COUNT(s.type)) "
-//            + "FROM Programmation ")
-//    List<ObjectifsOperationnelsRE> findtoPa(long structureId, long exerciceId);
 }

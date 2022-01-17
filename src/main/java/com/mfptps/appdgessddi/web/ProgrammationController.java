@@ -175,13 +175,18 @@ public class ProgrammationController {
      * @param exerciceId
      * @throws IOException
      */
-    @GetMapping(value = "print/{ids}/{ide}")
-    public void imprimer(HttpServletResponse response,
+    @GetMapping(value = "/print/{ids}/{ide}")
+    public void imprimerPAGlobal(HttpServletResponse response,
             @PathVariable("ids") long structureId,
             @PathVariable("ide") long exerciceId) throws IOException {
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"PA_" + structureId + ".pdf\""));
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"PA-GLOBAL.pdf\""));
         OutputStream outStream = response.getOutputStream();
-        programmationService.imprimerProgrammeActivites(structureId, exerciceId, outStream);
+        programmationService.imprimerProgrammeActivitesGlobal(structureId, exerciceId, outStream);
     }
+
+//    @GetMapping(value = "/test/test")
+//    public void em() {
+//        programmationService.emTest();
+//    }
 }

@@ -35,5 +35,5 @@ public interface ProgrammationService {
 
     void delete(Long structureId, Long programmationId);
 
-    void imprimerProgrammeActivites(long structureId, long exerciceId, OutputStream outputStream);
+    void imprimerProgrammeActivitesGlobal(long structureId, long exerciceId, OutputStream outputStream);
 }
