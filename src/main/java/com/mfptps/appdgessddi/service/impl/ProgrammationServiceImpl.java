@@ -25,6 +25,7 @@ import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
+import com.mfptps.appdgessddi.service.mapper.MinistereStructureMapper;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
 import com.mfptps.appdgessddi.service.reportentities.ProgrammeDataRE;
 import com.mfptps.appdgessddi.service.reportentities.ProgrammeRE;
@@ -36,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -67,6 +69,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private final EvaluationService evaluationService;
     private final CommentaireService commentaireService;
     private final ProgrammationMapper programmationMapper;
+    private final MinistereStructureMapper ministereStructureMapper;
 
     public ProgrammationServiceImpl(ProgrammationRepository programmationRepository,
             ExerciceRepository exerciceRepository,
@@ -76,7 +79,9 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             StructureRepository structureRepository,
             EvaluationService evaluationService,
             CommentaireService commentaireService,
-            ProgrammationMapper programmationMapper) {
+            ProgrammationMapper programmationMapper,
+            MinistereStructureMapper ministereStructureMapper,
+            EntityManager em) {
         this.programmationRepository = programmationRepository;
         this.tacheRepository = tacheRepository;
         this.exerciceRepository = exerciceRepository;
@@ -86,6 +91,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         this.evaluationService = evaluationService;
         this.commentaireService = commentaireService;
         this.programmationMapper = programmationMapper;
+        this.ministereStructureMapper = ministereStructureMapper;
+
     }
 
     /**
@@ -240,7 +247,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     }
 
     @Override
-    public void imprimerProgrammeActivites(long structureId, long exerciceId, OutputStream outputStream) {
+    public void imprimerProgrammeActivitesGlobal(long structureId, long exerciceId, OutputStream outputStream) {
         try {
             Ministere ministere = this.ministereStructureRepository.findByStructureIdAndStatutIsTrue(structureId)
                     .get()
@@ -256,11 +263,18 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 log.info("________________ structureParent : {}", structureParent);
             }
 
+            List<Structure> structuresRattachees = ministereStructureRepository
+                    .findAllStructuresByMinistere(ministere.getId());
+
             InputStream logoStream = AppUtil.getAppDefaultLogo();
 
             String titre = "PROGRAMME D'ACTIVITES";
+            List<Programmation> programmationList = new ArrayList<>();
 
-            List<Programmation> programmationList = programmationRepository.findByStructureAndExercice(structureId, exerciceId);
+            for (Structure structuresRattachee : structuresRattachees) {
+                programmationList.addAll(programmationRepository.findByStructureAndExercice(structuresRattachee.getId(), exerciceId));
+            }
+
             List<ProgrammeDataRE> donneesProgrammation = new ArrayList<>();
 
             log.info("__________________ pa : {} ", donneesProgrammation);
