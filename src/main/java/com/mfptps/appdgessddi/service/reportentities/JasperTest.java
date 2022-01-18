@@ -59,23 +59,23 @@ public class JasperTest {
         programmeREs.add(new ProgrammeRE("1.1", "Programme1",
                 "ST-GVAP",
                 Arrays.asList(
-                        new ObjectifStrategiqueRE("1.1.1",
+                        new ObjectifStrategiqueRE(null, "1.1.1",
                                 "OS1", "-",
                                 "-", Arrays.asList(
-                                        new ActionRE("1.1.1.1", "Action1",
+                                        new ActionRE(null, "1.1.1.1", "Action1",
                                                 "-", Arrays.asList(
-                                                        new ObjectifOperationnelRE("1.1.1.1.1", "OP1",
+                                                        new ObjectifOperationnelRE(null,"1.1.1.1.1", "OP1",
                                                                 "-", activiteREs))))))));
 
         programmeREs.add(new ProgrammeRE("1.2", "Programme2",
                 "ST-GVAP",
                 Arrays.asList(
-                        new ObjectifStrategiqueRE("1.2.1",
+                        new ObjectifStrategiqueRE(null,"1.2.1",
                                 "OS2", "-",
                                 "-", Arrays.asList(
-                                        new ActionRE("1.2.1.1", "Action2",
+                                        new ActionRE(null,"1.2.1.1", "Action2",
                                                 "-", Arrays.asList(
-                                                        new ObjectifOperationnelRE("1.2.1.1.1", "OP2",
+                                                        new ObjectifOperationnelRE(null,"1.2.1.1.1", "OP2",
                                                                 "-", activiteREsBis))))))));
         programmeDataREs.add(new ProgrammeDataRE("MFTPS", "Cabinet", "ST-GVAP",
                 "20000000", "PROGRAMME D'ACTIVITES", null, programmeREs));
