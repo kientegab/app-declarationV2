@@ -1,16 +1,16 @@
 -- VIEWS CREATION
 --
 -- structuresByMinistere
-DROP VIEW IF EXISTS structuresByMinistere;
-CREATE VIEW structuresByMinistere AS 
+DROP VIEW IF EXISTS structuresmyministere;
+CREATE VIEW structuresbyministere AS 
     SELECT s.id AS id, ministere_id AS ministereid, s.libelle AS libellestructure, s.sigle AS siglestructure, 
             s.niveau AS niveaustructure, s.statut AS statutstructure, s.telephone AS telephonestructure, 
             s.email_resp AS emailrespstructure, s.email_struct AS emailstructstructure, s.parent_id AS parentstructure
     FROM ministere_structure AS ms, structure AS s WHERE ms.statut IS TRUE GROUP BY ministere_id, s.id;
 
 -- programmationList
-DROP VIEW IF EXISTS programmationList CASCADE;
-CREATE VIEW programmationList AS 
+DROP VIEW IF EXISTS programmationlist CASCADE;
+CREATE VIEW programmationlist AS 
     SELECT DISTINCT p.id AS id, p.cible, p.code, p.cout_previsionnel AS coutprevisionnel, p.cout_reel AS coutreel,
         p.est_programme AS estprogramme, p.observations, p.taux, p.activite_id AS activiteid,
         p.objectif_id AS objectifid, p.projet_id AS projetid, p.source_financement_id AS sourcefinancementid,

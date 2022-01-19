@@ -102,7 +102,7 @@ public class ViewGlobale {
     private long idStructure;
 
     @Column(name = "siglestructure")
-    private long sigleStructure;
+    private String sigleStructure;
 
     @Column(name = "idministere")
     private long idMinistere;

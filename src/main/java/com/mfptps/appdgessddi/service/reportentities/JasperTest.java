@@ -11,9 +11,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -32,30 +29,29 @@ import org.springframework.stereotype.Service;
 @Service
 public class JasperTest {
 
-    @PersistenceContext
-    private static EntityManager em;
-
-    public JasperTest(EntityManager em) {
-        this.em = em;
-        Query l = this.em.createNativeQuery("select * from structurebymin ");
-        log.info("__________________ l " + l.toString());
-
-        List<Object[]> list = l.getResultList();
-        log.info("__________________ taille " + list.size());
-        for (Object[] o : list) {
-            System.out.println("---" + Arrays.toString(o));
-        }
-    }
-
+//    @PersistenceContext
+//    private static EntityManager em;
+//
+//    public JasperTest(EntityManager em) {
+//        this.em = em;
+//        Query l = this.em.createNativeQuery("select * from structuresmyministere ");
+//        log.info("__________________ l " + l.toString());
+//
+//        List<Object[]> list = l.getResultList();
+//        log.info("__________________ taille " + list.size());
+//        for (Object[] o : list) {
+//            System.out.println("---" + Arrays.toString(o));
+//        }
+//    }
     public static void main(String[] args) {
-        Query l = em.createNativeQuery("select * from structurebymin ");
-        log.info("__________________ l " + l.toString());
-
-        List<Object[]> list = l.getResultList();
-        log.info("__________________ taille " + list.size());
-        for (Object[] o : list) {
-            System.out.println("---" + Arrays.toString(o));
-        }
+//        Query l = em.createNativeQuery("select * from structuresmyministere ");
+//        log.info("__________________ l " + l.toString());
+//
+//        List<Object[]> list = l.getResultList();
+//        log.info("__________________ taille " + list.size());
+//        for (Object[] o : list) {
+//            System.out.println("---" + Arrays.toString(o));
+//        }
 
         ProgrammeDataRE programmeDataRE = new ProgrammeDataRE();
         List<ProgrammeDataRE> programmeDataREs = new ArrayList<>();

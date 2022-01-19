@@ -8,13 +8,16 @@ package com.mfptps.appdgessddi.service.impl;
 import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.entities.Ministere;
 import com.mfptps.appdgessddi.entities.Programmation;
+import com.mfptps.appdgessddi.entities.Programme;
 import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.enums.ExerciceStatus;
+import com.mfptps.appdgessddi.enums.TypeStructure;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
 import com.mfptps.appdgessddi.repositories.ObjectifRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
+import com.mfptps.appdgessddi.repositories.QueryManagerRepository;
 import com.mfptps.appdgessddi.repositories.StructureRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.security.SecurityUtils;
@@ -29,6 +32,8 @@ import com.mfptps.appdgessddi.service.mapper.MinistereStructureMapper;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
 import com.mfptps.appdgessddi.service.reportentities.ProgrammeDataRE;
 import com.mfptps.appdgessddi.service.reportentities.ProgrammeRE;
+import com.mfptps.appdgessddi.service.reportentities.ReportUtil;
+import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import com.mfptps.appdgessddi.utils.AppUtil;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,9 +42,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -70,6 +75,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private final CommentaireService commentaireService;
     private final ProgrammationMapper programmationMapper;
     private final MinistereStructureMapper ministereStructureMapper;
+    private final QueryManagerRepository query;
 
     public ProgrammationServiceImpl(ProgrammationRepository programmationRepository,
             ExerciceRepository exerciceRepository,
@@ -81,7 +87,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             CommentaireService commentaireService,
             ProgrammationMapper programmationMapper,
             MinistereStructureMapper ministereStructureMapper,
-            EntityManager em) {
+            QueryManagerRepository query) {
         this.programmationRepository = programmationRepository;
         this.tacheRepository = tacheRepository;
         this.exerciceRepository = exerciceRepository;
@@ -92,6 +98,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         this.commentaireService = commentaireService;
         this.programmationMapper = programmationMapper;
         this.ministereStructureMapper = ministereStructureMapper;
+        this.query = query;
 
     }
 
@@ -247,58 +254,82 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     }
 
     @Override
-    public void imprimerProgrammeActivitesGlobal(long structureId, long exerciceId, OutputStream outputStream) {
-        try {
-            Ministere ministere = this.ministereStructureRepository.findByStructureIdAndStatutIsTrue(structureId)
-                    .get()
-                    .getMinistere();
-            log.info("________________ MinistereLib : {}", ministere);
+    @Transactional
+    public void printProgrammeActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, OutputStream outputStream) {
 
-            Structure structure = this.structureRepository.findById(structureId).get();
-            log.info("________________ structure : {}", structure);
+        try {
+            // chargement du ministère concerné
+            Ministere ministere = this.ministereStructureRepository.findByStructureIdAndStatutIsTrue(currentStructureId).get().getMinistere();
+
+            // structure génératrice du document
+            Optional<Structure> currentStructure = Optional.ofNullable(structureRepository.getById(currentStructureId));
 
             Structure structureParent = new Structure();
-            if (structure.getParent() != null) {
-                structureParent = this.structureRepository.findById(structure.getParent().getId()).get();
-                log.info("________________ structureParent : {}", structureParent);
+            if (currentStructure.get().getParent() != null) {
+                structureParent = this.structureRepository.findById(currentStructure.get().getParent().getId()).get();
             }
 
-            List<Structure> structuresRattachees = ministereStructureRepository
-                    .findAllStructuresByMinistere(ministere.getId());
-
+            // chargement du logo
             InputStream logoStream = AppUtil.getAppDefaultLogo();
 
+            // le titre du rapport
             String titre = "PROGRAMME D'ACTIVITES";
-            List<Programmation> programmationList = new ArrayList<>();
 
-            for (Structure structuresRattachee : structuresRattachees) {
-                programmationList.addAll(programmationRepository.findByStructureAndExercice(structuresRattachee.getId(), exerciceId));
+            // Conteneurs intermédiaires utilisés pour construire les données
+            List<Programme> allPrograms = new ArrayList<>();
+
+            // conteneurs de données à imprimer
+            List<ProgrammeDataRE> mainProgramData = new ArrayList<>();
+
+            List<ProgrammeRE> programData = new ArrayList<>();
+
+            // conteneur des structures
+            List<Structure> allStructures = new ArrayList<>();
+
+            // cas de l'ensemble des structures
+            if (structureId == null) {
+                allStructures = this.ministereStructureRepository.allNonInternalStructureByMinistere(ministereId, TypeStructure.INTERNE);
+                // cas d'une structure particulière
+            } else {
+                Structure structure = this.structureRepository.findById(structureId).get();
+                allStructures.add(structure);
             }
 
-            List<ProgrammeDataRE> donneesProgrammation = new ArrayList<>();
+            // parcourir la liste des structures pour récuperer les programmes concernés par la structure ou le ministère
+//            for (Structure struct : allStructures) {//non utilisé
+//
+//                // recherche des actions liées à la structure sur l'exercice en cours 
+//                List<Action> allActions = this.actionRepository.findActionsByStructureAndExercice(struct.getId(), exerciceId);
+//
+//                for (Action act : allActions) {
+//                    // Recherche des programmes liées à chaque action
+//                    List<Programme> progs = this.programmeRepository.findProgrammeByAction(act.getId());
+//                    for (Programme prog : progs) {
+//                        if (!allPrograms.contains(prog)) {
+//                            allPrograms.add(prog);
+//                        }
+//                    }
+//                }
+//            }
+            // Construction des objet pour impression
+            List<ViewGlobale> globalData = this.query.globalDataList();
 
-            log.info("__________________ pa : {} ", donneesProgrammation);
-//            ProgrammeRE dataFE = new ProgrammeRE(ministere.getLibelle(),
-//                    structureParent.getLibelle(), structure.getLibelle(), structure.getTelephone(), titre, logoStream,
-//                    donneesProgrammation);
-//            log.info("__________________ dataFE : {} ", dataFE);
+            mainProgramData = (ReportUtil.consctruct(globalData, ministere.getLibelle(), structureParent.getLibelle(), currentStructure.get().getLibelle(), currentStructure.get().getTelephone(), titre, logoStream));
 
-            List<ProgrammeRE> stats = new ArrayList<>();
-
-            InputStream reportStream = this.getClass().getResourceAsStream("/programmeActivites.jasper");
+            InputStream reportStream = this.getClass().getResourceAsStream("/conteneur_principal.jasper");
 
             Map<String, Object> parameters = new HashMap<>();
 
 //            stats.add(dataFE);
-            JRDataSource datasource = new JRBeanCollectionDataSource(stats);
+            JRDataSource datasource = new JRBeanCollectionDataSource(mainProgramData);
 
             JasperReport japerReport = (JasperReport) JRLoader.loadObject(reportStream);
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(japerReport, parameters, datasource);
 
-            JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
-
-        } catch (Exception e) {
+//            JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\test2.pdf");//exportReportToPdfStream(jasperPrint, outStream);
+        } catch (JRException e) {
             log.error("Error when exporting data from", e);
         }
     }
