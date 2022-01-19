@@ -2,6 +2,9 @@ package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.MinistereStructure;
 import com.mfptps.appdgessddi.entities.Structure;
+
+import com.mfptps.appdgessddi.enums.TypeStructure;
+
 import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroupByType;
 import java.util.List;
 import java.util.Optional;
@@ -38,4 +41,10 @@ public interface MinistereStructureRepository extends JpaRepository<MinistereStr
             + "AND ms.statut IS TRUE "
             + "GROUP BY s.type ORDER BY s.type ASC")
     List<CountStructureGroupByType> countStructureByMinistereAndByGroupType(long id);
+    
+    @Query("SELECT s FROM MinistereStructure ms, Structure s"
+            + "WHERE ms.ministere.id =:ministereId "
+            + "AND ms.structure.structure.id=s.id "
+            + "AND ms.statut IS TRUE AND s.type<>:type")
+    List<Structure> allNonInternalStructureByMinistere(long ministereId, TypeStructure type);
 }

@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.service.reportentities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,9 @@ public class ObjectifOperationnelRE implements Serializable {
     /**
      * OBJECTIF OPERATIONNEL LEVEL
      */
+    
+    private Long id;
+    
     private String codeObjectifOp;
 
     private String libelleObjectifOp;
@@ -33,4 +37,11 @@ public class ObjectifOperationnelRE implements Serializable {
 
     private List<ActiviteRE> activiteREs;
 
+    public ObjectifOperationnelRE(Long id, String code, String libelle){
+        this.id = id;
+        this.codeObjectifOp = code;
+        this.libelleObjectifOp = libelle;
+        this.structureObjectifOp = "";
+        this.activiteREs = new ArrayList<>();
+    }
 }

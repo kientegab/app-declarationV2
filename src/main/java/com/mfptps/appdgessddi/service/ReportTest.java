@@ -17,7 +17,6 @@ import com.mfptps.appdgessddi.service.reportentities.ProgrammeRE;
 import com.mfptps.appdgessddi.service.reportentities.StructuresByMinistereVE;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,27 +85,26 @@ public class ReportTest {
             activiteREsBis.add(new ActiviteRE("" + (i + 1), "libelle" + i, "indicateur" + i, "" + i, (double) i, "fin" + i, "ST-GVAP" + i));
         }
 
-        programmeREs.add(new ProgrammeRE("1.1", "Programme1",
-                "ST-GVAP",
-                Arrays.asList(
-                        new ObjectifStrategiqueRE("1.1.1",
-                                "OS1", "-",
-                                "-", Arrays.asList(
-                                        new ActionRE("1.1.1.1", "Action1",
-                                                "-", Arrays.asList(
-                                                        new ObjectifOperationnelRE("1.1.1.1.1", "OP1",
-                                                                "-", activiteREs))))))));
-
-        programmeREs.add(new ProgrammeRE("1.2", "Programme2",
-                "ST-GVAP",
-                Arrays.asList(
-                        new ObjectifStrategiqueRE("1.2.1",
-                                "OS2", "-",
-                                "-", Arrays.asList(
-                                        new ActionRE("1.2.1.1", "Action2",
-                                                "-", Arrays.asList(
-                                                        new ObjectifOperationnelRE("1.2.1.1.1", "OP2",
-                                                                "-", activiteREsBis))))))));
+//        programmeREs.add(new ProgrammeRE("1.1", "Programme1",
+//                "ST-GVAP",
+//                Arrays.asList(
+//                        new ObjectifStrategiqueRE("1.1.1",
+//                                "OS1", "-",
+//                                "-", Arrays.asList(
+//                                        new ActionRE("1.1.1.1", "Action1",
+//                                                "-", Arrays.asList(
+//                                                        new ObjectifOperationnelRE("1.1.1.1.1", "OP1",
+//                                                                "-", activiteREs))))))));
+//        programmeREs.add(new ProgrammeRE("1.2", "Programme2",
+//                "ST-GVAP",
+//                Arrays.asList(
+//                        new ObjectifStrategiqueRE("1.2.1",
+//                                "OS2", "-",
+//                                "-", Arrays.asList(
+//                                        new ActionRE("1.2.1.1", "Action2",
+//                                                "-", Arrays.asList(
+//                                                        new ObjectifOperationnelRE("1.2.1.1.1", "OP2",
+//                                                                "-"))))))));
         programmeDataREs.add(new ProgrammeDataRE("MFTPS", "Cabinet", "ST-GVAP",
                 "20000000", "PROGRAMME D'ACTIVITES", null, programmeREs));
 

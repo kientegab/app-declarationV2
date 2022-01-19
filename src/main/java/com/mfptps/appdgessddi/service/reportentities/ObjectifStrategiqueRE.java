@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.service.reportentities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,9 @@ public class ObjectifStrategiqueRE implements Serializable {
     /**
      * OBJECTIF STRATEGIQUE LEVEL
      */
+    
+    private Long id;
+    
     private String codeObjectifStra;
 
     private String libelleObjectifStra;
@@ -34,4 +38,13 @@ public class ObjectifStrategiqueRE implements Serializable {
     private String structureObjectifStra;
 
     private List<ActionRE> actionREs;
+    
+    public ObjectifStrategiqueRE(Long id, String code, String libelle, String indicateur){
+        this.id = id;
+        this.codeObjectifStra = code;
+        this.libelleObjectifStra = libelle;
+        this.indicateurObjectifStra = indicateur;
+        this.structureObjectifStra = "";
+        this.actionREs = new ArrayList<>();
+    }
 }
