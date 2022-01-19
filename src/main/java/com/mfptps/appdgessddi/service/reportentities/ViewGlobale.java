@@ -101,6 +101,12 @@ public class ViewGlobale {
     @Column(name = "idstructure")
     private long idStructure;
 
+    @Column(name = "siglestructure")
+    private long sigleStructure;
+
+    @Column(name = "idministere")
+    private long idMinistere;
+
     @Column(name = "idexercice")
     private long idExercice;
 
