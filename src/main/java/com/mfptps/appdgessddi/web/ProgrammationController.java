@@ -8,6 +8,7 @@ package com.mfptps.appdgessddi.web;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.service.ProgrammationService;
+import com.mfptps.appdgessddi.service.ReportTest;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.utils.*;
@@ -54,10 +55,14 @@ public class ProgrammationController {
     private final ProgrammationService programmationService;
     private final ProgrammationRepository repository;
 
+    private final ReportTest reportTest;
+
     public ProgrammationController(ProgrammationService programmationService,
-            ProgrammationRepository repository) {
+            ProgrammationRepository repository,
+            ReportTest reportTest) {
         this.programmationService = programmationService;
         this.repository = repository;
+        this.reportTest = reportTest;
     }
 
     /**
@@ -185,8 +190,8 @@ public class ProgrammationController {
         programmationService.imprimerProgrammeActivitesGlobal(structureId, exerciceId, outStream);
     }
 
-//    @GetMapping(value = "/test/test")
-//    public void em() {
-//        programmationService.emTest();
-//    }
+    @GetMapping(value = "/test/test")
+    public void em() {
+        reportTest.seviceTestReport();
+    }
 }
