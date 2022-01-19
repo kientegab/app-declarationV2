@@ -40,12 +40,12 @@ public interface ObjectifRepository extends JpaRepository<Objectif, Long> {
             + "AND o.type = :typeObjectif")
     long countObjectifSubOperationnel(long parentId, TypeObjectif typeObjectif);
     
-    @Query("SELECT new com.mfptps.appdgessddi.service.reportentities.ObjectifOperationnelRE(o.id, o.code, o.libelle) "
-            + "FROM Objectif o, Action a WHERE o.action.id=a.id AND a.id=:actionId AND o.deleted = false")
-    List<ObjectifOperationnelRE> constructObjectifOperationnelREByAction(long actionId);
-    
-    
-    @Query("SELECT new com.mfptps.appdgessddi.service.reportentities.ObjectifStrategiqueRE(o.id, o.code, o.libelle, ind.libelle) "
-            + "FROM Objectif o, Programme p, IndicateurObjectif ind WHERE ind.objectif.id=o.id AND o.programme.id=p.id AND p.id=:programmeId AND o.deleted = false")
-    List<ObjectifStrategiqueRE> constructActionREByProgramme(long programmeId);
+//    @Query("SELECT new com.mfptps.appdgessddi.service.reportentities.ObjectifOperationnelRE(o.id, o.code, o.libelle) "
+//            + "FROM Objectif o, Action a WHERE o.action.id=a.id AND a.id=:actionId AND o.deleted = false")
+//    List<ObjectifOperationnelRE> constructObjectifOperationnelREByAction(long actionId);
+//    
+//    
+//    @Query("SELECT new com.mfptps.appdgessddi.service.reportentities.ObjectifStrategiqueRE(o.id, o.code, o.libelle, ind.libelle) "
+//            + "FROM Objectif o, Programme p, IndicateurObjectif ind WHERE ind.objectif.id=o.id AND o.programme.id=p.id AND p.id=:programmeId AND o.deleted = false")
+//    List<ObjectifStrategiqueRE> constructActionREByProgramme(long programmeId);
 }

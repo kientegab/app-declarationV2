@@ -22,7 +22,7 @@ public interface ActionRepository extends JpaRepository<Action,Long> {
     List<Action> findActionsByStructureAndExercice(long structureId, long exerciceId);
     
     
-    @Query("SELECT new com.mfptps.appdgessddi.service.reportentities.ActionRE(a.id, a.code, a.libelle) "
-            + "FROM Objectif o, Action a WHERE a.objectif.id=o.id AND o.id=:objectifId AND a.deleted = false")
-    List<ActionRE> constructActionREREByObjectif(long objectifId);
+//    @Query("SELECT new com.mfptps.appdgessddi.service.reportentities.ActionRE(a.id, a.code, a.libelle) "
+//            + "FROM Objectif o, Action a WHERE a.objectif.id=o.id AND o.id=:objectifId AND a.deleted = false")
+//    List<ActionRE> constructActionREREByObjectif(long objectifId);
 }
