@@ -8,6 +8,7 @@ package com.mfptps.appdgessddi.repositories;
 import com.mfptps.appdgessddi.service.reportentities.ObjectifOperationnelListVE;
 import com.mfptps.appdgessddi.service.reportentities.ProgrammationListVE;
 import com.mfptps.appdgessddi.service.reportentities.StructuresByMinistereVE;
+import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -39,6 +40,12 @@ public class QueryManagerRepository {
     public List<ObjectifOperationnelListVE> objectifOperationnelList() {
         Query q = em.createNativeQuery("select * from objectifOperationnelList", ObjectifOperationnelListVE.class);
         List<ObjectifOperationnelListVE> result = q.getResultList();
+        return result;
+    }
+    
+    public List<ViewGlobale> globalDataList() {
+        Query q = em.createNativeQuery("select * from dgessreportview", ViewGlobale.class);
+        List<ViewGlobale> result = q.getResultList();
         return result;
     }
 }
