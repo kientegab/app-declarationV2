@@ -1,10 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mfptps.appdgessddi.service.reportentities;
+package com.mfptps.appdgessddi.service.impl;
 
+import com.mfptps.appdgessddi.service.reportentities.ActionRE;
+import com.mfptps.appdgessddi.service.reportentities.ActiviteRE;
+import com.mfptps.appdgessddi.service.reportentities.JasperTest;
+import com.mfptps.appdgessddi.service.reportentities.ObjectifOperationnelRE;
+import com.mfptps.appdgessddi.service.reportentities.ObjectifStrategiqueRE;
+import com.mfptps.appdgessddi.service.reportentities.ProgrammeDataRE;
+import com.mfptps.appdgessddi.service.reportentities.ProgrammeRE;
+import com.mfptps.appdgessddi.service.reportentities.StrucTest;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,19 +30,38 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
- * @author Canisius <canisiushien@gmail.com>
+ * @author Fatogoma HEBIE <fat19ebie@gmail.com>
  */
 @Slf4j
 @Service
-public class JasperTest {
+@Transactional
+public class ServiceTest {
+    @PersistenceContext
+    private EntityManager em;
 
+    public ServiceTest(EntityManager em) {
+        this.em = em;
+    }
     
+    public void print(){
+         Query l = em.createNativeQuery("select * from structurebymin ");
+        log.info("__________________ l " + l.toString());
+        List<StrucTest> structures = l.getResultList();
+        for (StrucTest structure : structures) {
+            
+             System.out.println("--- structure" + structure.getLibelle());
+        }
+        
+        List<Object[]> list = l.getResultList();
+        log.info("__________________ taille " + list.size());
+        for (Object[] o : list) {
+            System.out.println("---" + Arrays.toString(o));
+        }
 
-    public static void main(String[] args) {
-       
         ProgrammeDataRE programmeDataRE = new ProgrammeDataRE();
         List<ProgrammeDataRE> programmeDataREs = new ArrayList<>();
 
@@ -104,5 +130,4 @@ public class JasperTest {
             log.error("________", e);
         }
     }
-
-}
+    }
