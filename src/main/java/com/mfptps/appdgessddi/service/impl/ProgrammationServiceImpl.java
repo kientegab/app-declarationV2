@@ -314,7 +314,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             // Construction des objet pour impression
             List<ViewGlobale> globalData = this.query.globalDataList();
 
-            mainProgramData = (ReportUtil.consctruct(globalData, ministere.getLibelle(), structureParent.getLibelle(), currentStructure.get().getLibelle(), currentStructure.get().getTelephone(), titre, logoStream));
+            mainProgramData = ReportUtil.consctruct(globalData, ministere.getLibelle(), structureParent.getLibelle(), currentStructure.get().getLibelle(), currentStructure.get().getTelephone(), titre, logoStream);
 
             InputStream reportStream = this.getClass().getResourceAsStream("/conteneur_principal.jasper");
 

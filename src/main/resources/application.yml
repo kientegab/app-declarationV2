@@ -133,3 +133,4 @@ spring:
     password: rootPostgresql #rootPostgresql admin
     hikari:
       auto-commit: false
+    
