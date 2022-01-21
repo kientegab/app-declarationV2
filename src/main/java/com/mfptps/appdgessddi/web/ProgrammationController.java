@@ -9,7 +9,9 @@ import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
+import com.mfptps.appdgessddi.service.dto.PrintGlobalDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
+import com.mfptps.appdgessddi.service.impl.StatisticParameterServiceImpl;
 import com.mfptps.appdgessddi.utils.*;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -54,10 +56,14 @@ public class ProgrammationController {
     private final ProgrammationService programmationService;
     private final ProgrammationRepository repository;
 
+    private final StatisticParameterServiceImpl reportTest;
+
     public ProgrammationController(ProgrammationService programmationService,
-            ProgrammationRepository repository) {
+            ProgrammationRepository repository,
+            StatisticParameterServiceImpl reportTest) {
         this.programmationService = programmationService;
         this.repository = repository;
+        this.reportTest = reportTest;
     }
 
     /**
@@ -175,18 +181,16 @@ public class ProgrammationController {
      * @param exerciceId
      * @throws IOException
      */
-    @GetMapping(value = "/print/{ids}/{ide}")
-    public void imprimerPAGlobal(HttpServletResponse response,
-            @PathVariable("ids") long structureId,
-            @PathVariable("ide") long exerciceId) throws IOException {
+    @PostMapping(value = "/print/programme-activites")
+    public void imprimerPAGlobal(HttpServletResponse response, @RequestBody PrintGlobalDTO printGlobalDTO) throws IOException {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", String.format("attachment; filename=\"PA-GLOBAL.pdf\""));
         OutputStream outStream = response.getOutputStream();
-        programmationService.imprimerProgrammeActivitesGlobal(structureId, exerciceId, outStream);
+        programmationService.printProgrammeActivites(printGlobalDTO.getMinistereId(), printGlobalDTO.getStructureId(), printGlobalDTO.getExerciceId(), printGlobalDTO.getCurrentStructureId(), null);
     }
 
 //    @GetMapping(value = "/test/test")
 //    public void em() {
-//        programmationService.emTest();
+//        reportTest.printProgrammeActivites(3L, null, 2L, 4L, null);
 //    }
 }

@@ -11,9 +11,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -32,10 +29,30 @@ import org.springframework.stereotype.Service;
 @Service
 public class JasperTest {
 
-    
-
+//    @PersistenceContext
+//    private static EntityManager em;
+//
+//    public JasperTest(EntityManager em) {
+//        this.em = em;
+//        Query l = this.em.createNativeQuery("select * from structuresmyministere ");
+//        log.info("__________________ l " + l.toString());
+//
+//        List<Object[]> list = l.getResultList();
+//        log.info("__________________ taille " + list.size());
+//        for (Object[] o : list) {
+//            System.out.println("---" + Arrays.toString(o));
+//        }
+//    }
     public static void main(String[] args) {
-       
+//        Query l = em.createNativeQuery("select * from structuresmyministere ");
+//        log.info("__________________ l " + l.toString());
+//
+//        List<Object[]> list = l.getResultList();
+//        log.info("__________________ taille " + list.size());
+//        for (Object[] o : list) {
+//            System.out.println("---" + Arrays.toString(o));
+//        }
+
         ProgrammeDataRE programmeDataRE = new ProgrammeDataRE();
         List<ProgrammeDataRE> programmeDataREs = new ArrayList<>();
 
@@ -67,23 +84,23 @@ public class JasperTest {
         programmeREs.add(new ProgrammeRE("1.1", "Programme1",
                 "ST-GVAP",
                 Arrays.asList(
-                        new ObjectifStrategiqueRE("1.1.1",
+                        new ObjectifStrategiqueRE(null, "1.1.1",
                                 "OS1", "-",
                                 "-", Arrays.asList(
-                                        new ActionRE("1.1.1.1", "Action1",
+                                        new ActionRE(null, "1.1.1.1", "Action1",
                                                 "-", Arrays.asList(
-                                                        new ObjectifOperationnelRE("1.1.1.1.1", "OP1",
+                                                        new ObjectifOperationnelRE(null, "1.1.1.1.1", "OP1",
                                                                 "-", activiteREs))))))));
 
         programmeREs.add(new ProgrammeRE("1.2", "Programme2",
                 "ST-GVAP",
                 Arrays.asList(
-                        new ObjectifStrategiqueRE("1.2.1",
+                        new ObjectifStrategiqueRE(null, "1.2.1",
                                 "OS2", "-",
                                 "-", Arrays.asList(
-                                        new ActionRE("1.2.1.1", "Action2",
+                                        new ActionRE(null, "1.2.1.1", "Action2",
                                                 "-", Arrays.asList(
-                                                        new ObjectifOperationnelRE("1.2.1.1.1", "OP2",
+                                                        new ObjectifOperationnelRE(null, "1.2.1.1.1", "OP2",
                                                                 "-", activiteREsBis))))))));
         programmeDataREs.add(new ProgrammeDataRE("MFTPS", "Cabinet", "ST-GVAP",
                 "20000000", "PROGRAMME D'ACTIVITES", null, programmeREs));

@@ -17,8 +17,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ActiviteRE implements Serializable {
 
     /**
@@ -37,4 +37,5 @@ public class ActiviteRE implements Serializable {
     private String financementLibelle;
 
     private String structureActivite;
+
 }
