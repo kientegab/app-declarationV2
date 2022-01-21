@@ -179,7 +179,7 @@ public class ReportUtil {
 
             //programmeRE.setObjectifStrategiqueREs(objStrData);
             for (ObjectifStrategiqueRE ostr : objStrData) {
-
+                objectifStrategiqueData = new ArrayList<>();//-------------------
                 List<ActionRE> actData = extractAction(ostr, globalData);
 
                 for (ActionRE act : actData) {
@@ -187,7 +187,7 @@ public class ReportUtil {
                     List<ObjectifOperationnelRE> listObjOp = extractOperationalPurpose(act, globalData);
 
                     for (ObjectifOperationnelRE obOp : listObjOp) {
-
+                        objectifOperationnelData = new ArrayList<>();//-----------
                         List<ActiviteRE> listActivite = extractActivity(obOp, globalData);
 
                         obOp.setActiviteREs(listActivite);
