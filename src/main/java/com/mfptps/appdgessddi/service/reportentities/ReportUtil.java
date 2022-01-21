@@ -5,17 +5,26 @@
 package com.mfptps.appdgessddi.service.reportentities;
 
 import com.mfptps.appdgessddi.entities.Structure;
+import com.mfptps.appdgessddi.repositories.QueryManagerRepository;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author aboubacary
  */
 @Slf4j
+@Service
 public class ReportUtil {
+
+    private static QueryManagerRepository query;
+
+    public ReportUtil(QueryManagerRepository query) {
+        this.query = query;
+    }
 
     public static boolean containsCodeProgramme(List<ProgrammeRE> programmes, final String codeProgramme) {
         return programmes.stream()
@@ -138,14 +147,27 @@ public class ReportUtil {
      * @return
      */
     protected static List<ActiviteRE> extractActivity(ObjectifOperationnelRE objectif, List<ViewGlobale> globalData) {
+        List<ProgrammationPhysiqueRE> programmationPhysiqueData = ReportUtil.query.programmationPhysiqueList();
+
         List<ActiviteRE> data = new ArrayList<>();
         for (ViewGlobale elmt : globalData) {
             if (objectif.getCodeObjectifOp().equals(elmt.getCodeObjectifOpe())) {
-                ActiviteRE activite = new ActiviteRE(elmt.getCodeProgrammation(), elmt.getLibelleActivite(), "", elmt.getCibleProgrammation(), elmt.getCoutPrevisionnel(), elmt.getLibelleFinancement(), elmt.getSigleStructure());
+                ActiviteRE activite = new ActiviteRE(elmt.getCodeProgrammation(), elmt.getLibelleActivite(), "", elmt.getCibleProgrammation(), elmt.getCoutPrevisionnel(), null, elmt.getLibelleFinancement(), elmt.getSigleStructure());
+                String periode = "";
+                for (ProgrammationPhysiqueRE physique : programmationPhysiqueData) {
+                    if (elmt.getId() == physique.getIdProgrammation()) {
+                        periode = periode + "-" + physique.getLibellePeriode();
+                    }
+                }
+                activite.setPhysique(periode.substring(1, periode.length()));
                 if (!containsCodeActivite(data, elmt.getCodeProgrammation())) {
                     data.add(activite);
                 }
             }
+        }
+
+        for (ActiviteRE a : data) {
+            System.out.println("\n__________ ActiviteRE :" + a.getCodeActivite() + "___ " + a.getPhysique());
         }
         return data;
     }
@@ -179,15 +201,12 @@ public class ReportUtil {
 
             //programmeRE.setObjectifStrategiqueREs(objStrData);
             for (ObjectifStrategiqueRE ostr : objStrData) {
-
                 List<ActionRE> actData = extractAction(ostr, globalData);
 
                 for (ActionRE act : actData) {
-
                     List<ObjectifOperationnelRE> listObjOp = extractOperationalPurpose(act, globalData);
 
                     for (ObjectifOperationnelRE obOp : listObjOp) {
-
                         List<ActiviteRE> listActivite = extractActivity(obOp, globalData);
 
                         obOp.setActiviteREs(listActivite);
@@ -204,6 +223,20 @@ public class ReportUtil {
 
             programmeRE.setObjectifStrategiqueREs(objectifStrategiqueData);
             programData.add(programmeRE);
+
+// NON RESOLUE             
+//            for (ProgrammeRE p : programData) {
+//                for (ObjectifStrategiqueRE os : p.getObjectifStrategiqueREs()) {
+//                    for (ActionRE ac : os.getActionREs()) {
+//                        for (ObjectifOperationnelRE op : ac.getObjectifOperationnelREs()) {
+//                            System.out.println("_________ op: " + op.getCodeObjectifOp());
+//                            for (ActiviteRE a : op.getActiviteREs()) {
+//                                System.out.println("\t_________ ac: " + op.getCodeObjectifOp());
+//                            }
+//                        }
+//                    }
+//                }
+//            }
             mainProgramData.add(new ProgrammeDataRE(ministereLibelle, structureParentLibelle, currentStructureLibelle, currentStructureTelephone, titre, logoStream, programData));
 
         }

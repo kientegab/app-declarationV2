@@ -34,6 +34,8 @@ public class ActiviteRE implements Serializable {
 
     private double coutPrevisionnel;
 
+    private String physique;
+
     private String financementLibelle;
 
     private String structureActivite;

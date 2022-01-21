@@ -7,6 +7,7 @@ package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.service.reportentities.ObjectifOperationnelListVE;
 import com.mfptps.appdgessddi.service.reportentities.ProgrammationListVE;
+import com.mfptps.appdgessddi.service.reportentities.ProgrammationPhysiqueRE;
 import com.mfptps.appdgessddi.service.reportentities.StructuresByMinistereVE;
 import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import java.util.List;
@@ -46,6 +47,12 @@ public class QueryManagerRepository {
     public List<ViewGlobale> globalDataList() {
         Query q = em.createNativeQuery("select * from dgessreportview", ViewGlobale.class);
         List<ViewGlobale> result = q.getResultList();
+        return result;
+    }
+
+    public List<ProgrammationPhysiqueRE> programmationPhysiqueList() {
+        Query q = em.createNativeQuery("select * from programmationphysique", ProgrammationPhysiqueRE.class);
+        List<ProgrammationPhysiqueRE> result = q.getResultList();
         return result;
     }
 }
