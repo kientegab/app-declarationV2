@@ -49,3 +49,10 @@ CREATE OR REPLACE VIEW dgessreportview AS
     AND ac.objectif_id = os.id -- jointure entre Action & ObjectifStrategique
     AND os.programme_id = prog.id -- jointure entre ObjectifStrategique & Programme
     AND p.structure_id = ms.structure_id AND ms.statut IS TRUE; -- jointure entre Structure & Ministere
+
+-- programmationphysique
+CREATE OR REPLACE VIEW programmationphysique AS 
+    SELECT pe.libelle AS libelleperiode, e.id AS id, vue.id AS idprogrammation, vue.idexercice
+    FROM evaluation e, periode pe, dgessreportview vue
+    WHERE e.periode_id = pe.id
+    AND e.programmation_id = vue.id;
