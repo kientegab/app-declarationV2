@@ -12,9 +12,9 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<style name="Title" forecolor="#FFFFFF" fontName="Arial" fontSize="50" isBold="false"/>
-	<style name="SubTitle" forecolor="#CCCCCC" fontName="Arial" fontSize="18" isBold="false"/>
-	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="14" isBold="true"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Arial" fontSize="12" isBold="false"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Arial" fontSize="12" isBold="false"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="10" isBold="true"/>
 	<style name="Detail" mode="Transparent" fontName="Arial"/>
 	<style name="Row" mode="Transparent" fontName="Arial" pdfFontName="Times-Roman">
 		<conditionalStyle>
@@ -33,7 +33,7 @@
 		<band height="30">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement x="0" y="0" width="90" height="30" uuid="84707d98-36e3-4f8b-b55c-0c6b5d56387c">
+				<reportElement mode="Opaque" x="0" y="0" width="90" height="30" backcolor="#F28F49" uuid="84707d98-36e3-4f8b-b55c-0c6b5d56387c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
@@ -42,12 +42,15 @@
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{codeProgramme}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="90" y="0" width="530" height="30" uuid="c44e7452-522a-4db1-8a5a-e24d5bf6460a">
+				<reportElement mode="Opaque" x="90" y="0" width="602" height="30" backcolor="#F28F49" uuid="c44e7452-522a-4db1-8a5a-e24d5bf6460a">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -55,18 +58,25 @@
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement verticalAlignment="Middle"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{libelleProgramme}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="620" y="0" width="182" height="30" uuid="7e79471d-44b5-41a4-bd8c-221e3397a1dc"/>
+				<reportElement mode="Opaque" x="692" y="0" width="110" height="30" backcolor="#F28F49" uuid="7e79471d-44b5-41a4-bd8c-221e3397a1dc">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{structureProgramme}]]></textFieldExpression>
 			</textField>
 		</band>

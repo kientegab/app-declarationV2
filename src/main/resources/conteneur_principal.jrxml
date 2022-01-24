@@ -12,9 +12,9 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<style name="Title" forecolor="#FFFFFF" fontName="Arial" fontSize="50" isBold="false"/>
-	<style name="SubTitle" forecolor="#CCCCCC" fontName="Arial" fontSize="18" isBold="false"/>
-	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="14" isBold="true"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Arial" fontSize="12" isBold="false"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Arial" fontSize="12" isBold="false"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="10" isBold="true"/>
 	<style name="Detail" mode="Transparent" fontName="Arial"/>
 	<style name="Row" mode="Transparent" fontName="Arial" pdfFontName="Times-Roman">
 		<conditionalStyle>
@@ -221,7 +221,7 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{CODE_TEXT}]]></textFieldExpression>
 				</textField>
@@ -238,7 +238,7 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{ACTIVITE_TEXT}]]></textFieldExpression>
 				</textField>
@@ -255,7 +255,7 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{INDICATEUR_TEXT}]]></textFieldExpression>
 				</textField>
@@ -272,12 +272,12 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{CIBLE_TEXT}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="362" y="0" width="80" height="30" uuid="c1298375-5f1d-4ad9-a42e-9a87e962e314">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="362" y="0" width="85" height="30" uuid="c1298375-5f1d-4ad9-a42e-9a87e962e314">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
@@ -289,14 +289,14 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{PROGRAMMATION_TEXT}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="442" y="0" width="115" height="30" uuid="c1798375-5f1d-4ad9-a42e-9a87e962e314">
-						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="447" y="0" width="110" height="30" uuid="c1798375-5f1d-4ad9-a42e-9a87e962e314">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
 					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 						<pen lineWidth="1.5"/>
@@ -306,7 +306,7 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{COUT_TEXT}]]></textFieldExpression>
 				</textField>
@@ -323,7 +323,7 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{FINANCEMENT_TEXT}]]></textFieldExpression>
 				</textField>
@@ -340,7 +340,7 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{STRUCTURE_TEXT}]]></textFieldExpression>
 				</textField>
