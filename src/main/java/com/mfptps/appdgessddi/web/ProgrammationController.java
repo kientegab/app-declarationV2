@@ -189,8 +189,4 @@ public class ProgrammationController {
         programmationService.printProgrammeActivites(printGlobalDTO.getMinistereId(), printGlobalDTO.getStructureId(), printGlobalDTO.getExerciceId(), printGlobalDTO.getCurrentStructureId(), null);
     }
 
-//    @GetMapping(value = "/test/test")
-//    public void em() {
-//        reportTest.printProgrammeActivites(3L, null, 2L, 4L, null);
-//    }
 }
