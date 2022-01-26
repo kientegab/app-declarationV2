@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -36,6 +37,7 @@ public class ActionController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Action> createAction(@Valid @RequestBody ActionDTO actionDTO) throws URISyntaxException {
         Action action = actionService.create(actionDTO);
         log.debug("Création d une action : {}", actionDTO);
@@ -45,6 +47,7 @@ public class ActionController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Action> updateAction(@Valid @RequestBody Action action) throws URISyntaxException {
         log.debug("Mis à jour d une action : {}", action);
         if (action.getId() == null) {
@@ -78,6 +81,7 @@ public class ActionController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Suppression d une action : {}", id);
         actionService.delete(id);

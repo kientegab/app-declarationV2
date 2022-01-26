@@ -1,9 +1,7 @@
 package com.mfptps.appdgessddi.entities;
 
 import java.util.*;
-
 import javax.persistence.*;
-
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -12,21 +10,25 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "profile")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Profile extends CommonEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
+
+    @Column(nullable = false, unique = true)
     private String name;
+
     @Column(name = "native_profile")
     private boolean nativeProfile = false;
-    
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "profile_privilege", 
-            joinColumns = {@JoinColumn(name = "profile_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "privilege_id", referencedColumnName = "id")}
+    @JoinTable(name = "profile_privilege",
+            joinColumns = {
+                @JoinColumn(name = "profile_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+                @JoinColumn(name = "privilege_id", referencedColumnName = "id")}
     )
     @BatchSize(size = 20)
     private Set<Privilege> privileges = new HashSet<>();

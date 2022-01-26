@@ -4,6 +4,7 @@ import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.service.ExerciceService;
 import com.mfptps.appdgessddi.service.dto.ExerciceDTO;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.HeaderUtil;
 import com.mfptps.appdgessddi.utils.PaginationUtil;
 import com.mfptps.appdgessddi.utils.ResponseUtil;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -47,6 +49,7 @@ public class ExerciceController {
 //                .body(exercice);
 //    }
     @PutMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Exercice> updateExercice(@Valid @RequestBody ExerciceDTO exercice) throws URISyntaxException {
         log.debug("Mis à jour d un exercice : {}", exercice);
         if (exercice.getId() == null) {
@@ -63,6 +66,7 @@ public class ExerciceController {
      * @return
      */
     @GetMapping(path = "/cloture")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> cloture() {
         log.debug("Cloture de l'exercice en cours : {}");
         exerciceService.cloture();

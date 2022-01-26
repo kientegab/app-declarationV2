@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -35,6 +36,7 @@ public class ObjectifController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Objectif> createObjectif(@Valid @RequestBody ObjectifDTO objectifDTO) throws URISyntaxException {
         Objectif objectif = objectifService.create(objectifDTO);
         log.debug("Création d un objectif : {}", objectifDTO);
@@ -44,6 +46,7 @@ public class ObjectifController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Objectif> updateObjectif(@Valid @RequestBody Objectif objectif) throws URISyntaxException {
         log.debug("Mis à jour d un objectif : {}", objectif);
         if (objectif.getId() == null) {
@@ -90,6 +93,7 @@ public class ObjectifController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Suppression d un objectif : {}", id);
         objectifService.delete(id);

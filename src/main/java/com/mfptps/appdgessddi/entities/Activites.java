@@ -25,10 +25,14 @@ public class Activites extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(updatable = false, nullable = false)
     private String code;
+
     private String description;
+
+    @Column(nullable = false)
     private String libelle;
 
     @Convert(converter = ActiviteStatusConverter.class)
@@ -36,6 +40,7 @@ public class Activites extends CommonEntity {
     private ActiviteStatus status;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private TypeActivites typeActivites;
 
     public Activites() {

@@ -9,7 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Filter;
@@ -35,20 +34,34 @@ public class Structure extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(nullable = false, unique = true)
     private String libelle;
-    private String sigle;//added 22112021
-    private Integer niveau;//added 20122021
-    private String description;
+
+    @Column(nullable = false)
+    private String sigle;
+
+    @Column(nullable = false)
+    private Integer niveau;
+
     @Column(nullable = false, length = 1)
     @Convert(converter = TypeStructureConverter.class)
     private TypeStructure type;
-    private String statut;//if Structure always exists or no (20112021)
+
+    private String statut;//if Structure always exists or no (20112021) // A TRANSFORMER EN ENUM(ACTIVER, DESACTIVER)
+
     private String telephone;
+
+    @Column(nullable = false)
     private String emailResp;
+
+    @Column(nullable = false)
     private String emailStruct;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(nullable = true)
     private Structure parent;
+
+    private String description;
 
     public Structure() {
 

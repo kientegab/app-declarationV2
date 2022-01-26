@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,6 +56,7 @@ public class SourceFinancementController {
      * @throws URISyntaxException
      */
     @PostMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DAF + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<SourceFinancement> createSourceFinancement(@Valid @RequestBody SourceFinancement sourceFinancement) throws URISyntaxException {
         AppUtil.checkDebutBeforeFin(sourceFinancement.getDebut(), sourceFinancement.getFin());
         SourceFinancement entitySaved = sourceFinancementService.create(sourceFinancement);
@@ -71,6 +73,7 @@ public class SourceFinancementController {
      * @throws URISyntaxException
      */
     @PutMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DAF + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<SourceFinancement> updateSourceFinancement(@Valid @RequestBody SourceFinancement sourceFinancement) throws URISyntaxException {
         log.debug("Mis à jour d'une SourceFinancement : {}", sourceFinancement);
         if (sourceFinancement.getId() == null) {

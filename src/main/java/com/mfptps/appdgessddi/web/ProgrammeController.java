@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,6 +58,7 @@ public class ProgrammeController {
      * @throws URISyntaxException
      */
     @PostMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Programme> createProgramme(@Valid @RequestBody ProgrammeDTO programmeDTO) throws URISyntaxException {
         Programme programmeSaved = programmeService.create(programmeDTO);
         log.debug("Création du Programme : {}", programmeDTO);
@@ -72,6 +74,7 @@ public class ProgrammeController {
      * @throws URISyntaxException
      */
     @PutMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Programme> updateProgramme(@Valid @RequestBody Programme programme) throws URISyntaxException {
         log.debug("Mis à jour du Programme : {}", programme);
         if (programme.getId() == null) {
@@ -127,6 +130,7 @@ public class ProgrammeController {
      * @return
      */
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Suppression du Programme : {}", id);
         programmeService.delete(id);
