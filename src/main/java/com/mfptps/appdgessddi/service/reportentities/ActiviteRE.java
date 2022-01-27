@@ -34,7 +34,23 @@ public class ActiviteRE implements Serializable {
 
     private double coutPrevisionnel;
 
-    private String physique;
+    /**
+     * WHEN PERIODICITE PARAMETER IS QUARTERLY
+     */
+    private String t1;
+
+    private String t2;
+
+    private String t3;
+
+    private String t4;
+
+    /**
+     * WHEN PERIODICITE PARAMETER IS HALF-YEARLY
+     */
+    private String s1;
+
+    private String s2;
 
     private String financementLibelle;
 

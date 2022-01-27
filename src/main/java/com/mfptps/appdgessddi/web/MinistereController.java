@@ -14,6 +14,7 @@ import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -35,6 +36,7 @@ public class MinistereController {
     }
 
     @PostMapping(path = "/ministeres")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Ministere> create(@Valid @RequestBody MinistereDTO ministere) throws URISyntaxException {
 
         Ministere min = ministereService.create(ministere);
@@ -45,6 +47,7 @@ public class MinistereController {
     }
 
     @PutMapping(path = "/ministeres")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Ministere> updateMinistere(@Valid @RequestBody Ministere ministere) throws URISyntaxException {
         log.debug("Mis à jour du Ministere : {}", ministere);
         if (ministere.getId() == null) {
@@ -77,6 +80,7 @@ public class MinistereController {
     }
 
     @DeleteMapping(path = "/ministeres/{id}")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Suppression du Ministere : {}", id);
         ministereService.delete(id);

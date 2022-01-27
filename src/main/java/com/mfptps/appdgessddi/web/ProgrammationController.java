@@ -148,7 +148,7 @@ public class ProgrammationController {
      * @return
      */
     @PutMapping(path = "/rejet")
-    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RD + "\", \"" + AppUtil.DD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<String> rejetProgrammation(@Valid @RequestBody CommentaireDTO commentaireDTO) {
         log.debug("Rejet de la Programmation : {}", commentaireDTO.getProgrammationId());
         programmationService.rejetDgessOrCasem(commentaireDTO);
@@ -162,7 +162,7 @@ public class ProgrammationController {
      * @return
      */
     @DeleteMapping(path = "/{ids}/{idp}")
-    //@PreAuthorize("hasAnyAuthority(\"FOCAL_STRUCT\")")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.FS + "\", \"" + AppUtil.RD + "\", \"" + AppUtil.DD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> delete(
             @PathVariable(name = "ids", required = true) Long structureId,
             @PathVariable(name = "idp", required = true) Long programmationId) {
@@ -189,8 +189,4 @@ public class ProgrammationController {
         programmationService.printProgrammeActivites(printGlobalDTO.getMinistereId(), printGlobalDTO.getStructureId(), printGlobalDTO.getExerciceId(), printGlobalDTO.getCurrentStructureId(), null);
     }
 
-//    @GetMapping(value = "/test/test")
-//    public void em() {
-//        reportTest.printProgrammeActivites(3L, null, 2L, 4L, null);
-//    }
 }

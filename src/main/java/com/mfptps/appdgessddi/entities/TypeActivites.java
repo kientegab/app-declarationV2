@@ -1,11 +1,11 @@
 package com.mfptps.appdgessddi.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
@@ -29,6 +29,8 @@ public class TypeActivites extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(nullable = false, unique = true)
     private String libelle;
 
     public Long getId() {
@@ -44,7 +46,7 @@ public class TypeActivites extends CommonEntity {
     }
 
     public void setLibelle(String libelle) {
-        this.libelle = libelle;
+        this.libelle = libelle.toUpperCase();
     }
 
     @Override

@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -28,12 +29,13 @@ public class Commentaire extends CommonEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String contenu;
 
     //================== Relationships
     @JsonIgnoreProperties(value = {"taches", "sourceFinancement", "activite", "projet", "structure"})
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Programmation programmation;
 
     //======================= CONSTRUCTORS && GETTERS/SETTERS

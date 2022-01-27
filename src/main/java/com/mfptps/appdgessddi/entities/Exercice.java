@@ -30,13 +30,17 @@ public class Exercice extends CommonEntity {
     private Long id;
 
     private String description;
+
     @Convert(converter = ExerciceStatusConverter.class)
     @Column(nullable = false, length = 1)
     private ExerciceStatus statut;
 
+    @Column(nullable = false)
     private LocalDate debut;
 
+    @Column(nullable = false)
     private LocalDate fin;
+
     @ManyToOne
     private Observations observation;
 

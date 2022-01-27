@@ -14,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -72,6 +73,7 @@ public class Programmation extends CommonEntity {
 
     //============= relationships 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private SourceFinancement sourceFinancement;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "programmation"/*, cascade = CascadeType.PERSIST*/)
@@ -80,19 +82,24 @@ public class Programmation extends CommonEntity {
 //    @OneToMany(mappedBy = "programmation")
 //    private List<Evaluation> evaluations;
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Activites activite;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Projet projet;
 
     @JsonIgnoreProperties(value = {"parent"})
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Structure structure;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Exercice exercice;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Objectif objectif;//ObjectifOperationel
 
     //============== CONSTRUCTORS && GETTERS/SETTERS

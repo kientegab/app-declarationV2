@@ -152,23 +152,39 @@ public class ReportUtil {
         List<ActiviteRE> data = new ArrayList<>();
         for (ViewGlobale elmt : globalData) {
             if (objectif.getCodeObjectifOp().equals(elmt.getCodeObjectifOpe())) {
-                ActiviteRE activite = new ActiviteRE(elmt.getCodeProgrammation(), elmt.getLibelleActivite(), "", elmt.getCibleProgrammation(), elmt.getCoutPrevisionnel(), null, elmt.getLibelleFinancement(), elmt.getSigleStructure());
-                String periode = "";
+                ActiviteRE activite = new ActiviteRE(elmt.getCodeProgrammation(), elmt.getLibelleActivite(), "", elmt.getCibleProgrammation(), elmt.getCoutPrevisionnel(), null, null, null, null, null, null, elmt.getLibelleFinancement(), elmt.getSigleStructure());
                 for (ProgrammationPhysiqueRE physique : programmationPhysiqueData) {
                     if (elmt.getId() == physique.getIdProgrammation()) {
-                        periode = periode + "-" + physique.getLibellePeriode();
+                        switch (physique.getLibellePeriode()) {
+                            case "T1":
+                                activite.setT1("X");
+                                break;
+                            case "T2":
+                                activite.setT2("X");
+                                break;
+                            case "T3":
+                                activite.setT3("X");
+                                break;
+                            case "T4":
+                                activite.setT4("X");
+                                break;
+                            case "S1":
+                                activite.setS1("X");
+                                break;
+                            case "S2":
+                                activite.setS2("X");
+                                break;
+                            default:
+                                System.out.println("_______________________ default case...");
+                        }
                     }
                 }
-                activite.setPhysique(periode.substring(1, periode.length()));
                 if (!containsCodeActivite(data, elmt.getCodeProgrammation())) {
                     data.add(activite);
                 }
             }
         }
 
-        for (ActiviteRE a : data) {
-            System.out.println("\n__________ ActiviteRE :" + a.getCodeActivite() + "___ " + a.getPhysique());
-        }
         return data;
     }
 
@@ -224,19 +240,6 @@ public class ReportUtil {
             programmeRE.setObjectifStrategiqueREs(objectifStrategiqueData);
             programData.add(programmeRE);
 
-// NON RESOLUE             
-//            for (ProgrammeRE p : programData) {
-//                for (ObjectifStrategiqueRE os : p.getObjectifStrategiqueREs()) {
-//                    for (ActionRE ac : os.getActionREs()) {
-//                        for (ObjectifOperationnelRE op : ac.getObjectifOperationnelREs()) {
-//                            System.out.println("_________ op: " + op.getCodeObjectifOp());
-//                            for (ActiviteRE a : op.getActiviteREs()) {
-//                                System.out.println("\t_________ ac: " + op.getCodeObjectifOp());
-//                            }
-//                        }
-//                    }
-//                }
-//            }
             mainProgramData.add(new ProgrammeDataRE(ministereLibelle, structureParentLibelle, currentStructureLibelle, currentStructureTelephone, titre, logoStream, programData));
 
         }

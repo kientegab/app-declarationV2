@@ -12,9 +12,9 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<style name="Title" forecolor="#FFFFFF" fontName="Arial" fontSize="50" isBold="false"/>
-	<style name="SubTitle" forecolor="#CCCCCC" fontName="Arial" fontSize="18" isBold="false"/>
-	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="14" isBold="true"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Arial" fontSize="12" isBold="false"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Arial" fontSize="12" isBold="false"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="10" isBold="true"/>
 	<style name="Detail" mode="Transparent" fontName="Arial"/>
 	<style name="Row" mode="Transparent" fontName="Arial" pdfFontName="Times-Roman">
 		<conditionalStyle>
@@ -51,6 +51,22 @@
 	<variable name="PROGRAMMATION_TEXT" class="java.lang.String">
 		<variableExpression><![CDATA[$V{PROGRAMMATION_TEXT}]]></variableExpression>
 		<initialValueExpression><![CDATA["PROGRAMMATION PHYSIQUE"]]></initialValueExpression>
+	</variable>
+	<variable name="T1_TEXT" class="java.lang.String">
+		<variableExpression><![CDATA[$V{T1_TEXT}]]></variableExpression>
+		<initialValueExpression><![CDATA["T1"]]></initialValueExpression>
+	</variable>
+	<variable name="T2_TEXT" class="java.lang.String">
+		<variableExpression><![CDATA[$V{T2_TEXT}]]></variableExpression>
+		<initialValueExpression><![CDATA["T2"]]></initialValueExpression>
+	</variable>
+	<variable name="T3_TEXT" class="java.lang.String">
+		<variableExpression><![CDATA[$V{T3_TEXT}]]></variableExpression>
+		<initialValueExpression><![CDATA["T3"]]></initialValueExpression>
+	</variable>
+	<variable name="T4_TEXT" class="java.lang.String">
+		<variableExpression><![CDATA[$V{T4_TEXT}]]></variableExpression>
+		<initialValueExpression><![CDATA["T4"]]></initialValueExpression>
 	</variable>
 	<variable name="COUT_TEXT" class="java.lang.String">
 		<variableExpression><![CDATA[$V{COUT_TEXT}]]></variableExpression>
@@ -199,19 +215,20 @@
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<frame>
-				<reportElement positionType="Float" mode="Opaque" x="0" y="30" width="802" height="30" backcolor="#2EB6D1" uuid="a6d46af0-e5d0-4d58-a0a7-d0b5a04d4e9e">
+				<reportElement positionType="Float" mode="Opaque" x="0" y="15" width="802" height="45" backcolor="#2EB6D1" uuid="a6d46af0-e5d0-4d58-a0a7-d0b5a04d4e9e">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<box>
 					<pen lineWidth="1.5"/>
 				</box>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement positionType="Float" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="90" height="30" uuid="0cf3f448-b686-4234-a523-ba0c3a00da0d">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="90" height="45" uuid="0cf3f448-b686-4234-a523-ba0c3a00da0d">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 						<pen lineWidth="1.5" lineStyle="Solid"/>
@@ -221,14 +238,15 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{CODE_TEXT}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement positionType="Float" stretchType="RelativeToTallestObject" mode="Transparent" x="90" y="0" width="132" height="30" uuid="c2698375-5f1d-4ad9-a42e-9a87e962e310">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" mode="Transparent" x="90" y="0" width="132" height="45" uuid="c2698375-5f1d-4ad9-a42e-9a87e962e310">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 						<pen lineWidth="1.5" lineStyle="Solid"/>
@@ -238,14 +256,15 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{ACTIVITE_TEXT}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="222" y="0" width="90" height="30" uuid="c3698375-5f1d-4ad9-a42e-9a87e962e314">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="222" y="0" width="90" height="45" uuid="c3698375-5f1d-4ad9-a42e-9a87e962e314">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 						<pen lineWidth="1.5"/>
@@ -255,14 +274,15 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{INDICATEUR_TEXT}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="312" y="0" width="50" height="30" uuid="c4698375-5f1d-4ad9-a42e-9a87e962e314">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="312" y="0" width="50" height="45" uuid="c4698375-5f1d-4ad9-a42e-9a87e962e314">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 						<pen lineWidth="1.5"/>
@@ -272,12 +292,12 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{CIBLE_TEXT}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="362" y="0" width="80" height="30" uuid="c1298375-5f1d-4ad9-a42e-9a87e962e314">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="362" y="0" width="84" height="30" uuid="c1298375-5f1d-4ad9-a42e-9a87e962e314">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
@@ -289,12 +309,12 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{PROGRAMMATION_TEXT}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="442" y="0" width="115" height="30" uuid="c1798375-5f1d-4ad9-a42e-9a87e962e314">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="362" y="30" width="21" height="15" uuid="c1298375-5f1d-4ad9-a42e-9a87e962e314">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
@@ -306,14 +326,84 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{T1_TEXT}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="383" y="30" width="21" height="15" uuid="c1298375-5f1d-4ad9-a42e-9a87e962e314">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="1.5"/>
+						<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{T2_TEXT}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="404" y="30" width="21" height="15" uuid="c1298375-5f1d-4ad9-a42e-9a87e962e314">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="1.5"/>
+						<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{T3_TEXT}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="425" y="30" width="21" height="15" uuid="c1298375-5f1d-4ad9-a42e-9a87e962e314">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="1.5"/>
+						<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{T4_TEXT}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="446" y="0" width="111" height="45" uuid="c1798375-5f1d-4ad9-a42e-9a87e962e314">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+						<pen lineWidth="1.5"/>
+						<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{COUT_TEXT}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="557" y="0" width="135" height="30" uuid="c1898375-5f1d-4ad9-a42e-9a87e962e314">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="557" y="0" width="135" height="45" uuid="c1898375-5f1d-4ad9-a42e-9a87e962e314">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 						<pen lineWidth="1.5"/>
@@ -323,14 +413,15 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{FINANCEMENT_TEXT}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="692" y="0" width="110" height="30" uuid="c1608375-5f1d-4ad9-a42e-9a87e962e314">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="692" y="0" width="110" height="45" uuid="c1608375-5f1d-4ad9-a42e-9a87e962e314">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 						<pen lineWidth="1.5"/>
@@ -340,7 +431,7 @@
 						<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{STRUCTURE_TEXT}]]></textFieldExpression>
 				</textField>
