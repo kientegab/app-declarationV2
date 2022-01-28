@@ -35,6 +35,13 @@ public class MinistereController {
         this.ministereService = ministereService;
     }
 
+    /**
+     * Access granted to RESP_DGESS, ADMIN
+     *
+     * @param ministere
+     * @return
+     * @throws URISyntaxException
+     */
     @PostMapping(path = "/ministeres")
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Ministere> create(@Valid @RequestBody MinistereDTO ministere) throws URISyntaxException {
@@ -46,6 +53,13 @@ public class MinistereController {
                 .body(min);
     }
 
+    /**
+     * Access granted to RESP_DGESS, ADMIN
+     *
+     * @param ministere
+     * @return
+     * @throws URISyntaxException
+     */
     @PutMapping(path = "/ministeres")
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Ministere> updateMinistere(@Valid @RequestBody Ministere ministere) throws URISyntaxException {
@@ -79,6 +93,12 @@ public class MinistereController {
         return ResponseEntity.ok().headers(headers).body(minsiteres.getContent());
     }
 
+    /**
+     * Access granted to ADMIN
+     *
+     * @param id
+     * @return
+     */
     @DeleteMapping(path = "/ministeres/{id}")
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> delete(@PathVariable Long id) {

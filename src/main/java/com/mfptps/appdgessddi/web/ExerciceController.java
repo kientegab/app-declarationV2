@@ -48,6 +48,13 @@ public class ExerciceController {
 //                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, exercice.getId().toString()))
 //                .body(exercice);
 //    }
+    /**
+     * Access granted to RESP_DGESS, (ADMIN)
+     *
+     * @param exercice
+     * @return
+     * @throws URISyntaxException
+     */
     @PutMapping
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Exercice> updateExercice(@Valid @RequestBody ExerciceDTO exercice) throws URISyntaxException {
@@ -62,6 +69,7 @@ public class ExerciceController {
     }
 
     /**
+     * Access granted to RESP_DGESS, (ADMIN)
      *
      * @return
      */

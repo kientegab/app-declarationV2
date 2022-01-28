@@ -15,6 +15,7 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -48,7 +49,12 @@ public class Structure extends CommonEntity {
     @Convert(converter = TypeStructureConverter.class)
     private TypeStructure type;
 
-    private String statut;//if Structure always exists or no (20112021) // A TRANSFORMER EN ENUM(ACTIVER, DESACTIVER)
+    /**
+     * STRUCTURE CAN BE 'ACTIVATED/ACTIVEE' OR 'DEACTIVATED/DESACTIVEE'
+     */
+    @Column(nullable = false)
+    @Type(type = "yes_no")
+    private boolean active = true;//if Structure always exists or no (20112021); because Structure having type MISSION can disappear
 
     private String telephone;
 
@@ -115,12 +121,12 @@ public class Structure extends CommonEntity {
         this.type = type;
     }
 
-    public String getStatut() {
-        return statut;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setStatut(String statut) {
-        this.statut = statut;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String getTelephone() {
@@ -164,7 +170,7 @@ public class Structure extends CommonEntity {
                 + ", niveau='" + niveau + '\''
                 + ", description='" + description + '\''
                 + ", type='" + type + '\''
-                + ", statut='" + statut + '\''
+                + ", active='" + active + '\''
                 + ", telephone=" + telephone
                 + ", emailResp='" + emailResp + '\''
                 + ", emailStruct='" + emailStruct + '\''

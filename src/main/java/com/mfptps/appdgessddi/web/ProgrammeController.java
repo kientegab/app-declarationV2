@@ -52,6 +52,7 @@ public class ProgrammeController {
     }
 
     /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
      *
      * @param programmeDTO
      * @return
@@ -68,6 +69,7 @@ public class ProgrammeController {
     }
 
     /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
      *
      * @param programme : json Programme object
      * @return
@@ -125,6 +127,7 @@ public class ProgrammeController {
     }
 
     /**
+     * Access granted to ADMIN
      *
      * @param id : id of Programme to be deleted
      * @return

@@ -31,7 +31,7 @@ public class Tache extends CommonEntity {
 
     private double ponderation;
 
-    private double valeur;//this is valeurCible of the tache
+    private double valeur = 1D;//this is valeurCible of the tache
 
     @Column(name = "est_execute", nullable = false)
     @Type(type = "yes_no")

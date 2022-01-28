@@ -51,6 +51,7 @@ public class PeriodiciteController {
     }
 
     /**
+     * Access granted to RESP_DGESS, ADMIN
      *
      * @param periodicite :
      * @return

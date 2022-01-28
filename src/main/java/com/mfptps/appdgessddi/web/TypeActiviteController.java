@@ -45,6 +45,13 @@ public class TypeActiviteController {
         this.typeActiviteService = typeActiviteService;
     }
 
+    /**
+     * Access granted to ADMIN
+     *
+     * @param typeActivite
+     * @return
+     * @throws URISyntaxException
+     */
     @PostMapping
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<TypeActivites> create(@Valid @RequestBody TypeActiviteDTO typeActivite) throws URISyntaxException {
@@ -56,6 +63,13 @@ public class TypeActiviteController {
                 .body(type);
     }
 
+    /**
+     * Access granted to ADMIN
+     *
+     * @param typeActivites
+     * @return
+     * @throws URISyntaxException
+     */
     @PutMapping
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<TypeActivites> updateTypeActivites(@Valid @RequestBody TypeActivites typeActivites) throws URISyntaxException {
@@ -84,6 +98,12 @@ public class TypeActiviteController {
         return ResponseEntity.ok().headers(headers).body(typeActivite.getContent());
     }
 
+    /**
+     * Access granted to ADMIN
+     *
+     * @param id
+     * @return
+     */
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> delete(@PathVariable Long id) {

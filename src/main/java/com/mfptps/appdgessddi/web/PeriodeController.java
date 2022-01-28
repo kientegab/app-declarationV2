@@ -49,6 +49,7 @@ public class PeriodeController {
     }
 
     /**
+     * Access granted to ADMIN
      *
      * @param periode
      * @return

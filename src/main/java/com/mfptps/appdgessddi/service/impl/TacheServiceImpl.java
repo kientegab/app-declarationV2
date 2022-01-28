@@ -112,8 +112,9 @@ public class TacheServiceImpl implements TacheService {
     @Override
     @Transactional(rollbackFor = CustomException.class)
     public List<Tache> evaluer(List<Tache> taches) {
-        Programmation programmation = programmationRepository.findById(taches.get(0).getProgrammation().getId())
-                .orElseThrow(() -> new CustomException("Programmation inexistante."));
+        Programmation programmation = taches.get(0).getProgrammation();
+        //programmationRepository.findById(taches.get(0).getProgrammation().getId())
+        //       .orElseThrow(() -> new CustomException("Programmation inexistante."));
         List<Tache> tachesdb = this.get(programmation.getId());
 
         evaluationService.checkPeriodeEvaluation(programmation.getId());
@@ -124,7 +125,7 @@ public class TacheServiceImpl implements TacheService {
                     TacheEvaluer tacheEvaluer = new TacheEvaluer();
                     TacheEvaluer tacheEvaluerPrecedent = new TacheEvaluer();
                     tacheEvaluerPrecedent = tacheEvaluerRepository.findByIdAndActive(tdb.getId()).orElse(null);
-                    this.checkValeurCumulee(tacheEvaluerPrecedent, t, tdb);
+                    //this.checkValeurCumulee(tacheEvaluerPrecedent, t, tdb);
                     this.evaluerTacheAValeurCible(tacheEvaluer, tacheEvaluerPrecedent, t, tdb);
                 } else if (t.getId().equals(tdb.getId()) && (tdb.getValeur() == 1D) && !tdb.isExecute()) {//tache without valeur cible and not yet executee
                     tdb.setExecute(t.isExecute());
@@ -146,12 +147,17 @@ public class TacheServiceImpl implements TacheService {
      * table
      */
     void evaluerTacheAValeurCible(TacheEvaluer aEvaluer, TacheEvaluer precedent, Tache t, Tache tdb) {
+        boolean execute = (t.getValeur() >= tdb.getValeur());
         if (precedent == null) {//the first insert of tacheEvaluer
             aEvaluer.setTache(tdb);
             aEvaluer.setValeurAtteinte(t.getValeur());
             aEvaluer.setValeurCumulee(t.getValeur());
             aEvaluer.setCumuleeActive(true);
             tacheEvaluerRepository.save(aEvaluer);
+            if (execute) {
+                tdb.setExecute(execute);
+                tacheRepository.save(tdb);
+            }
         } else {
             if (t.getValeur() != 0D) {
                 aEvaluer.setTache(tdb);
@@ -161,6 +167,10 @@ public class TacheServiceImpl implements TacheService {
                 precedent.setCumuleeActive(false);
                 tacheEvaluerRepository.save(precedent);
                 tacheEvaluerRepository.save(aEvaluer);
+                if (execute) {
+                    tdb.setExecute(execute);
+                    tacheRepository.save(tdb);
+                }
             } else if ((t.getValeur() == 0D) && !tdb.isExecute()) {//Cumul acquire but tache.execute != true
                 tdb.setExecute(t.isExecute());
                 tacheRepository.save(tdb);

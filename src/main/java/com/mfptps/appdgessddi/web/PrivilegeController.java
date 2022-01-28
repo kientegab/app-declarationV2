@@ -36,6 +36,8 @@ public class PrivilegeController {
     }
 
     /**
+     * Access granted to ADMIN
+     *
      * {@code POST  /privileges} : Create a new privilege.
      *
      * @param privilege the privilege to create.
@@ -58,6 +60,8 @@ public class PrivilegeController {
     }
 
     /**
+     * Access granted to ADMIN
+     *
      * {@code PUT  /privileges} : Updates an existing privilege.
      *
      * @param privilege the privilege to update.
@@ -117,6 +121,8 @@ public class PrivilegeController {
     }
 
     /**
+     * Access granted to ADMIN
+     *
      * {@code DELETE  /privileges/:id} : delete the "id" privilege.
      *
      * @param id the id of the privilege to delete.
