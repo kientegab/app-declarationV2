@@ -36,6 +36,8 @@ public class ProfileController {
     }
 
     /**
+     * Access granted to ADMIN
+     *
      * {@code POST  /profiles} : Create a new profile.
      *
      * @param profile the profile to create.
@@ -59,6 +61,8 @@ public class ProfileController {
     }
 
     /**
+     * Access granted to ADMIN
+     *
      * {@code PUT  /profiles} : Updates an existing profile.
      *
      * @param profile the profile to update.
@@ -111,6 +115,8 @@ public class ProfileController {
     }
 
     /**
+     * Access granted to ADMIN
+     *
      * {@code DELETE  /profiles/:id} : delete the "id" profile.
      *
      * @param id the id of the profile to delete.

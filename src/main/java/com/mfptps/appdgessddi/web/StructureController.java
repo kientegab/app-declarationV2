@@ -47,7 +47,7 @@ public class StructureController {
     }
 
     /**
-     * ACCESS TO : ROLE_RESP_DDII, ROLE_DIR_DGESS, ROLE_ADMIN
+     * Access granted to RESP_DDII, DIR_DGESS, ADMIN
      *
      * @param structure
      * @return
@@ -76,7 +76,7 @@ public class StructureController {
     }
 
     /**
-     * ACCESS TO : ROLE_RESP_DDII, ROLE_DIR_DGESS, ROLE_ADMIN
+     * Access granted to RESP_DDII, DIR_DGESS, ADMIN
      *
      * @param structure
      * @return
@@ -122,7 +122,7 @@ public class StructureController {
     }
 
     /**
-     * ACCESS TO : ROLE_RESP_DDII, ROLE_DIR_DGESS, ROLE_ADMIN
+     * Access granted to RESP_DDII, DIR_DGESS, ADMIN
      *
      * @param changeMinistereDTO
      * @return

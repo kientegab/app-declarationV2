@@ -104,7 +104,6 @@ public class AppDataInitializer {
             structure.setNiveau(1);
             structure.setType(TypeStructure.CENTRALE);
             structure.setTelephone(AppUtil.BASIC_STRUCTURE_TELEPHONE);
-            structure.setStatut("ACTIF");
             structureRepository.save(structure);
 
             ministereStructure.setMinistere(ministere);

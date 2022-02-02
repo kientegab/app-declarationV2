@@ -50,6 +50,7 @@ public class SourceFinancementController {
     }
 
     /**
+     * Access granted to DAF, RESP_DGESS, (ADMIN)
      *
      * @param sourceFinancement
      * @return
@@ -67,6 +68,7 @@ public class SourceFinancementController {
     }
 
     /**
+     * Access granted to DAF, RESP_DGESS, (ADMIN)
      *
      * @param sourceFinancement
      * @return

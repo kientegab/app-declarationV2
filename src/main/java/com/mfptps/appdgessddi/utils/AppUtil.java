@@ -18,6 +18,9 @@ import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammeRepository;
 import com.mfptps.appdgessddi.service.CustomException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -196,4 +199,21 @@ public class AppUtil {
             throw new CustomException("Erreur lors du chargement du logo..." + e);
         }
     }
+
+    /**
+     *
+     * @param date
+     * @return
+     * @throws ParseException
+     */
+    public static Date normaliserDate(Date date) throws ParseException {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String dateValue = df.format(date);
+        Date toDay = new Date();
+        String toDayValue = df.format(toDay);
+        String value = dateValue
+                .substring(0, dateValue.length() - 4).concat(toDayValue.substring(toDayValue.length() - 4, toDayValue.length()));
+        return df.parse(value);
+    }
+
 }

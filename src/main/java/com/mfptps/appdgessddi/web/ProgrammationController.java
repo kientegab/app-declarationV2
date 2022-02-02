@@ -6,12 +6,10 @@
 package com.mfptps.appdgessddi.web;
 
 import com.mfptps.appdgessddi.entities.Programmation;
-import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.PrintGlobalDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
-import com.mfptps.appdgessddi.service.impl.StatisticParameterServiceImpl;
 import com.mfptps.appdgessddi.utils.*;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -54,19 +52,14 @@ public class ProgrammationController {
     private String applicationName;
 
     private final ProgrammationService programmationService;
-    private final ProgrammationRepository repository;
 
-    private final StatisticParameterServiceImpl reportTest;
-
-    public ProgrammationController(ProgrammationService programmationService,
-            ProgrammationRepository repository,
-            StatisticParameterServiceImpl reportTest) {
+    public ProgrammationController(ProgrammationService programmationService) {
         this.programmationService = programmationService;
-        this.repository = repository;
-        this.reportTest = reportTest;
     }
 
     /**
+     * Access granted to FOCAL_STRUCT, RESP_STRUCT, RESP_DGESS, DIR_DGESS,
+     * (ADMIN)
      *
      * @param programmationDTO
      * @return
@@ -125,7 +118,7 @@ public class ProgrammationController {
     }
 
     /**
-     * Validation performed by RESP_STRUC or RESP_DGESS
+     * Access granted to RESP_STRUCT, RESP_DGESS, (ADMIN)
      *
      * @param structureId : id of Structure of validator referency by ids in
      * path
@@ -143,6 +136,7 @@ public class ProgrammationController {
     }
 
     /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
      *
      * @param commentaireDTO: motif of rejection
      * @return
@@ -156,6 +150,7 @@ public class ProgrammationController {
     }
 
     /**
+     * Access granted to FOCAL_STRUCT, RESP_DGESS, DIR_DGESS, (ADMIN)
      *
      * @param structureId
      * @param programmationId

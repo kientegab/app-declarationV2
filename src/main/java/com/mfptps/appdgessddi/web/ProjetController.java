@@ -53,6 +53,7 @@ public class ProjetController {
     }
 
     /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
      *
      * @param projetDto
      * @return
@@ -70,6 +71,7 @@ public class ProjetController {
     }
 
     /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
      *
      * @param projet
      * @return
@@ -126,6 +128,7 @@ public class ProjetController {
     }
 
     /**
+     * Access granted to ADMIN
      *
      * @param id : Projet id to be deleted
      * @return

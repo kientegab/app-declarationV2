@@ -13,6 +13,8 @@ import com.mfptps.appdgessddi.repositories.PeriodeRepository;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.EvaluationService;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
+import com.mfptps.appdgessddi.utils.AppUtil;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,17 +30,17 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class EvaluationServiceImpl implements EvaluationService {
-
+    
     private EvaluationRepository evaluationRepository;
-
+    
     private PeriodeRepository periodeRepository;
-
+    
     public EvaluationServiceImpl(EvaluationRepository evaluationRepository,
             PeriodeRepository periodeRepository) {
         this.evaluationRepository = evaluationRepository;
         this.periodeRepository = periodeRepository;
     }
-
+    
     @Override
     public Evaluation create(Evaluation evaluation) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -55,11 +57,11 @@ public class EvaluationServiceImpl implements EvaluationService {
     public void addEvaluation(List<PeriodesDTO> periodes, Programmation programmation) {
         List<Periode> periodesParametrees = periodeRepository.findByPeriodiciteActif();
         List<Evaluation> evaluations = new ArrayList<>();
-
+        
         if (periodes.size() != periodesParametrees.size()) {
             throw new CustomException("Périodes non conformes à celles parametrées.");
         }
-
+        
         periodes.forEach(p -> {
             periodesParametrees.stream().filter(pp -> ((p.getLibelle().trim().charAt(0) == pp.getLibelle().charAt(0))
                     && (p.getLibelle().trim().charAt(p.getLibelle().length() - 1)
@@ -101,12 +103,27 @@ public class EvaluationServiceImpl implements EvaluationService {
      * @param programmationId
      */
     @Override
-    public void checkPeriodeEvaluation(Long programmationId) {
+    public void checkPeriodeEvaluation(Long programmationId) throws CustomException {
         Date toDay = new Date();
-        evaluationRepository.findByProgrammationAndPeriode(programmationId, toDay)
-                .orElseThrow(() -> new CustomException("Opération interdite ! Rassurez-vous d'être dans la bonne période d'évaluation de l'activité."));
+        boolean value = false;
+        List<Evaluation> evs = evaluationRepository.findByProgrammationAndPeriode(programmationId);
+        for (Evaluation ev : evs) {
+            try {
+                Date dateDebut = AppUtil.normaliserDate(ev.getPeriode().getDebut());
+                Date dateFin = AppUtil.normaliserDate(ev.getPeriode().getFin());
+                value = value || (toDay.after(dateDebut) && toDay.before(dateFin));
+                if (value) {
+                    break;
+                }
+            } catch (ParseException ex) {
+                log.error("Error when parsing data.");
+            }
+        }
+        if (!value) {
+            throw new CustomException("Opération non autorisée ! Rassurez-vous d'être dans la bonne période d'évaluation de l'activité.");
+        }
     }
-
+    
     @Override
     public Page<Evaluation> findAllByProgrammation(Long progammationId, Pageable pageable) {
         return evaluationRepository.findByProgrammationId(progammationId, pageable);

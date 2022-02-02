@@ -36,6 +36,13 @@ public class ActionController {
         this.actionService = actionService;
     }
 
+    /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
+     *
+     * @param actionDTO
+     * @return
+     * @throws URISyntaxException
+     */
     @PostMapping
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Action> createAction(@Valid @RequestBody ActionDTO actionDTO) throws URISyntaxException {
@@ -46,6 +53,13 @@ public class ActionController {
                 .body(action);
     }
 
+    /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
+     *
+     * @param action
+     * @return
+     * @throws URISyntaxException
+     */
     @PutMapping
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Action> updateAction(@Valid @RequestBody Action action) throws URISyntaxException {
@@ -80,6 +94,12 @@ public class ActionController {
         return ResponseEntity.ok().headers(headers).body(actions.getContent());
     }
 
+    /**
+     * Access granted to ADMIN
+     *
+     * @param id
+     * @return
+     */
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
