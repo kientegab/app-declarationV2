@@ -89,6 +89,20 @@ public class ProgrammationController {
     }
 
     /**
+     * list of Programmation for Evaluation
+     *
+     * @param structureId
+     * @param pageable
+     * @return
+     */
+    @GetMapping(path = "/all/valide/{ids}")
+    public ResponseEntity<List<Programmation>> findAllProgrammationsValided(@PathVariable(name = "ids", required = true) Long structureId, Pageable pageable) {
+        Page<Programmation> programmations = programmationService.findAllValided(structureId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), programmations);
+        return ResponseEntity.ok().headers(headers).body(programmations.getContent());
+    }
+
+    /**
      *
      * @param structureId : id of Structure referency by ids in path
      * @param libelle : field libelle of Activite
@@ -178,10 +192,11 @@ public class ProgrammationController {
      */
     @PostMapping(value = "/print/programme-activites")
     public void imprimerPAGlobal(HttpServletResponse response, @RequestBody PrintGlobalDTO printGlobalDTO) throws IOException {
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"PA-GLOBAL.pdf\""));
+        response.setContentType("application/octet-stream");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"Programme_activite_" + printGlobalDTO.getMinistereId() + ".xlsx\""));
         OutputStream outStream = response.getOutputStream();
-        programmationService.printProgrammeActivites(printGlobalDTO.getMinistereId(), printGlobalDTO.getStructureId(), printGlobalDTO.getExerciceId(), printGlobalDTO.getCurrentStructureId(), null);
+        programmationService.printProgrammeActivites(printGlobalDTO.getMinistereId(), printGlobalDTO.getStructureId(), printGlobalDTO.getExerciceId(), printGlobalDTO.getCurrentStructureId(), outStream);
     }
 
 }

@@ -29,6 +29,8 @@ public interface ProgrammationService {
 
     Page<Programmation> findAll(Long structureId, Pageable pageable);
 
+    Page<Programmation> findAllValided(Long structureId, Pageable pageable);
+
     Optional<Programmation> validationInitialeOrInterne(Long structureId, Long programmationId);
 
     void rejetDgessOrCasem(CommentaireDTO commentaireDTO);

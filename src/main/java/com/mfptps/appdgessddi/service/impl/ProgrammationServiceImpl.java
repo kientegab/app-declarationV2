@@ -35,6 +35,10 @@ import com.mfptps.appdgessddi.service.reportentities.ProgrammeRE;
 import com.mfptps.appdgessddi.service.reportentities.ReportUtil;
 import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import com.mfptps.appdgessddi.utils.AppUtil;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -45,12 +49,16 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.export.Exporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -174,6 +182,12 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     @Transactional(readOnly = true)
     public Page<Programmation> findAll(Long structureId, Pageable pageable) {
         return programmationRepository.findAll(structureId, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Programmation> findAllValided(Long structureId, Pageable pageable) {
+        return programmationRepository.findAllValided(structureId, pageable);
     }
 
     /**
@@ -320,15 +334,37 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
             Map<String, Object> parameters = new HashMap<>();
 
-//            stats.add(dataFE);
             JRDataSource datasource = new JRBeanCollectionDataSource(mainProgramData);
 
             JasperReport japerReport = (JasperReport) JRLoader.loadObject(reportStream);
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(japerReport, parameters, datasource);
 
-//            JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\test2.pdf");//exportReportToPdfStream(jasperPrint, outStream);
+            /**
+             * export to pdf
+             */
+            //JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+            /**
+             * export to Excel sheet
+             */
+            SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
+            configuration.setOnePagePerSheet(true);
+            configuration.setIgnoreGraphics(false);
+
+            File outputFile = new File("C:\\Users\\Canisius\\Pictures\\ProgrammeActivite.xlsx");
+            try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    OutputStream fileOutputStream = new FileOutputStream(outputFile)) {
+                Exporter exporter = new JRXlsxExporter();
+                exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+                exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
+                exporter.setConfiguration(configuration);
+                exporter.exportReport();
+                byteArrayOutputStream.writeTo(fileOutputStream);
+            } catch (IOException ex) {
+                log.error("Error when exporting data from", ex);
+            }
+//            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\test2.pdf");//exportReportToPdfStream(jasperPrint, outStream);
+
         } catch (JRException e) {
             log.error("Error when exporting data from", e);
         }
