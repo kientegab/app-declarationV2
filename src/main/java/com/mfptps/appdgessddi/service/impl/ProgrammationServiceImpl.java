@@ -35,10 +35,6 @@ import com.mfptps.appdgessddi.service.reportentities.ProgrammeRE;
 import com.mfptps.appdgessddi.service.reportentities.ReportUtil;
 import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import com.mfptps.appdgessddi.utils.AppUtil;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -49,16 +45,12 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.export.Exporter;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -234,7 +226,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                         programmation.setValidationInitial(true);
                     }
                     if ((SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) && programmation.isValidationInitial()) {
-                        programmation.setValidationInterne(true);
+                        programmation.setValidationInterne(true);//validation DGESS
+                        programmation.setValidationFinal(true);//validation CASEM... A revoir
                     }
                     return programmation;
                 });
@@ -242,6 +235,29 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             throw new CustomException("La programmation d'id " + programmationId + " est inexistante ou déjà validée");
         }
         return response;
+    }
+
+    @Override
+    public void allValidationInitiale(Long structureId) {
+        List<Programmation> list = programmationRepository.findAll(structureId);
+        if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_STRUCT") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
+            for (Programmation programmation : list) {
+                programmation.setValidationInitial(true);
+            }
+        }
+    }
+
+    @Override
+    public void allValidationInterne(Long structureId) {
+        List<Programmation> list = programmationRepository.findAll(structureId);
+        if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
+            list.stream().filter(programmation -> (programmation.isValidationInitial())).map(programmation -> {
+                programmation.setValidationInterne(true);
+                return programmation;
+            }).forEachOrdered(programmation -> {
+                programmation.setValidationFinal(true);
+            });
+        }
     }
 
     /**
@@ -343,28 +359,27 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             /**
              * export to pdf
              */
-            //JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+            JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
             /**
              * export to Excel sheet
              */
-            SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
-            configuration.setOnePagePerSheet(true);
-            configuration.setIgnoreGraphics(false);
-
-            File outputFile = new File("C:\\Users\\Canisius\\Pictures\\ProgrammeActivite.xlsx");
-            try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    OutputStream fileOutputStream = new FileOutputStream(outputFile)) {
-                Exporter exporter = new JRXlsxExporter();
-                exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-                exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
-                exporter.setConfiguration(configuration);
-                exporter.exportReport();
-                byteArrayOutputStream.writeTo(fileOutputStream);
-            } catch (IOException ex) {
-                log.error("Error when exporting data from", ex);
-            }
+//            SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
+//            configuration.setOnePagePerSheet(true);
+//            configuration.setIgnoreGraphics(false);
+//
+//            File outputFile = new File("C:\\Users\\Canisius\\Pictures\\ProgrammeActivite.xlsx");
+//            try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//                    OutputStream fileOutputStream = new FileOutputStream(outputFile)) {
+//                Exporter exporter = new JRXlsxExporter();
+//                exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+//                exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
+//                exporter.setConfiguration(configuration);
+//                exporter.exportReport();
+//                byteArrayOutputStream.writeTo(fileOutputStream);
+//            } catch (IOException ex) {
+//                log.error("Error when exporting data from", ex);
+//            }
 //            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\test2.pdf");//exportReportToPdfStream(jasperPrint, outStream);
-
         } catch (JRException e) {
             log.error("Error when exporting data from", e);
         }

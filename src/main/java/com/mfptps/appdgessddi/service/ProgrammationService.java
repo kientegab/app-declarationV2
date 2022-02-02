@@ -33,6 +33,10 @@ public interface ProgrammationService {
 
     Optional<Programmation> validationInitialeOrInterne(Long structureId, Long programmationId);
 
+    void allValidationInitiale(Long structureId);
+
+    void allValidationInterne(Long structureId);
+
     void rejetDgessOrCasem(CommentaireDTO commentaireDTO);
 
     void delete(Long structureId, Long programmationId);
