@@ -24,17 +24,21 @@ import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.CommentaireService;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.EvaluationService;
+import com.mfptps.appdgessddi.service.ExerciceService;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
-import com.mfptps.appdgessddi.service.mapper.MinistereStructureMapper;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
 import com.mfptps.appdgessddi.service.reportentities.ProgrammeDataRE;
 import com.mfptps.appdgessddi.service.reportentities.ProgrammeRE;
 import com.mfptps.appdgessddi.service.reportentities.ReportUtil;
 import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import com.mfptps.appdgessddi.utils.AppUtil;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -50,7 +54,12 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.export.Exporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -74,7 +83,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private final EvaluationService evaluationService;
     private final CommentaireService commentaireService;
     private final ProgrammationMapper programmationMapper;
-    private final MinistereStructureMapper ministereStructureMapper;
+    private final ExerciceService exerciceService;
     private final QueryManagerRepository query;
 
     public ProgrammationServiceImpl(ProgrammationRepository programmationRepository,
@@ -86,7 +95,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             EvaluationService evaluationService,
             CommentaireService commentaireService,
             ProgrammationMapper programmationMapper,
-            MinistereStructureMapper ministereStructureMapper,
+            ExerciceService exerciceService,
             QueryManagerRepository query) {
         this.programmationRepository = programmationRepository;
         this.tacheRepository = tacheRepository;
@@ -97,7 +106,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         this.evaluationService = evaluationService;
         this.commentaireService = commentaireService;
         this.programmationMapper = programmationMapper;
-        this.ministereStructureMapper = ministereStructureMapper;
+        this.exerciceService = exerciceService;
         this.query = query;
 
     }
@@ -176,6 +185,12 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         return programmationRepository.findAll(structureId, pageable);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Programmation> findAllValided(Long structureId, Pageable pageable) {
+        return programmationRepository.findAllValided(structureId, pageable);
+    }
+
     /**
      *
      * @param structureId
@@ -220,7 +235,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                         programmation.setValidationInitial(true);
                     }
                     if ((SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) && programmation.isValidationInitial()) {
-                        programmation.setValidationInterne(true);
+                        programmation.setValidationInterne(true);//validation DGESS
+                        programmation.setValidationFinal(true);//validation CASEM... A revoir
                     }
                     return programmation;
                 });
@@ -228,6 +244,29 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             throw new CustomException("La programmation d'id " + programmationId + " est inexistante ou déjà validée");
         }
         return response;
+    }
+
+    @Override
+    public void allValidationInitiale(Long structureId) {
+        List<Programmation> list = programmationRepository.findAll(structureId);
+        if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_STRUCT") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
+            for (Programmation programmation : list) {
+                programmation.setValidationInitial(true);
+            }
+        }
+    }
+
+    @Override
+    public void allValidationInterne(Long structureId) {
+        List<Programmation> list = programmationRepository.findAll(structureId);
+        if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
+            list.stream().filter(programmation -> (programmation.isValidationInitial())).map(programmation -> {
+                programmation.setValidationInterne(true);
+                return programmation;
+            }).forEachOrdered(programmation -> {
+                programmation.setValidationFinal(true);
+            });
+        }
     }
 
     /**
@@ -255,7 +294,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     @Override
     @Transactional
-    public void printProgrammeActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, OutputStream outputStream) {
+    public void printProgrammeActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, String fileFormat, OutputStream outputStream) {
 
         try {
             // chargement du ministère concerné
@@ -263,6 +302,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
             // structure génératrice du document
             Optional<Structure> currentStructure = Optional.ofNullable(structureRepository.getById(currentStructureId));
+
+            Optional<Exercice> exercice = exerciceService.get(exerciceId);
 
             Structure structureParent = new Structure();
             if (currentStructure.get().getParent() != null) {
@@ -273,7 +314,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             InputStream logoStream = AppUtil.getAppDefaultLogo();
 
             // le titre du rapport
-            String titre = "PROGRAMME D'ACTIVITES";
+            String titre = "PROGRAMME D'ACTIVITES " + exercice.get().getDebut().getYear();
 
             // Conteneurs intermédiaires utilisés pour construire les données
             List<Programme> allPrograms = new ArrayList<>();
@@ -295,40 +336,44 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 allStructures.add(structure);
             }
 
-            // parcourir la liste des structures pour récuperer les programmes concernés par la structure ou le ministère
-//            for (Structure struct : allStructures) {//non utilisé
-//
-//                // recherche des actions liées à la structure sur l'exercice en cours 
-//                List<Action> allActions = this.actionRepository.findActionsByStructureAndExercice(struct.getId(), exerciceId);
-//
-//                for (Action act : allActions) {
-//                    // Recherche des programmes liées à chaque action
-//                    List<Programme> progs = this.programmeRepository.findProgrammeByAction(act.getId());
-//                    for (Programme prog : progs) {
-//                        if (!allPrograms.contains(prog)) {
-//                            allPrograms.add(prog);
-//                        }
-//                    }
-//                }
-//            }
             // Construction des objet pour impression
             List<ViewGlobale> globalData = this.query.globalDataList();
 
-            mainProgramData = ReportUtil.consctruct(globalData, ministere.getLibelle(), structureParent.getLibelle(), currentStructure.get().getLibelle(), currentStructure.get().getTelephone(), titre, logoStream);
+            mainProgramData = ReportUtil.consctruct(ministere.getLibelle(), structureParent.getLibelle(), currentStructure.get().getLibelle(), currentStructure.get().getTelephone(), titre, logoStream, globalData);
 
             InputStream reportStream = this.getClass().getResourceAsStream("/conteneur_principal.jasper");
 
             Map<String, Object> parameters = new HashMap<>();
 
-//            stats.add(dataFE);
             JRDataSource datasource = new JRBeanCollectionDataSource(mainProgramData);
 
             JasperReport japerReport = (JasperReport) JRLoader.loadObject(reportStream);
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(japerReport, parameters, datasource);
 
-//            JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\test2.pdf");//exportReportToPdfStream(jasperPrint, outStream);
+            if (fileFormat.trim().equals("pdf")) {//export to pdf file
+                JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+            } else if (fileFormat.trim().equals("excel")) {//export to Excel sheet
+                SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
+                configuration.setOnePagePerSheet(true);
+                configuration.setIgnoreGraphics(false);
+
+                File outputFile = new File("C:\\Users\\Canisius\\Pictures\\ProgrammeActivite.xlsx");
+                try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        OutputStream fileOutputStream = new FileOutputStream(outputFile)) {
+                    Exporter exporter = new JRXlsxExporter();
+                    exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+                    exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
+                    exporter.setConfiguration(configuration);
+                    exporter.exportReport();
+                    byteArrayOutputStream.writeTo(fileOutputStream);
+                    JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+                } catch (IOException ex) {
+                    log.error("Error when exporting data from", ex);
+                }
+            }
+
+//            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\test2.pdf");//exportReportToPdfStream(jasperPrint, outStream);
         } catch (JRException e) {
             log.error("Error when exporting data from", e);
         }

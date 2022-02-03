@@ -7,7 +7,7 @@ package com.mfptps.appdgessddi.web;
 
 import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.service.TacheService;
-import com.mfptps.appdgessddi.service.dto.TacheVM;
+import com.mfptps.appdgessddi.web.vm.TacheVM;
 import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.PaginationUtil;
 import java.util.List;

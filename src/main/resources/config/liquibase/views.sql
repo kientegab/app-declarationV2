@@ -4,7 +4,7 @@
 -- DROP VIEW IF EXISTS structuresmyministere;
 CREATE OR REPLACE VIEW structuresbyministere AS 
     SELECT s.id AS id, ministere_id AS ministereid, s.libelle AS libellestructure, s.sigle AS siglestructure, 
-            s.niveau AS niveaustructure, s.statut AS statutstructure, s.telephone AS telephonestructure, 
+            s.niveau AS niveaustructure, s.active AS statutstructure, s.telephone AS telephonestructure, 
             s.email_resp AS emailrespstructure, s.email_struct AS emailstructstructure, s.parent_id AS parentstructure
     FROM ministere_structure AS ms, structure AS s WHERE ms.statut IS TRUE GROUP BY ministere_id, s.id;
 -- 

@@ -29,11 +29,17 @@ public interface ProgrammationService {
 
     Page<Programmation> findAll(Long structureId, Pageable pageable);
 
+    Page<Programmation> findAllValided(Long structureId, Pageable pageable);
+
     Optional<Programmation> validationInitialeOrInterne(Long structureId, Long programmationId);
+
+    void allValidationInitiale(Long structureId);
+
+    void allValidationInterne(Long structureId);
 
     void rejetDgessOrCasem(CommentaireDTO commentaireDTO);
 
     void delete(Long structureId, Long programmationId);
 
-    void printProgrammeActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, OutputStream outputStream);
+    void printProgrammeActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, String fileFormat, OutputStream outputStream);
 }

@@ -8,9 +8,10 @@ package com.mfptps.appdgessddi.web;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
-import com.mfptps.appdgessddi.service.dto.PrintGlobalDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.utils.*;
+import com.mfptps.appdgessddi.web.vm.PrintGlobalVM;
+import com.mfptps.appdgessddi.web.vm.ValidProgammationVM;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
@@ -89,6 +90,20 @@ public class ProgrammationController {
     }
 
     /**
+     * list of Programmation for Evaluation
+     *
+     * @param structureId
+     * @param pageable
+     * @return
+     */
+    @GetMapping(path = "/all/valide/{ids}")
+    public ResponseEntity<List<Programmation>> findAllProgrammationsValided(@PathVariable(name = "ids", required = true) Long structureId, Pageable pageable) {
+        Page<Programmation> programmations = programmationService.findAllValided(structureId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), programmations);
+        return ResponseEntity.ok().headers(headers).body(programmations.getContent());
+    }
+
+    /**
      *
      * @param structureId : id of Structure referency by ids in path
      * @param libelle : field libelle of Activite
@@ -136,6 +151,26 @@ public class ProgrammationController {
     }
 
     /**
+     *
+     * @param validProgammationDTO
+     * @return
+     */
+    @PutMapping(path = "/validation-all")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RS + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
+    public ResponseEntity<String> allValidationProgrammation(@RequestBody ValidProgammationVM validProgammationVM) {
+        log.debug("Validation globale initiale/interne de Programmations");
+        String message = "";
+        if (validProgammationVM.isInitiale()) {//all initial validation of RESP_STRUCT
+            programmationService.allValidationInitiale(validProgammationVM.getStructureId());
+            message = "Validations initiales bien effectuées.";
+        } else if (!validProgammationVM.isInitiale()) {
+            programmationService.allValidationInterne(validProgammationVM.getStructureId());
+            message = "Validations initerne et finale bien effectuées.";
+        }
+        return ResponseEntity.ok().body(message);
+    }
+
+    /**
      * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
      *
      * @param commentaireDTO: motif of rejection
@@ -177,11 +212,13 @@ public class ProgrammationController {
      * @throws IOException
      */
     @PostMapping(value = "/print/programme-activites")
-    public void imprimerPAGlobal(HttpServletResponse response, @RequestBody PrintGlobalDTO printGlobalDTO) throws IOException {
+    public void imprimerPAGlobal(HttpServletResponse response, @RequestBody PrintGlobalVM printGlobalVM) throws IOException {
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"PA-GLOBAL.pdf\""));
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"Programme_activite_" + printGlobalVM.getMinistereId() + ".pdf\""));
         OutputStream outStream = response.getOutputStream();
-        programmationService.printProgrammeActivites(printGlobalDTO.getMinistereId(), printGlobalDTO.getStructureId(), printGlobalDTO.getExerciceId(), printGlobalDTO.getCurrentStructureId(), null);
+        programmationService.printProgrammeActivites(printGlobalVM.getMinistereId(),
+                printGlobalVM.getStructureId(), printGlobalVM.getExerciceId(),
+                printGlobalVM.getCurrentStructureId(), printGlobalVM.getFormat(), outStream);
     }
 
 }

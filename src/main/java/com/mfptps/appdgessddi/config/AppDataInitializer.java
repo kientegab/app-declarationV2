@@ -32,17 +32,17 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class AppDataInitializer {
-
+    
     private final ExerciceRepository exerciceRepository;
-
+    
     private final MinistereRepository ministereRepository;
-
+    
     private final StructureRepository structureRepository;
-
+    
     private final MinistereStructureRepository ministereStructureRepository;
-
+    
     private final AgentService agentService;
-
+    
     public AppDataInitializer(ExerciceRepository exerciceRepository,
             MinistereRepository ministereRepository,
             StructureRepository structureRepository,
@@ -54,7 +54,7 @@ public class AppDataInitializer {
         this.ministereStructureRepository = ministereStructureRepository;
         this.agentService = agentService;
     }
-
+    
     @PostConstruct
     public void initialization() {
         //save Exercices
@@ -65,15 +65,15 @@ public class AppDataInitializer {
             LocalDate dateFin = LocalDate.of(LocalDate.now().getYear(), Month.DECEMBER, 31);
             Exercice exerciceCourant = new Exercice();
             Exercice exerciceAVenir = new Exercice();
-
+            
             exerciceCourant.setDebut(dateDebut);
             exerciceCourant.setFin(dateFin);
             exerciceCourant.setStatut(ExerciceStatus.EN_COURS);
-
+            
             exerciceAVenir.setDebut(dateDebut.plusYears(1));
             exerciceAVenir.setFin(dateFin.plusYears(1));
             exerciceAVenir.setStatut(ExerciceStatus.EN_ATTENTE);
-
+            
             exerciceRepository.saveAll(Arrays.asList(exerciceCourant, exerciceAVenir));
         }
 
@@ -82,7 +82,7 @@ public class AppDataInitializer {
         if (basicExisting.isEmpty()) {
             this.recordBasicMinistereAndStrucuture();
         }
-
+        
     }
 
     /**
@@ -93,19 +93,21 @@ public class AppDataInitializer {
             Ministere ministere = new Ministere();
             Structure structure = new Structure();
             MinistereStructure ministereStructure = new MinistereStructure();
-
+            
             ministere.setCode(AppUtil.BASIC_MINISTERE_CODE);
             ministere.setLibelle(AppUtil.BASIC_MINISTERE_LABEL);
             ministere.setSigle(AppUtil.BASIC_MINISTERE_SIGLE);
             ministereRepository.save(ministere);
-
+            
             structure.setLibelle(AppUtil.BASIC_STRUCTURE_LABEL);
             structure.setSigle(AppUtil.BASIC_STRUCTURE_SIGLE);
             structure.setNiveau(1);
             structure.setType(TypeStructure.CENTRALE);
             structure.setTelephone(AppUtil.BASIC_STRUCTURE_TELEPHONE);
+            structure.setEmailResp(AppUtil.BASIC_STRUCTURE_EMAIL);
+            structure.setEmailStruct(AppUtil.BASIC_STRUCTURE_EMAIL);
             structureRepository.save(structure);
-
+            
             ministereStructure.setMinistere(ministere);
             ministereStructure.setStructure(structure);
             ministereStructure.setDateDebut(new Date());
@@ -118,5 +120,5 @@ public class AppDataInitializer {
             throw new CustomException("Une erreur s'est produite lors de l'initialisation des ministère et structure de base.");
         }
     }
-
+    
 }

@@ -25,7 +25,21 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "WHERE p.deleted = false "
             + "AND p.structure.id = s.id "
             + "AND s.id = :structureId")
+    List<Programmation> findAll(Long structureId);
+
+    @Query("SELECT p FROM Programmation p, Structure s "
+            + "WHERE p.deleted = false "
+            + "AND p.structure.id = s.id "
+            + "AND s.id = :structureId")
     Page<Programmation> findAll(Long structureId, Pageable Pageable);
+
+    @Query("SELECT p FROM Programmation p, Structure s "
+            + "WHERE p.deleted = false "
+            + "AND p.structure.id = s.id "
+            + "AND s.id = :structureId "
+            + "AND p.validationInterne = true "
+            + "AND p.validationFinal = true")
+    Page<Programmation> findAllValided(Long structureId, Pageable Pageable);
 
     @Query("SELECT p FROM Programmation p, Structure s "
             + "WHERE p.id = :id "

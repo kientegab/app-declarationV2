@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mfptps.appdgessddi.service.dto;
+package com.mfptps.appdgessddi.web.vm;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PrintGlobalDTO {
+public class PrintGlobalVM {
 
     private long ministereId;
 
@@ -23,4 +23,6 @@ public class PrintGlobalDTO {
     private long exerciceId;
 
     private long currentStructureId;
+
+    private String format;
 }
