@@ -23,4 +23,6 @@ public class PrintGlobalVM {
     private long exerciceId;
 
     private long currentStructureId;
+
+    private String format;
 }

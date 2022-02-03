@@ -188,7 +188,7 @@ public class ReportUtil {
         return data;
     }
 
-    public static List<ProgrammeDataRE> consctruct(List<ViewGlobale> globalData, String ministereLibelle, String structureParentLibelle, String currentStructureLibelle, String currentStructureTelephone, String titre, InputStream logoStream) {
+    public static List<ProgrammeDataRE> consctruct(String ministereLibelle, String structureParentLibelle, String currentStructureLibelle, String currentStructureTelephone, String titre, InputStream logoStream, List<ViewGlobale> globalData) {
         //ministere.getLibelle(), structureParent.getLibelle(), currentStructure.getLibelle(), currentStructure.getTelephone(), titre, logoStream
 
         // Conteneurs intermédiaires utilisés pour construire les données

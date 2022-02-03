@@ -216,7 +216,9 @@ public class ProgrammationController {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", String.format("attachment; filename=\"Programme_activite_" + printGlobalVM.getMinistereId() + ".pdf\""));
         OutputStream outStream = response.getOutputStream();
-        programmationService.printProgrammeActivites(printGlobalVM.getMinistereId(), printGlobalVM.getStructureId(), printGlobalVM.getExerciceId(), printGlobalVM.getCurrentStructureId(), outStream);
+        programmationService.printProgrammeActivites(printGlobalVM.getMinistereId(),
+                printGlobalVM.getStructureId(), printGlobalVM.getExerciceId(),
+                printGlobalVM.getCurrentStructureId(), printGlobalVM.getFormat(), outStream);
     }
 
 }

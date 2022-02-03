@@ -41,5 +41,5 @@ public interface ProgrammationService {
 
     void delete(Long structureId, Long programmationId);
 
-    void printProgrammeActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, OutputStream outputStream);
+    void printProgrammeActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, String fileFormat, OutputStream outputStream);
 }

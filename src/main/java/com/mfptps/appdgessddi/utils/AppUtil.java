@@ -50,6 +50,7 @@ public class AppUtil {
     public static final String BASIC_STRUCTURE_LABEL = "Structure de Test";
     public static final String BASIC_STRUCTURE_SIGLE = "STRUC - TEST";
     public static final String BASIC_STRUCTURE_TELEPHONE = "00.00.00.00";
+    public static final String BASIC_STRUCTURE_EMAIL = "contact.test@fp.gov.bf";
 
     /**
      * TYPE OF OBJECTIF

@@ -193,7 +193,7 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 			</rectangle>
-			<staticText>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="0" y="202" width="802" height="70" uuid="c7a33dde-d664-49d3-a9b4-f22d5a546fa6">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -203,8 +203,8 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="23" isBold="true" isUnderline="true"/>
 				</textElement>
-				<text><![CDATA[PROGRAMME D'ACTIVITES]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$F{titre}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
