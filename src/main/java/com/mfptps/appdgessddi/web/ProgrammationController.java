@@ -10,6 +10,7 @@ import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.utils.*;
+import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import com.mfptps.appdgessddi.web.vm.PrintGlobalVM;
 import com.mfptps.appdgessddi.web.vm.ValidProgammationVM;
 import java.io.IOException;
@@ -74,6 +75,25 @@ public class ProgrammationController {
         return ResponseEntity.created(new URI("/api/programmations/" + saved.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, saved.getId().toString()))
                 .body(saved);
+    }
+
+    /**
+     *
+     * @param programmation
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.FS + "\",\"" + AppUtil.RS + "\",\"" + AppUtil.RD + "\",\"" + AppUtil.DD + "\", \"" + AppUtil.ADMIN + "\")")
+    public ResponseEntity<Programmation> updateProgrammation(@Valid @RequestBody Programmation programmation) throws URISyntaxException {
+        log.debug("Mis à jour de la Programmation : {}", programmation);
+        if (programmation.getId() == null) {
+            throw new BadRequestAlertException("Id invalide", ENTITY_NAME, "idnull");
+        }
+        Programmation result = programmationService.update(programmation);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, programmation.getId().toString()))
+                .body(result);
     }
 
     /**

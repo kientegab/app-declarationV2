@@ -156,7 +156,16 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     @Override
     public Programmation update(Programmation programmation) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Optional<Programmation> response = programmationRepository.findById(programmation.getId())
+                .filter(p -> !p.isValidationFinal())
+                .map(p -> {
+                    return programmationRepository.save(programmation);
+                });
+
+        if (response.isEmpty()) {
+            throw new CustomException("Modification non autorisée car la programmation est déjà validée.");
+        }
+        return response.get();
     }
 
     /**
@@ -358,7 +367,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 configuration.setOnePagePerSheet(true);
                 configuration.setIgnoreGraphics(false);
 
-                File outputFile = new File("C:\\Users\\Canisius\\Pictures\\ProgrammeActivite.xlsx");
+                File outputFile = new File("C:\\Users\\Canisius\\Pictures\\Programme_activites.xlsx");
                 try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                         OutputStream fileOutputStream = new FileOutputStream(outputFile)) {
                     Exporter exporter = new JRXlsxExporter();
@@ -367,7 +376,6 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                     exporter.setConfiguration(configuration);
                     exporter.exportReport();
                     byteArrayOutputStream.writeTo(fileOutputStream);
-                    JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
                 } catch (IOException ex) {
                     log.error("Error when exporting data from", ex);
                 }
