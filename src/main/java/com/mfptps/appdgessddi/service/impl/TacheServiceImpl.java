@@ -114,8 +114,6 @@ public class TacheServiceImpl implements TacheService {
     public List<Tache> evaluer(List<Tache> taches) {
         //on recupere la programmation concernee a partir de la liste de taches recues en parametre
         Programmation programmation = taches.get(0).getProgrammation();
-//        programmationRepository.findById(taches.get(0).getProgrammation().getId())
-//               .orElseThrow(() -> new CustomException("Programmation inexistante."));
 
         //on recupere les taches(enregistrees lors de la programmation) depuis la bd
         List<Tache> tachesdb = this.get(programmation.getId());
