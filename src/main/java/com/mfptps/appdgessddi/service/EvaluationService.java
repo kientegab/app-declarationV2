@@ -22,7 +22,14 @@ public interface EvaluationService {
 
     void addEvaluation(List<PeriodesDTO> periodes, Programmation programmation);
 
-    void checkPeriodeEvaluation(Long programmationId) throws CustomException;
+    /**
+     * Return the Id of Periode come from Evaluation ligne
+     *
+     * @param programmationId
+     * @return
+     * @throws CustomException
+     */
+    Long checkPeriodeEvaluation(Long programmationId) throws CustomException;
 
     Page<Evaluation> findAllByProgrammation(Long progammationId, Pageable pageable);
 }

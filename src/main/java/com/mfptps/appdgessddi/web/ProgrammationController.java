@@ -233,6 +233,9 @@ public class ProgrammationController {
      */
     @PostMapping(value = "/print/programme-activites")
     public void imprimerPAGlobal(HttpServletResponse response, @RequestBody PrintGlobalVM printGlobalVM) throws IOException {
+        if (printGlobalVM.getExerciceId() == null) {
+            throw new BadRequestAlertException("Exercice non renseigné. ", ENTITY_NAME, "idnull");
+        }
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", String.format("attachment; filename=\"Programme_activite_" + printGlobalVM.getMinistereId() + ".pdf\""));
         OutputStream outStream = response.getOutputStream();

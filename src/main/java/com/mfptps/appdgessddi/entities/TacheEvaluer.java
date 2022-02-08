@@ -36,9 +36,6 @@ public class TacheEvaluer extends CommonEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
-    private Tache tache;//Tache referency
-
     private double valeurAtteinte;//this is valeurCibleAtteinte
 
     private double valeurCumulee;//sum of previous valeurAtteinte saved of some tache
@@ -46,4 +43,10 @@ public class TacheEvaluer extends CommonEntity {
     @Type(type = "yes_no")
     private boolean cumuleeActive;//mark the last row of the calculated valeurCumulee 
 
+    //sert a comparer la periode d'evalution pour mettre à jour ou ajouter une evaluation
+    //ce champ est fourni a partir de la Periode provenant de l'Evaluation
+    private long periodeId;
+
+    @ManyToOne
+    private Tache tache;//Tache referency
 }

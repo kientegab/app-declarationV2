@@ -44,8 +44,9 @@ public class QueryManagerRepository {
         return result;
     }
 
-    public List<ViewGlobale> globalDataList() {
-        Query q = em.createNativeQuery("select * from dgessreportview", ViewGlobale.class);
+    public List<ViewGlobale> globalDataList(long exerciceId) {
+        Query q = em.createNativeQuery("select * from dgessreportview where idexercice = :exercice", ViewGlobale.class);
+        q.setParameter("exercice", exerciceId);
         List<ViewGlobale> result = q.getResultList();
         return result;
     }
