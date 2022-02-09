@@ -19,9 +19,15 @@ import org.springframework.data.jpa.repository.Query;
 public interface TacheEvaluerRepository extends JpaRepository<TacheEvaluer, Long> {
 
     @Query("SELECT te FROM TacheEvaluer te "
-            + "WHERE te.tache.id = :id "
-            + "AND te.cumuleeActive = true")
-    Optional<TacheEvaluer> findByIdAndActive(Long id);
+            + "WHERE te.tache.id = :tacheId "
+            + "AND te.cumuleeActive = true ")
+    Optional<TacheEvaluer> getByTacheAndActive(Long tacheId);
+
+    @Query("SELECT te FROM TacheEvaluer te "
+            + "WHERE te.tache.id = :tacheId "
+            + "AND te.idPeriode = :periodeId "
+            + "AND te.cumuleeActive = true ")
+    Optional<TacheEvaluer> getByTacheAndPeriodeActive(Long tacheId, Long periodeId);
 
     Optional<TacheEvaluer> findByCumuleeActiveIsTrue();
 

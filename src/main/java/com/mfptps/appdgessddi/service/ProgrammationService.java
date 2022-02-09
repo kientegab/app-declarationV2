@@ -19,27 +19,117 @@ import org.springframework.data.domain.Pageable;
  */
 public interface ProgrammationService {
 
+    /**
+     * Programmation d'une activite
+     *
+     * @param programmationDTO
+     * @return
+     */
     Programmation create(ProgrammationDTO programmationDTO);
 
+    /**
+     * Modification superficielle d'une activite programmee
+     *
+     * @param programmation
+     * @return
+     */
     Programmation update(Programmation programmation);
 
     Page<Programmation> get(Long structureId, String libelle, Pageable pageable);
 
+    /**
+     * Recherche d'une activite programmee via son id et la structure l'ayant
+     * programme
+     *
+     * @param structureId
+     * @param id
+     * @return
+     */
     Optional<Programmation> get(Long structureId, Long id);
 
+    /**
+     * Liste des activites programmees d'une structure donnee
+     *
+     * @param structureId
+     * @param pageable
+     * @return
+     */
     Page<Programmation> findAll(Long structureId, Pageable pageable);
 
+    /**
+     * Liste des activites programmees (d'une structure) et validees au CASEM
+     *
+     * @param structureId
+     * @param pageable
+     * @return
+     */
     Page<Programmation> findAllValided(Long structureId, Pageable pageable);
 
+    /**
+     * Validation (par Responsable DGESS ou Responsable Structure) d'une
+     * programmation d'une structure donnee
+     *
+     * @param structureId
+     * @param programmationId
+     * @return
+     */
     Optional<Programmation> validationInitialeOrInterne(Long structureId, Long programmationId);
 
+    /**
+     * Validation (par Responsable Structure) de toutes les programmations d'une
+     * structure donnee
+     *
+     * @param structureId
+     */
     void allValidationInitiale(Long structureId);
 
+    /**
+     * Validation (par Responsable DGESS) de toutes les programmations d'une
+     * structure donnee
+     *
+     * @param structureId
+     */
     void allValidationInterne(Long structureId);
 
+    /**
+     * Rejet d'une programmation
+     *
+     * @param commentaireDTO
+     */
     void rejetDgessOrCasem(CommentaireDTO commentaireDTO);
 
     void delete(Long structureId, Long programmationId);
 
+    /**
+     * Impression de programme d'activite d'une structure ou d'un ministere
+     * donne en fonction de l'exercice
+     *
+     * @param ministereId
+     * @param structureId
+     * @param exerciceId : NOT NULLABLE
+     * @param currentStructureId : NOT NULLABLE
+     * @param fileFormat
+     * @param outputStream
+     */
     void printProgrammeActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, String fileFormat, OutputStream outputStream);
+
+    /**
+     * Taux d'execution annuel ou pour periode d'une structure donnee
+     *
+     * @param structureId: id field of Structure. NOT NULLABLE
+     * @param exerciceId : id field of Exercice. NOT NULLABLE
+     * @param periodeId : id field of Period. if null, yearly rate(taux)
+     * @return
+     */
+    double tauxExecution(long structureId, Long exerciceId, Long periodeId);
+
+    /**
+     * Taux d'execution annuel ou pour periode d'un ministere donne
+     *
+     * @param ministereId : id field of Ministere. NOT NULLABLE
+     * @param exerciceId
+     * @param periodeId
+     * @return
+     */
+    double tauxExecutionGlobal(long ministereId, long exerciceId, long periodeId);
 }

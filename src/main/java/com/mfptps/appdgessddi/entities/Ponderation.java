@@ -42,6 +42,7 @@ public class Ponderation extends CommonEntity {
     @Column(nullable = false)
     private double impact;
 
+    //NON ENCORE GERE
     //on ne peut avoir que une et une seule ponderation active
     //ne pas avoir plus d'une pour une meme annee
     @Type(type = "yes_no")

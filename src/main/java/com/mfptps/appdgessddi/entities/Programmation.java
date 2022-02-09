@@ -57,7 +57,7 @@ public class Programmation extends CommonEntity {
     @Type(type = "yes_no")
     private boolean singleton; //If this Programmation have just one Tache
 
-    private double cible;
+    private double cible = 1D;
 
     private double taux;
 

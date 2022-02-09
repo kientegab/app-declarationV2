@@ -131,14 +131,23 @@ public class TacheServiceImpl implements TacheService {
                 if (t.getId().equals(tdb.getId()) && (tdb.getValeur() != 1D) && !tdb.isExecute()) {
                     TacheEvaluer tacheEvaluerPrecedent = new TacheEvaluer();
                     //on recupere l'evaluation precedente de la ieme tache 
-                    tacheEvaluerPrecedent = tacheEvaluerRepository.findByIdAndActive(tdb.getId()).orElse(null); //===============
+                    tacheEvaluerPrecedent = tacheEvaluerRepository.getByTacheAndActive(tdb.getId()).orElse(null); //===============
 //                    this.checkValeurCumulee(tacheEvaluerPrecedent, t, tdb);
                     //appel de la sous methode d'evaluation
                     this.evaluerTacheAValeurCible(tacheEvaluerPrecedent, t, tdb, periodeId);
                 } //instructions pour tache sans valeur cible et non encore executee
-                //dans ce cas, il n'y a pas de creation de ligne TacheEvaluer. On met a jour la ligne Tache uniquement
-                else if (t.getId().equals(tdb.getId()) && (tdb.getValeur() == 1D) && !tdb.isExecute()) {
+                //dans ce cas, On met a jour la ligne Tache puis cree une ligne TacheEvaluer. 
+                else if (t.getId().equals(tdb.getId()) && (tdb.getValeur() == 1D) && !tdb.isExecute() && t.isExecute()) {
+                    TacheEvaluer tacheEvaluer = new TacheEvaluer();
+                    tacheEvaluer.setCumuleeActive(true);
+                    tacheEvaluer.setValeurCumulee(tdb.getPonderation());
+                    tacheEvaluer.setValeurAtteinte(tdb.getPonderation());
+                    tacheEvaluer.setIdPeriode(periodeId);
+                    tacheEvaluer.setTache(tdb);
+
                     tdb.setExecute(t.isExecute());
+
+                    tacheEvaluerRepository.save(tacheEvaluer);
                     tacheRepository.save(tdb);
                 }
             }
@@ -156,21 +165,21 @@ public class TacheServiceImpl implements TacheService {
      * @param tdb : tache in list come from database for updating TacheEvaluer
      * table
      */
-    void evaluerTacheAValeurCible(/*TacheEvaluer aEvaluer, */TacheEvaluer precedent, Tache t, Tache tdb, long periodeId) {
+    void evaluerTacheAValeurCible(TacheEvaluer precedent, Tache t, Tache tdb, long periodeId) {
         TacheEvaluer aEvaluer = new TacheEvaluer();
-
-        //execute=true si la valeurCible renseignee à l'evaluation excede celle renseignee lors de la programmation
-        boolean execute = (t.getValeur() >= tdb.getValeur());
 
         //si c'est la toute premiere evaluation de la tache
         if (precedent == null) {//the first insert of tacheEvaluer
+            //execute=true si la valeurCible renseignee à l'evaluation excede celle renseignee lors de la programmation
+            boolean execute = (t.getValeur() >= tdb.getValeur());
+
             this.firstEvaluationOfSomeTache(aEvaluer, execute, t, tdb, periodeId);
         } else {//si c'est la nieme evaluation de la tache
             //execute=true si la somme de valeurCibles precedente et encours renseignee à l'evaluation excede celle renseignee lors de la programmation
-            execute = ((precedent.getValeurCumulee() + t.getValeur()) >= tdb.getValeur());
+            //execute = ((precedent.getValeurCumulee() + t.getValeur()) >= tdb.getValeur());//===========
 
             if (t.getValeur() != 0D) {
-                this.newOrUpdateEvaluationOfSomeTache(aEvaluer, precedent, execute, t, tdb, periodeId);
+                this.newOrUpdateEvaluationOfSomeTache(aEvaluer, precedent, t, tdb, periodeId);
             } //si l'evaluation contient juste l'info execute=true et que la tacheFromDB a execute=false (pas encore marquee execute)
             else if ((t.getValeur() == 0D) && !tdb.isExecute()) {//Cumul acquire but tache.execute != true
                 tdb.setExecute(t.isExecute());
@@ -192,7 +201,7 @@ public class TacheServiceImpl implements TacheService {
         aEvaluer.setValeurAtteinte(t.getValeur());
         aEvaluer.setValeurCumulee(t.getValeur());
         aEvaluer.setCumuleeActive(true);
-        aEvaluer.setPeriodeId(periodeId);
+        aEvaluer.setIdPeriode(periodeId);
         tacheEvaluerRepository.save(aEvaluer);
 
         //si la valeur de la toute premiere evaluation excede deja la valeur cible programmee,
@@ -211,14 +220,14 @@ public class TacheServiceImpl implements TacheService {
      * @param tdb
      * @param periodeId
      */
-    void newOrUpdateEvaluationOfSomeTache(TacheEvaluer aEvaluer, TacheEvaluer precedent, boolean execute, Tache t, Tache tdb, long periodeId) {
-        if (precedent.getPeriodeId() == periodeId) {//Mise à jour car nous sommes toujours dans la meme periode
+    void newOrUpdateEvaluationOfSomeTache(TacheEvaluer aEvaluer, TacheEvaluer precedent, Tache t, Tache tdb, long periodeId) {
+        if (precedent.getIdPeriode() == periodeId) {//Mise à jour car nous sommes toujours dans la meme periode
             precedent.setValeurAtteinte(t.getValeur());
             precedent.setValeurCumulee(precedent.getValeurAtteinte());
-            tacheEvaluerRepository.save(precedent);
+            TacheEvaluer updated = tacheEvaluerRepository.save(precedent);
 
-            if (execute) {//on marque systematiquement que la tache est executee
-                tdb.setExecute(execute);
+            if (updated.getValeurCumulee() >= tdb.getValeur()) {//on marque systematiquement que la tache est executee
+                tdb.setExecute(true);
                 tacheRepository.save(tdb);
             }
         } else {//nouvelle evaluation de la periode suivante
@@ -226,13 +235,13 @@ public class TacheServiceImpl implements TacheService {
             aEvaluer.setValeurAtteinte(t.getValeur());
             aEvaluer.setValeurCumulee(precedent.getValeurCumulee() + t.getValeur());
             aEvaluer.setCumuleeActive(true);
-            aEvaluer.setPeriodeId(periodeId);
+            aEvaluer.setIdPeriode(periodeId);
             precedent.setCumuleeActive(false);
             tacheEvaluerRepository.save(precedent);
-            tacheEvaluerRepository.save(aEvaluer);
+            TacheEvaluer saved = tacheEvaluerRepository.save(aEvaluer);
 
-            if (execute) {//on marque systematiquement que la tache est executee
-                tdb.setExecute(execute);
+            if (saved.getValeurCumulee() >= tdb.getValeur()) {//on marque systematiquement que la tache est executee
+                tdb.setExecute(true);
                 tacheRepository.save(tdb);
             }
         }

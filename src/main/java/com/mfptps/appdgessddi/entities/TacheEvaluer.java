@@ -45,7 +45,7 @@ public class TacheEvaluer extends CommonEntity {
 
     //sert a comparer la periode d'evalution pour mettre à jour ou ajouter une evaluation
     //ce champ est fourni a partir de la Periode provenant de l'Evaluation
-    private long periodeId;
+    private long idPeriode;
 
     @ManyToOne
     private Tache tache;//Tache referency

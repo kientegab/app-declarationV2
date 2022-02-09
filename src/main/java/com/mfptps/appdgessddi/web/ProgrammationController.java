@@ -12,6 +12,7 @@ import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import com.mfptps.appdgessddi.web.vm.PrintGlobalVM;
+import com.mfptps.appdgessddi.web.vm.TauxExecutionVM;
 import com.mfptps.appdgessddi.web.vm.ValidProgammationVM;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -244,4 +246,17 @@ public class ProgrammationController {
                 printGlobalVM.getCurrentStructureId(), printGlobalVM.getFormat(), outStream);
     }
 
+    /**
+     *
+     * @param tauxExecutionVM
+     * @return
+     */
+    @GetMapping(path = "/structure/taux-execution")
+    public ResponseEntity<Double> tauxExecution(@RequestBody TauxExecutionVM tauxExecutionVM) {
+        log.debug("Taux d'execution des activités par Exercice : {}", tauxExecutionVM.getExerciceId());
+        double counter = programmationService
+                .tauxExecution(tauxExecutionVM.getStructureId(),
+                        tauxExecutionVM.getExerciceId(), tauxExecutionVM.getPeriodeId());
+        return new ResponseEntity<Double>(counter, HttpStatus.OK);
+    }
 }
