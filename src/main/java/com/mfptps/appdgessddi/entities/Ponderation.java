@@ -1,5 +1,6 @@
 package com.mfptps.appdgessddi.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,12 +29,25 @@ public class Ponderation extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private double efficacite ;
-    private double efficience ;
-    private double gouvernance ;
-    private double impact ;
-    @Type(type="yes_no")
-    private boolean actif ;
+
+    @Column(nullable = false)
+    private double efficacite;
+
+    @Column(nullable = false)
+    private double efficience;
+
+    @Column(nullable = false)
+    private double gouvernance;
+
+    @Column(nullable = false)
+    private double impact;
+
+    //NON ENCORE GERE
+    //on ne peut avoir que une et une seule ponderation active
+    //ne pas avoir plus d'une pour une meme annee
+    @Type(type = "yes_no")
+    private boolean actif;
+
     @ManyToOne
     private Performance performance;
 

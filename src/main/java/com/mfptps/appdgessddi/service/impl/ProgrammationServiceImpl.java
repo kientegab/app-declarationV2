@@ -8,9 +8,9 @@ package com.mfptps.appdgessddi.service.impl;
 import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.entities.Ministere;
 import com.mfptps.appdgessddi.entities.Programmation;
-import com.mfptps.appdgessddi.entities.Programme;
 import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.entities.Tache;
+import com.mfptps.appdgessddi.entities.TacheEvaluer;
 import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.enums.TypeStructure;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
@@ -19,6 +19,7 @@ import com.mfptps.appdgessddi.repositories.ObjectifRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.QueryManagerRepository;
 import com.mfptps.appdgessddi.repositories.StructureRepository;
+import com.mfptps.appdgessddi.repositories.TacheEvaluerRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.CommentaireService;
@@ -31,7 +32,6 @@ import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
 import com.mfptps.appdgessddi.service.reportentities.ProgrammeDataRE;
-import com.mfptps.appdgessddi.service.reportentities.ProgrammeRE;
 import com.mfptps.appdgessddi.service.reportentities.ReportUtil;
 import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import com.mfptps.appdgessddi.utils.AppUtil;
@@ -76,6 +76,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     private final ProgrammationRepository programmationRepository;
     private final TacheRepository tacheRepository;
+    private final TacheEvaluerRepository tacheEvaluerRepository;
     private final ExerciceRepository exerciceRepository;
     private final ObjectifRepository objectifRepository;
     private final MinistereStructureRepository ministereStructureRepository;
@@ -89,6 +90,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     public ProgrammationServiceImpl(ProgrammationRepository programmationRepository,
             ExerciceRepository exerciceRepository,
             TacheRepository tacheRepository,
+            TacheEvaluerRepository tacheEvaluerRepository,
             ObjectifRepository objectifRepository,
             MinistereStructureRepository ministereStructureRepository,
             StructureRepository structureRepository,
@@ -99,6 +101,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             QueryManagerRepository query) {
         this.programmationRepository = programmationRepository;
         this.tacheRepository = tacheRepository;
+        this.tacheEvaluerRepository = tacheEvaluerRepository;
         this.exerciceRepository = exerciceRepository;
         this.objectifRepository = objectifRepository;
         this.ministereStructureRepository = ministereStructureRepository;
@@ -113,7 +116,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     /**
      *
-     * @param programmationDTO : DTO content Activite, Programmation, Projet,
+     * @param programmationDTO : DTO contents Activite, Programmation, Projet,
      * SourceFinancement, and Tache(s) fields
      * @return
      */
@@ -131,12 +134,14 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         Exercice exerciceEnAttente = exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
         programmationMapped.setExercice(exerciceEnAttente);
         programmationMapped.setCode(code);
+        programmationMapped.setCible(programmationDTO.getCible() <= 0 ? 1D : programmationDTO.getCible());
+
         Programmation response = programmationRepository.save(programmationMapped);
         evaluationService.addEvaluation(programmationDTO.getPeriodes(), response);
 
         if (programmationDTO.isSingleton()) {//Activite with one Tache
             Tache tache = new Tache();
-            tache.setValeur(programmationDTO.getCible());
+            tache.setValeur(programmationMapped.getCible());
             tache.setPonderation(100);
             tache.setLibelle(programmationDTO.getActivite().getLibelle());
             tache.setProgrammation(response);
@@ -156,7 +161,16 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     @Override
     public Programmation update(Programmation programmation) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Optional<Programmation> response = programmationRepository.findById(programmation.getId())
+                .filter(p -> !p.isValidationFinal())
+                .map(p -> {
+                    return programmationRepository.save(programmation);
+                });
+
+        if (response.isEmpty()) {
+            throw new CustomException("Modification non autorisée car la programmation est déjà validée.");
+        }
+        return response.get();
     }
 
     /**
@@ -316,13 +330,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             // le titre du rapport
             String titre = "PROGRAMME D'ACTIVITES " + exercice.get().getDebut().getYear();
 
-            // Conteneurs intermédiaires utilisés pour construire les données
-            List<Programme> allPrograms = new ArrayList<>();
-
             // conteneurs de données à imprimer
             List<ProgrammeDataRE> mainProgramData = new ArrayList<>();
-
-            List<ProgrammeRE> programData = new ArrayList<>();
 
             // conteneur des structures
             List<Structure> allStructures = new ArrayList<>();
@@ -337,7 +346,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             }
 
             // Construction des objet pour impression
-            List<ViewGlobale> globalData = this.query.globalDataList();
+            List<ViewGlobale> globalData = this.query.globalDataList(exercice.get().getId());
 
             mainProgramData = ReportUtil.consctruct(ministere.getLibelle(), structureParent.getLibelle(), currentStructure.get().getLibelle(), currentStructure.get().getTelephone(), titre, logoStream, globalData);
 
@@ -358,7 +367,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 configuration.setOnePagePerSheet(true);
                 configuration.setIgnoreGraphics(false);
 
-                File outputFile = new File("C:\\Users\\Canisius\\Pictures\\ProgrammeActivite.xlsx");
+                File outputFile = new File("C:\\Users\\Canisius\\Pictures\\Programme_activites.xlsx");
                 try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                         OutputStream fileOutputStream = new FileOutputStream(outputFile)) {
                     Exporter exporter = new JRXlsxExporter();
@@ -367,7 +376,6 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                     exporter.setConfiguration(configuration);
                     exporter.exportReport();
                     byteArrayOutputStream.writeTo(fileOutputStream);
-                    JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
                 } catch (IOException ex) {
                     log.error("Error when exporting data from", ex);
                 }
@@ -377,6 +385,109 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         } catch (JRException e) {
             log.error("Error when exporting data from", e);
         }
+    }
+
+    /**
+     * TAUX D'EXECUTION PAR STRUCTURE
+     *
+     * @param structureId
+     * @param exerciceId
+     * @param periodeId
+     * @return
+     */
+    @Override
+    public double tauxExecution(long structureId, long exerciceId, Long periodeId) {
+        double result = 0;
+        if (null == periodeId) {
+            //Recuperer toutes programmations concernees par l'exercice
+            List<Programmation> programmations = programmationRepository.findByStructureAndExerciceValided(structureId, exerciceId);
+
+            result = this.tauxExecutionByExerciceOrPeriode(programmations, null);
+        } else {
+            //Recuperer toutes programmations concernees par l'exercice et la periode
+            List<Programmation> programmations = programmationRepository.findByStructureAndExerciceAndPeriodeValided(structureId, exerciceId, periodeId);
+
+            result = this.tauxExecutionByExerciceOrPeriode(programmations, periodeId);
+        }
+        return result;
+    }
+
+    /**
+     * SOUS FONCTION (TAUX PAR STRUCTURE): Taux d'execution par exercice/periode
+     *
+     * @param structureId
+     * @param exerciceId
+     * @param periodeId
+     * @return
+     */
+    private double tauxExecutionByExerciceOrPeriode(List<Programmation> programmations, Long periodeId) {
+        double taux = 0;//taux global recherche
+
+        for (Programmation prog : programmations) {
+            double tauxTaches = 0;//taux global de chaque programmation
+            //on totalise les taux des taches de chaque programmation
+            for (Tache tache : prog.getTaches()) {
+                if (periodeId == null) {//============== CALCULS SANS TENIR COMPTE DE LA PEDIODE
+                    Optional<TacheEvaluer> tacheEvaluee = tacheEvaluerRepository.getByTacheAndActive(tache.getId());
+                    tauxTaches = this.tauxByValueOfPeriode(prog, tache, tacheEvaluee, tauxTaches);
+                } else {//============== CALCULS EN FONCTION DE LA PERIODE
+                    Optional<TacheEvaluer> tacheEvaluee = tacheEvaluerRepository.getByTacheAndPeriodeActive(tache.getId(), periodeId);
+                    tauxTaches = this.tauxByValueOfPeriode(prog, tache, tacheEvaluee, tauxTaches);
+                }
+            }
+            //on totalise le taux de chaque programmation 
+            taux += tauxTaches;
+        }
+        return taux;
+    }
+
+    //SOUS FONCTION DE tauxExecutionByExerciceOrPeriode(...)
+    private double tauxByValueOfPeriode(Programmation prog, Tache tache, Optional<TacheEvaluer> tacheEvaluee, double tauxTaches) {
+        if (tacheEvaluee.isPresent()) {
+            if ((tache.getValeur() == 1D) && tache.isExecute()) {//tache sans cible(cible = 1)  deja execute
+                tauxTaches += tache.getPonderation();
+            } else if ((tache.getValeur() != 1D) && tache.isExecute()) {//tache a cible deja execute(meme au dela de la cible prevue)
+                tauxTaches += tache.getPonderation();
+            } else if ((tache.getValeur() != 1D) && !tache.isExecute()) {//tache a cible execute partiellement
+                tauxTaches = this.tauxByValueOfProgrammationCible(prog, tache, tacheEvaluee, tauxTaches);
+            }
+        }
+        return tauxTaches;
+    }
+
+    //SOUS FONCTION DE tauxByValueOfPeriode(...)
+    private double tauxByValueOfProgrammationCible(Programmation prog, Tache tache, Optional<TacheEvaluer> tacheEvaluee, double tauxTaches) {
+        if (prog.getCible() != 1D) {//programmation a cible 
+            tauxTaches += (tacheEvaluee.get().getValeurCumulee() / prog.getCible()) * tache.getPonderation();
+        } else {//programmation sans cible (cible = 1) 
+            tauxTaches += (tacheEvaluee.get().getValeurCumulee() / tache.getValeur()) * tache.getPonderation();
+        }
+        return tauxTaches;
+    }
+
+    /**
+     * TAUX D'EXECUTION PAR MINISTERE
+     *
+     * @param ministereId
+     * @param exerciceId
+     * @param periodeId
+     * @return
+     */
+    @Override
+    public double tauxExecutionGlobal(long ministereId, long exerciceId, Long periodeId) {
+        double tauxGlobal = 0;
+        if (null == periodeId) {
+            //Recuperer toutes programmations concernees par l'exercice
+            List<Programmation> programmations = programmationRepository.findByMinistereAndExerciceValided(ministereId, exerciceId);
+
+            tauxGlobal = this.tauxExecutionByExerciceOrPeriode(programmations, null);
+        } else {
+            //Recuperer toutes programmations concernees par l'exercice et la periode
+            List<Programmation> programmations = programmationRepository.findByMinistereAndExerciceAndPeriodeValided(ministereId, exerciceId, periodeId);
+
+            tauxGlobal = this.tauxExecutionByExerciceOrPeriode(programmations, periodeId);
+        }
+        return tauxGlobal;
     }
 
 }

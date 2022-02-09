@@ -60,7 +60,7 @@ public class DocumentServiceImpl implements DocumentService {
             StructureRepository structureRepository,
             ProgrammationRepository programmationRepository,
             DocumentMapper documentMapper) {
-    	
+
         this.documentRepository = documentRepository;
         this.tacheRepository = tacheRepository;
         this.structureRepository = structureRepository;
@@ -98,10 +98,6 @@ public class DocumentServiceImpl implements DocumentService {
         Document document = new Document();
         document = documentMapper.toEntity(documentDTO);
         Tache tache = tacheRepository.findById(document.getTache().getId()).orElseThrow(() -> new CustomException("Tache inexistante"));
-
-        if (documentDTO.getTacheId() == null) {
-            throw new CustomException("Aucune tache n'est associée");
-        }
 
         if (documentFile.isEmpty()) {
             response.setCode(500);

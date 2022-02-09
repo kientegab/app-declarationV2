@@ -10,7 +10,9 @@ import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.utils.*;
+import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import com.mfptps.appdgessddi.web.vm.PrintGlobalVM;
+import com.mfptps.appdgessddi.web.vm.TauxExecutionVM;
 import com.mfptps.appdgessddi.web.vm.ValidProgammationVM;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -74,6 +77,25 @@ public class ProgrammationController {
         return ResponseEntity.created(new URI("/api/programmations/" + saved.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, saved.getId().toString()))
                 .body(saved);
+    }
+
+    /**
+     *
+     * @param programmation
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.FS + "\",\"" + AppUtil.RS + "\",\"" + AppUtil.RD + "\",\"" + AppUtil.DD + "\", \"" + AppUtil.ADMIN + "\")")
+    public ResponseEntity<Programmation> updateProgrammation(@Valid @RequestBody Programmation programmation) throws URISyntaxException {
+        log.debug("Mis à jour de la Programmation : {}", programmation);
+        if (programmation.getId() == null) {
+            throw new BadRequestAlertException("Id invalide", ENTITY_NAME, "idnull");
+        }
+        Programmation result = programmationService.update(programmation);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, programmation.getId().toString()))
+                .body(result);
     }
 
     /**
@@ -213,6 +235,9 @@ public class ProgrammationController {
      */
     @PostMapping(value = "/print/programme-activites")
     public void imprimerPAGlobal(HttpServletResponse response, @RequestBody PrintGlobalVM printGlobalVM) throws IOException {
+        if (printGlobalVM.getExerciceId() == null) {
+            throw new BadRequestAlertException("Exercice non renseigné. ", ENTITY_NAME, "idnull");
+        }
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", String.format("attachment; filename=\"Programme_activite_" + printGlobalVM.getMinistereId() + ".pdf\""));
         OutputStream outStream = response.getOutputStream();
@@ -221,4 +246,25 @@ public class ProgrammationController {
                 printGlobalVM.getCurrentStructureId(), printGlobalVM.getFormat(), outStream);
     }
 
+    /**
+     *
+     * @param params
+     * @return
+     */
+    @GetMapping(path = "/taux-execution")
+    public ResponseEntity<Double> tauxExecution(@RequestBody TauxExecutionVM params) {
+        log.debug("Taux d'execution des activités(Ministere/Structure) par Exercice : {}", params.getExerciceId());
+        double taux = 0;
+        if ((params.getStructureId() == null) && (params.getMinistereId() != null)) { //TAUX PAR MINISTERE
+            taux = programmationService
+                    .tauxExecutionGlobal(params.getMinistereId(), params.getExerciceId(), params.getPeriodeId());
+        } else if ((params.getMinistereId() == null) && (params.getStructureId() != null)) { //TAUX PAR STRUCTURE
+            taux = programmationService
+                    .tauxExecution(params.getStructureId(), params.getExerciceId(), params.getPeriodeId());
+        } else {
+            throw new BadRequestAlertException("Paramètres mal renseignés.", ENTITY_NAME, "idincorrects");
+        }
+
+        return new ResponseEntity<>(taux, HttpStatus.OK);
+    }
 }

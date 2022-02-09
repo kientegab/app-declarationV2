@@ -53,10 +53,11 @@ public class Programmation extends CommonEntity {
     @Type(type = "yes_no")
     private boolean estProgramme = true;//If activite is programmed
 
+    @Column(updatable = false)
     @Type(type = "yes_no")
     private boolean singleton; //If this Programmation have just one Tache
 
-    private double cible;
+    private double cible = 1D;
 
     private double taux;
 
@@ -73,7 +74,7 @@ public class Programmation extends CommonEntity {
 
     //============= relationships 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, updatable = false)
     private SourceFinancement sourceFinancement;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "programmation"/*, cascade = CascadeType.PERSIST*/)
@@ -82,24 +83,24 @@ public class Programmation extends CommonEntity {
 //    @OneToMany(mappedBy = "programmation")
 //    private List<Evaluation> evaluations;
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, updatable = false)
     private Activites activite;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, updatable = false)
     private Projet projet;
 
     @JsonIgnoreProperties(value = {"parent"})
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, updatable = false)
     private Structure structure;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, updatable = false)
     private Exercice exercice;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, updatable = false)
     private Objectif objectif;//ObjectifOperationel
 
     //============== CONSTRUCTORS && GETTERS/SETTERS

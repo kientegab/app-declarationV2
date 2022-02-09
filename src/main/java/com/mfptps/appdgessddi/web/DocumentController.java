@@ -9,6 +9,7 @@ import com.mfptps.appdgessddi.service.DocumentService;
 import com.mfptps.appdgessddi.service.dto.DocumentDTO;
 import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.ResponseMessage;
+import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,7 +59,9 @@ public class DocumentController {
     public ResponseEntity<ResponseMessage> createDocument(@Valid @RequestPart DocumentDTO documentDTO,
             @RequestPart MultipartFile documentFile) {
         log.debug("Jointure d'un Document à une Tache : {}", documentDTO);
-
+        if (documentDTO.getTacheId() == null) {
+            throw new BadRequestAlertException("Aucune tache n'est associée. ", ENTITY_NAME, "idnull");
+        }
         ResponseMessage message = documentService.create(documentDTO, documentFile);
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }

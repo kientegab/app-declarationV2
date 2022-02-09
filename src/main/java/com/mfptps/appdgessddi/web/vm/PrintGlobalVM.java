@@ -20,7 +20,7 @@ public class PrintGlobalVM {
 
     private Long structureId;
 
-    private long exerciceId;
+    private Long exerciceId;
 
     private long currentStructureId;
 

@@ -30,17 +30,17 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class EvaluationServiceImpl implements EvaluationService {
-    
+
     private EvaluationRepository evaluationRepository;
-    
+
     private PeriodeRepository periodeRepository;
-    
+
     public EvaluationServiceImpl(EvaluationRepository evaluationRepository,
             PeriodeRepository periodeRepository) {
         this.evaluationRepository = evaluationRepository;
         this.periodeRepository = periodeRepository;
     }
-    
+
     @Override
     public Evaluation create(Evaluation evaluation) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -57,11 +57,11 @@ public class EvaluationServiceImpl implements EvaluationService {
     public void addEvaluation(List<PeriodesDTO> periodes, Programmation programmation) {
         List<Periode> periodesParametrees = periodeRepository.findByPeriodiciteActif();
         List<Evaluation> evaluations = new ArrayList<>();
-        
+
         if (periodes.size() != periodesParametrees.size()) {
             throw new CustomException("Périodes non conformes à celles parametrées.");
         }
-        
+
         periodes.forEach(p -> {
             periodesParametrees.stream().filter(pp -> ((p.getLibelle().trim().charAt(0) == pp.getLibelle().charAt(0))
                     && (p.getLibelle().trim().charAt(p.getLibelle().length() - 1)
@@ -103,7 +103,7 @@ public class EvaluationServiceImpl implements EvaluationService {
      * @param programmationId
      */
     @Override
-    public void checkPeriodeEvaluation(Long programmationId) throws CustomException {
+    public Long checkPeriodeEvaluation(Long programmationId) throws CustomException {
         Date toDay = new Date();
         boolean value = false;
         List<Evaluation> evs = evaluationRepository.findByProgrammationAndPeriode(programmationId);
@@ -113,7 +113,7 @@ public class EvaluationServiceImpl implements EvaluationService {
                 Date dateFin = AppUtil.normaliserDate(ev.getPeriode().getFin());
                 value = value || (toDay.after(dateDebut) && toDay.before(dateFin));
                 if (value) {
-                    break;
+                    return ev.getPeriode().getId();
                 }
             } catch (ParseException ex) {
                 log.error("Error when parsing data.");
@@ -122,8 +122,10 @@ public class EvaluationServiceImpl implements EvaluationService {
         if (!value) {
             throw new CustomException("Opération non autorisée ! Rassurez-vous d'être dans la bonne période d'évaluation de l'activité.");
         }
+
+        return null;
     }
-    
+
     @Override
     public Page<Evaluation> findAllByProgrammation(Long progammationId, Pageable pageable) {
         return evaluationRepository.findByProgrammationId(progammationId, pageable);
