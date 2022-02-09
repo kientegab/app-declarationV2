@@ -121,7 +121,7 @@ public interface ProgrammationService {
      * @param periodeId : id field of Period. if null, yearly rate(taux)
      * @return
      */
-    double tauxExecution(long structureId, Long exerciceId, Long periodeId);
+    double tauxExecution(long structureId, long exerciceId, Long periodeId);
 
     /**
      * Taux d'execution annuel ou pour periode d'un ministere donne

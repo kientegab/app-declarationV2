@@ -396,7 +396,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
      * @return
      */
     @Override
-    public double tauxExecution(long structureId, Long exerciceId, Long periodeId) {
+    public double tauxExecution(long structureId, long exerciceId, Long periodeId) {
         double result = 0;
         if (null == periodeId) {
             //Recuperer toutes programmations concernees par l'exercice

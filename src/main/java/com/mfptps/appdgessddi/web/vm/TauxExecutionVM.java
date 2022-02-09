@@ -28,11 +28,11 @@ public class TauxExecutionVM {
      * Dans les 2 cas, exerciceId doit etre obligatoirement renseigne. NE
      * FOURNIR periodeId QUE LORSQU'ON A BESOIN DE TAUX POUR UNE PERIODE DONNEE
      */
-    private long ministereId;
+    private Long ministereId;
 
-    private long structureId;
+    private Long structureId;
 
-    private Long exerciceId;
+    private long exerciceId;
 
     private Long periodeId;
 }

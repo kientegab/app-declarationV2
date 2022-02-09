@@ -248,15 +248,23 @@ public class ProgrammationController {
 
     /**
      *
-     * @param tauxExecutionVM
+     * @param params
      * @return
      */
-    @GetMapping(path = "/structure/taux-execution")
-    public ResponseEntity<Double> tauxExecution(@RequestBody TauxExecutionVM tauxExecutionVM) {
-        log.debug("Taux d'execution des activités par Exercice : {}", tauxExecutionVM.getExerciceId());
-        double taux = programmationService
-                .tauxExecution(tauxExecutionVM.getStructureId(),
-                        tauxExecutionVM.getExerciceId(), tauxExecutionVM.getPeriodeId());
-        return new ResponseEntity<Double>(taux, HttpStatus.OK);
+    @GetMapping(path = "/taux-execution")
+    public ResponseEntity<Double> tauxExecution(@RequestBody TauxExecutionVM params) {
+        log.debug("Taux d'execution des activités(Ministere/Structure) par Exercice : {}", params.getExerciceId());
+        double taux = 0;
+        if ((params.getStructureId() == null) && (params.getMinistereId() != null)) { //TAUX PAR MINISTERE
+            taux = programmationService
+                    .tauxExecutionGlobal(params.getMinistereId(), params.getExerciceId(), params.getPeriodeId());
+        } else if ((params.getMinistereId() == null) && (params.getStructureId() != null)) { //TAUX PAR STRUCTURE
+            taux = programmationService
+                    .tauxExecution(params.getStructureId(), params.getExerciceId(), params.getPeriodeId());
+        } else {
+            throw new BadRequestAlertException("Paramètres mal renseignés.", ENTITY_NAME, "idincorrects");
+        }
+
+        return new ResponseEntity<>(taux, HttpStatus.OK);
     }
 }
