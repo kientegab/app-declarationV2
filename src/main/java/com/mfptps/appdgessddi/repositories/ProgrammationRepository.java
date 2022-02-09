@@ -92,4 +92,20 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.validationInterne = true AND p.validationFinal = true")
     List<Programmation> findByStructureAndExerciceAndPeriodeValided(long structureId, long exerciceId, long periodeId);
 
+    @Query("SELECT p FROM Programmation p, Exercice e, Structure s, MinistereStructure ms "
+            + "WHERE p.deleted = false "
+            + "AND p.validationInterne = true AND p.validationFinal = true " //s'assurer que la programmation a ete validee
+            + "AND p.exercice.id = e.id AND e.id = :exerciceId " //filtrer par exercice
+            + "AND p.structure.id = s.id " //liaison entre programmation et structure
+            + "AND s.id = ms.structure.id AND ms.statut = true AND ms.ministere.id = :ministereId") //filtrer enfin par ministere
+    List<Programmation> findByMinistereAndExerciceValided(long ministereId, long exerciceId);
+
+    @Query("SELECT p FROM Programmation p, Exercice e, Evaluation ev, Structure s, MinistereStructure ms "
+            + "WHERE p.deleted = false "
+            + "AND p.validationInterne = true AND p.validationFinal = true " //s'assurer que la programmation a ete validee
+            + "AND p.exercice.id = e.id AND e.id = :exerciceId " //filtrer par exercice
+            + "AND p.id = ev.programmation.id AND ev.periode.id = :periodeId " //filter par periode
+            + "AND p.structure.id = s.id "
+            + "AND s.id = ms.structure.id AND ms.statut = true AND ms.ministere.id = :ministereId")
+    List<Programmation> findByMinistereAndExerciceAndPeriodeValided(long ministereId, long exerciceId, long periodeId);
 }

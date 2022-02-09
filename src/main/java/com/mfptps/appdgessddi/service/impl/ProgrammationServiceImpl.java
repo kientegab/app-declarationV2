@@ -465,9 +465,29 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         return tauxTaches;
     }
 
+    /**
+     * TAUX D'EXECUTION PAR MINISTERE
+     *
+     * @param ministereId
+     * @param exerciceId
+     * @param periodeId
+     * @return
+     */
     @Override
-    public double tauxExecutionGlobal(long ministereId, long exerciceId, long periodeId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public double tauxExecutionGlobal(long ministereId, long exerciceId, Long periodeId) {
+        double tauxGlobal = 0;
+        if (null == periodeId) {
+            //Recuperer toutes programmations concernees par l'exercice
+            List<Programmation> programmations = programmationRepository.findByMinistereAndExerciceValided(ministereId, exerciceId);
+
+            tauxGlobal = this.tauxExecutionByExerciceOrPeriode(programmations, null);
+        } else {
+            //Recuperer toutes programmations concernees par l'exercice et la periode
+            List<Programmation> programmations = programmationRepository.findByMinistereAndExerciceAndPeriodeValided(ministereId, exerciceId, periodeId);
+
+            tauxGlobal = this.tauxExecutionByExerciceOrPeriode(programmations, periodeId);
+        }
+        return tauxGlobal;
     }
 
 }

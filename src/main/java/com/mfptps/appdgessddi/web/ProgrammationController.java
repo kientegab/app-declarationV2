@@ -254,9 +254,9 @@ public class ProgrammationController {
     @GetMapping(path = "/structure/taux-execution")
     public ResponseEntity<Double> tauxExecution(@RequestBody TauxExecutionVM tauxExecutionVM) {
         log.debug("Taux d'execution des activités par Exercice : {}", tauxExecutionVM.getExerciceId());
-        double counter = programmationService
+        double taux = programmationService
                 .tauxExecution(tauxExecutionVM.getStructureId(),
                         tauxExecutionVM.getExerciceId(), tauxExecutionVM.getPeriodeId());
-        return new ResponseEntity<Double>(counter, HttpStatus.OK);
+        return new ResponseEntity<Double>(taux, HttpStatus.OK);
     }
 }

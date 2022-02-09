@@ -131,5 +131,5 @@ public interface ProgrammationService {
      * @param periodeId
      * @return
      */
-    double tauxExecutionGlobal(long ministereId, long exerciceId, long periodeId);
+    double tauxExecutionGlobal(long ministereId, long exerciceId, Long periodeId);
 }
