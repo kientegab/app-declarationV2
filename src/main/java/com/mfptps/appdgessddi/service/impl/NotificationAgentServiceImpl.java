@@ -61,14 +61,14 @@ public class NotificationAgentServiceImpl implements NotificationAgentService{
     }
 
     @Override
-    public Page<NotificationAgent> get(Long id,Pageable pageable) {
-        Page<NotificationAgent> responseMapped = notificationAgentRepository.findAllNotificationAgent(id,pageable);
+    public Page<NotificationAgent> get(String matricule,Pageable pageable) {
+        Page<NotificationAgent> responseMapped = notificationAgentRepository.findAllNotificationAgent(matricule,pageable);
         return responseMapped;
         
     }
 
     @Override
-    public Long getNonLu(Long id) {
-       return notificationAgentRepository.findAllByLuFalse(id);
+    public Long getNonLu(String matricule) {
+       return notificationAgentRepository.findAllByLuFalse(matricule);
     }
 }
