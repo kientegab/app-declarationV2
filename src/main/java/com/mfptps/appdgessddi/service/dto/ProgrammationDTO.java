@@ -30,6 +30,8 @@ public class ProgrammationDTO {
 
     private double cible;
 
+    private String resultatsAttendus;
+
     private String observations;
 
     private boolean singleton;
@@ -86,6 +88,14 @@ public class ProgrammationDTO {
 
     public void setCible(double cible) {
         this.cible = cible;
+    }
+
+    public String getResultatsAttendus() {
+        return resultatsAttendus;
+    }
+
+    public void setResultatsAttendus(String resultatsAttendus) {
+        this.resultatsAttendus = resultatsAttendus;
     }
 
     public String getObservations() {
