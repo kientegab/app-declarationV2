@@ -24,7 +24,6 @@ import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.CommentaireService;
 import com.mfptps.appdgessddi.service.CustomException;
-import com.mfptps.appdgessddi.service.EvaluationService;
 import com.mfptps.appdgessddi.service.ExerciceService;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
@@ -64,6 +63,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.mfptps.appdgessddi.service.ProgrammationPhysiqueService;
 
 /**
  *
@@ -81,7 +81,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private final ObjectifRepository objectifRepository;
     private final MinistereStructureRepository ministereStructureRepository;
     private final StructureRepository structureRepository;
-    private final EvaluationService evaluationService;
+    private final ProgrammationPhysiqueService programmationPhysiqueService;
     private final CommentaireService commentaireService;
     private final ProgrammationMapper programmationMapper;
     private final ExerciceService exerciceService;
@@ -94,7 +94,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             ObjectifRepository objectifRepository,
             MinistereStructureRepository ministereStructureRepository,
             StructureRepository structureRepository,
-            EvaluationService evaluationService,
+            ProgrammationPhysiqueService programmationPhysiqueService,
             CommentaireService commentaireService,
             ProgrammationMapper programmationMapper,
             ExerciceService exerciceService,
@@ -106,7 +106,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         this.objectifRepository = objectifRepository;
         this.ministereStructureRepository = ministereStructureRepository;
         this.structureRepository = structureRepository;
-        this.evaluationService = evaluationService;
+        this.programmationPhysiqueService = programmationPhysiqueService;
         this.commentaireService = commentaireService;
         this.programmationMapper = programmationMapper;
         this.exerciceService = exerciceService;
@@ -137,7 +137,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         programmationMapped.setCible(programmationDTO.getCible() <= 0 ? 1D : programmationDTO.getCible());
 
         Programmation response = programmationRepository.save(programmationMapped);
-        evaluationService.addEvaluation(programmationDTO.getPeriodes(), response);
+        programmationPhysiqueService.addProgrammationPhysique(programmationDTO.getPeriodes(), response);
 
         if (programmationDTO.isSingleton()) {//Activite with one Tache
             Tache tache = new Tache();

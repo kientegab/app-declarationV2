@@ -5,13 +5,13 @@
  */
 package com.mfptps.appdgessddi.service.impl;
 
-import com.mfptps.appdgessddi.entities.Evaluation;
 import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.entities.Programmation;
-import com.mfptps.appdgessddi.repositories.EvaluationRepository;
+import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import com.mfptps.appdgessddi.repositories.PeriodeRepository;
+import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.service.CustomException;
-import com.mfptps.appdgessddi.service.EvaluationService;
+import com.mfptps.appdgessddi.service.ProgrammationPhysiqueService;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import com.mfptps.appdgessddi.utils.AppUtil;
 import java.text.ParseException;
@@ -29,20 +29,20 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class EvaluationServiceImpl implements EvaluationService {
+public class ProgrammationPhysiqueServiceImpl implements ProgrammationPhysiqueService {
 
-    private EvaluationRepository evaluationRepository;
+    private ProgrammationPhysiqueRepository programmationPhysiqueRepository;
 
     private PeriodeRepository periodeRepository;
 
-    public EvaluationServiceImpl(EvaluationRepository evaluationRepository,
+    public ProgrammationPhysiqueServiceImpl(ProgrammationPhysiqueRepository programmationPhysiqueRepository,
             PeriodeRepository periodeRepository) {
-        this.evaluationRepository = evaluationRepository;
+        this.programmationPhysiqueRepository = programmationPhysiqueRepository;
         this.periodeRepository = periodeRepository;
     }
 
     @Override
-    public Evaluation create(Evaluation evaluation) {
+    public ProgrammationPhysique create(ProgrammationPhysique programmationPhysique) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -54,9 +54,9 @@ public class EvaluationServiceImpl implements EvaluationService {
      * checked
      * @param programmation : Object Programmation saving
      */
-    public void addEvaluation(List<PeriodesDTO> periodes, Programmation programmation) {
+    public void addProgrammationPhysique(List<PeriodesDTO> periodes, Programmation programmation) {
         List<Periode> periodesParametrees = periodeRepository.findByPeriodiciteActif();
-        List<Evaluation> evaluations = new ArrayList<>();
+        List<ProgrammationPhysique> programmationPhysiques = new ArrayList<>();
 
         if (periodes.size() != periodesParametrees.size()) {
             throw new CustomException("Périodes non conformes à celles parametrées.");
@@ -68,14 +68,14 @@ public class EvaluationServiceImpl implements EvaluationService {
                     == pp.getLibelle().charAt(pp.getLibelle().length() - 1))
                     && p.isValeur())).map(pp -> {
                 //if elem of periodesDTO is true and fisrtIndex/lastIndex of libelles are equals
-                Evaluation evaluation = new Evaluation();
-                evaluation.setPeriode(pp);
-                return evaluation;
-            }).map(evaluation -> {
-                evaluation.setProgrammation(programmation);
-                return evaluation;
-            }).forEachOrdered(evaluation -> {
-                evaluations.add(evaluation);
+                ProgrammationPhysique progPhysique = new ProgrammationPhysique();
+                progPhysique.setPeriode(pp);
+                return progPhysique;
+            }).map(progPhysique -> {
+                progPhysique.setProgrammation(programmation);
+                return progPhysique;
+            }).forEachOrdered(progPhysique -> {
+                programmationPhysiques.add(progPhysique);
             });
         });
 // above similars loops
@@ -86,14 +86,14 @@ public class EvaluationServiceImpl implements EvaluationService {
 //                        && (p.getLibelle().trim().charAt(p.getLibelle().length() - 1)
 //                        == pp.getLibelle().charAt(pp.getLibelle().length() - 1))
 //                        && p.isValeur()) {//if elem of periodesDTO is true and fisrtIndex/lastIndex of libelles are equals
-//                    Evaluation evaluation = new Evaluation();
-//                    evaluation.setPeriode(pp);
-//                    evaluation.setProgrammation(programmation);
-//                    evaluations.add(evaluation);
+//                    ProgrammationPhysique progPhysique = new ProgrammationPhysique();
+//                    progPhysique.setPeriode(pp);
+//                    progPhysique.setProgrammation(programmation);
+//                    programmationPhysiques.add(progPhysique);
 //                }
 //            }
 //        }
-        evaluationRepository.saveAll(evaluations);
+        programmationPhysiqueRepository.saveAll(programmationPhysiques);
     }
 
     /**
@@ -103,17 +103,17 @@ public class EvaluationServiceImpl implements EvaluationService {
      * @param programmationId
      */
     @Override
-    public Long checkPeriodeEvaluation(Long programmationId) throws CustomException {
+    public Long checkProgrammationPhysique(Long programmationId) throws CustomException {
         Date toDay = new Date();
         boolean value = false;
-        List<Evaluation> evs = evaluationRepository.findByProgrammationAndPeriode(programmationId);
-        for (Evaluation ev : evs) {
+        List<ProgrammationPhysique> progsPhysiques = programmationPhysiqueRepository.findByProgrammationAndPeriode(programmationId);
+        for (ProgrammationPhysique pp : progsPhysiques) {
             try {
-                Date dateDebut = AppUtil.normaliserDate(ev.getPeriode().getDebut());
-                Date dateFin = AppUtil.normaliserDate(ev.getPeriode().getFin());
+                Date dateDebut = AppUtil.normaliserDate(pp.getPeriode().getDebut());
+                Date dateFin = AppUtil.normaliserDate(pp.getPeriode().getFin());
                 value = value || (toDay.after(dateDebut) && toDay.before(dateFin));
                 if (value) {
-                    return ev.getPeriode().getId();
+                    return pp.getPeriode().getId();
                 }
             } catch (ParseException ex) {
                 log.error("Error when parsing data.");
@@ -127,7 +127,7 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     @Override
-    public Page<Evaluation> findAllByProgrammation(Long progammationId, Pageable pageable) {
-        return evaluationRepository.findByProgrammationId(progammationId, pageable);
+    public Page<ProgrammationPhysique> findAllByProgrammation(Long progammationId, Pageable pageable) {
+        return programmationPhysiqueRepository.findByProgrammationId(progammationId, pageable);
     }
 }
