@@ -10,11 +10,12 @@ import com.mfptps.appdgessddi.entities.NotificationAgent;
 import com.mfptps.appdgessddi.repositories.AgentRepository;
 import com.mfptps.appdgessddi.repositories.NotificationAgentRepository;
 import com.mfptps.appdgessddi.repositories.NotificationRepository;
+import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.NotificationService;
-import com.mfptps.appdgessddi.service.dto.NotificationAgentDTO;
 import com.mfptps.appdgessddi.service.dto.NotificationDTO;
 import com.mfptps.appdgessddi.service.mapper.NotificationAgentMapper;
 import com.mfptps.appdgessddi.service.mapper.NotificationMapper;
+import com.mfptps.appdgessddi.utils.ResponseMessage;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -55,8 +56,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Notification create(NotificationDTO notificationDTO) {
         Notification notification = notificationMapper.toEntity(notificationDTO);
-       // NotificationAgent notificationAgent = new NotificationAgent();
         List<Agent> agents = agentRepository.findAllAgentByProfiles();
+        if(agents.size() == 0){
+                throw new CustomException("Il n'y a pas de points focaux ou de responsable structues");
+        } else {
         Notification saveNotification = notificationRepository.save(notification);
         for (Agent agent : agents) {
             NotificationAgent notificationAgent = new NotificationAgent();
@@ -66,7 +69,9 @@ public class NotificationServiceImpl implements NotificationService {
             notificationAgentRepository.save(notificationAgent);
             emailServiceImpl.sendEmail(notificationAgent.getNotification(), notificationAgent.getAgent());
         }
+        
         return saveNotification;
+        }
         
     }
     

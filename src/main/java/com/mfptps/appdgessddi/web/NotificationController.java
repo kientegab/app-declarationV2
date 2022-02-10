@@ -90,18 +90,18 @@ public class NotificationController {
         return ResponseUtil.wrapOrNotFound(notification);
     }
 
-    @GetMapping(path = "/agent/{id}")
-    public ResponseEntity<List<NotificationAgent>> getNotificationAgentByID(@PathVariable(name = "id") Long id, Pageable pageable) {
-        log.debug("Consultation de la notification : {}", id);
-         Page<NotificationAgent> notificationAgent = notificationAgentService.get(id,pageable);
-         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), notificationAgent);
+    @GetMapping(path = "/agent/{username}")
+    public ResponseEntity<List<NotificationAgent>> getNotificationAgentByID(@PathVariable(name = "username") String username, Pageable pageable) {
+        log.debug("Consultation de la notification : {}", username);
+        Page<NotificationAgent> notificationAgent = notificationAgentService.get(username,pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), notificationAgent);
         return ResponseEntity.ok().headers(headers).body(notificationAgent.getContent());
     }
     
-    @GetMapping(path = "/nonlu/{id}")
-    public Long getNumberNonlu(@PathVariable(name = "id") Long id) {
-        log.debug("notification non lu: {}", id);
-        return notificationAgentService.getNonLu(id);
+    @GetMapping(path = "/nonlu/{username}")
+    public Long getNumberNonlu(@PathVariable(name = "username") String username) {
+        log.debug("notification non lu: {}", username);
+        return notificationAgentService.getNonLu(username);
     }
     
     /**

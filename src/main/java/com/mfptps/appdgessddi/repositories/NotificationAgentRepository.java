@@ -21,12 +21,13 @@ public interface NotificationAgentRepository extends JpaRepository<NotificationA
     
     List<NotificationAgent> findByLuFalse();
     
-    @Query(value = "SELECT COUNT(n) FROM notification_agent n "
+    @Query(value = "SELECT COUNT(n) FROM notification_agent n, agent ag "
            + " WHERE n.lu = false "
-           + " AND n.id =:id ",nativeQuery = true)
-    Long findAllByLuFalse(Long id);
+           + " AND n.agent_id = ag.id "
+           + " AND ag.matricule =:matricule ",nativeQuery = true)
+    Long findAllByLuFalse(String matricule);
     
     @Query("SELECT n FROM NotificationAgent n "
-        + " WHERE n.agent.id =:id ")
-    Page<NotificationAgent> findAllNotificationAgent(@Param("id") Long id, Pageable pageable);
+        + " WHERE n.agent.matricule =:matricule ")
+    Page<NotificationAgent> findAllNotificationAgent(@Param("matricule") String matricule, Pageable pageable);
 }
