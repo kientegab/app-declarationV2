@@ -6,8 +6,6 @@ package com.mfptps.appdgessddi.service;
 
 import com.mfptps.appdgessddi.entities.NotificationAgent;
 import com.mfptps.appdgessddi.service.dto.NotificationAgentDTO;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,9 +19,9 @@ public interface NotificationAgentService {
 
     NotificationAgent update(NotificationAgent notificationAgent);
 
-    Page<NotificationAgent> get(Long id,Pageable pageable);
+    Page<NotificationAgent> get(String matricule,Pageable pageable);
     
-    Long getNonLu(Long id);
+    Long getNonLu(String matricule);
 
     Page<NotificationAgentDTO> findAll(Pageable pageable);
 
