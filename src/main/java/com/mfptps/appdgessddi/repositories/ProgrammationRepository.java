@@ -84,11 +84,11 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.validationFinal = true")
     List<Programmation> findByStructureAndExerciceValided(long structureId, long exerciceId);
 
-    @Query("SELECT p FROM Programmation p, Structure s, Exercice e, ProgrammationPhysique pph "
+    @Query("SELECT p FROM Programmation p, Structure s, Exercice e, Evaluation ev "
             + "WHERE p.deleted = false "
             + "AND p.structure.id = s.id AND s.id = :structureId "
             + "AND p.exercice.id = e.id AND e.id = :exerciceId "
-            + "AND p.id = pph.programmation.id AND pph.periode.id = :periodeId "
+            + "AND p.id = ev.programmation.id AND ev.periode.id = :periodeId "
             + "AND p.validationInterne = true AND p.validationFinal = true")
     List<Programmation> findByStructureAndExerciceAndPeriodeValided(long structureId, long exerciceId, long periodeId);
 
@@ -100,12 +100,28 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND s.id = ms.structure.id AND ms.statut = true AND ms.ministere.id = :ministereId") //filtrer enfin par ministere
     List<Programmation> findByMinistereAndExerciceValided(long ministereId, long exerciceId);
 
-    @Query("SELECT p FROM Programmation p, Exercice e, ProgrammationPhysique pph, Structure s, MinistereStructure ms "
+    @Query("SELECT p FROM Programmation p, Exercice e, Evaluation ev, Structure s, MinistereStructure ms "
             + "WHERE p.deleted = false "
             + "AND p.validationInterne = true AND p.validationFinal = true " //s'assurer que la programmation a ete validee
             + "AND p.exercice.id = e.id AND e.id = :exerciceId " //filtrer par exercice
-            + "AND p.id = pph.programmation.id AND pph.periode.id = :periodeId " //filter par periode
+            + "AND p.id = ev.programmation.id AND ev.periode.id = :periodeId " //filter par periode
             + "AND p.structure.id = s.id " //liaison entre programmation et structure
             + "AND s.id = ms.structure.id AND ms.statut = true AND ms.ministere.id = :ministereId")
     List<Programmation> findByMinistereAndExerciceAndPeriodeValided(long ministereId, long exerciceId, long periodeId);
+    
+    @Query("SELECT COUNT(p) FROM Programmation p, Structure s, Exercice e "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND p.deleted = false "
+            + "AND p.validationFinal.id = true")
+    long countStructureProgrammation(long structureId, long exerciceId);
+    
+    @Query("SELECT SUM(p.coutReel) FROM Programmation p, Structure s, Exercice e "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND p.deleted = false "
+            + "AND p.validationFinal.id = true")
+    double coutTotalStructureProgrammation(long structureId, long exerciceId);
 }
