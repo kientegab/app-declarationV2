@@ -110,7 +110,7 @@ public class Programmation extends CommonEntity {
     private Objectif objectif;//ObjectifOperationel
 
     //============== CONSTRUCTORS && GETTERS/SETTERS
-    public Programmation() {
+    public Programmation() {       
     }
 
     public Long getId() {

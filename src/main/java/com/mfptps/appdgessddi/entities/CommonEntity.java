@@ -6,6 +6,7 @@ import java.time.Instant;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
+import org.hibernate.annotations.Type;
 
 import org.springframework.data.annotation.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -33,7 +34,8 @@ public abstract class CommonEntity implements Serializable {
     @Column(name = "last_modified_date")
     private Instant lastModifiedDate = Instant.now();
 
-	private boolean deleted = false;
+    @Type(type = "yes_no")
+    private boolean deleted = false;
 
     public String getCreatedBy() {
         return createdBy;

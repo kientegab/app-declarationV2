@@ -2,28 +2,39 @@ package com.mfptps.appdgessddi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
+import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "evaluation_gouvernance")
+@Table(name = "evaluation_gouvernance",
+        uniqueConstraints = {
+            @UniqueConstraint(columnNames = {"EXERCICE_ID", "CRITERE_ID", "STRUCTURE_ID"})})
 public class EvaluationGouvernance extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(name = "VALEUR")
     private double valeur;
+
+    @Column(name = "VALEUR_REFERENCE")
     private double valeurReference;
-    private boolean applicable;
+
+    @Type(type = "yes_no")
+    @Column(name = "NON_APPLICABLE")
+    private boolean nonapplicable;
+
     @JsonIgnoreProperties(value = {"observation", "ponderation"})
     @ManyToOne
-    @JoinColumn(unique = true)
+    @JoinColumn(name = "EXERCICE_ID", nullable = false)
     private Exercice exercice;
     @ManyToOne
-    @JoinColumn(unique = true)
+    @JoinColumn(name = "CRITERE_ID", nullable = false)
     private CritereGouvernance critereGouvernance;
 
     @JsonIgnoreProperties(value = {"parent"})
     @ManyToOne
-    @JoinColumn(unique = true)
+    @JoinColumn(name = "STRUCTURE_ID", nullable = false)
     private Structure structure;
 
     public EvaluationGouvernance() {
@@ -53,12 +64,12 @@ public class EvaluationGouvernance extends CommonEntity {
         this.valeurReference = valeurReference;
     }
 
-    public boolean isApplicable() {
-        return applicable;
+    public boolean isNonapplicable() {
+        return nonapplicable;
     }
 
-    public void setApplicable(boolean applicable) {
-        this.applicable = applicable;
+    public void setNonapplicable(boolean nonapplicable) {
+        this.nonapplicable = nonapplicable;
     }
 
     public Exercice getExercice() {
@@ -91,7 +102,7 @@ public class EvaluationGouvernance extends CommonEntity {
                 + "id=" + id
                 + ", valeur=" + valeur
                 + ", valeurReference=" + valeurReference
-                + ", applicable=" + applicable
+                + ", nonapplicable=" + nonapplicable
                 + ", exercice=" + exercice
                 + ", critereGouvernance=" + critereGouvernance
                 + ", structure=" + structure
