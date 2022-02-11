@@ -1,20 +1,29 @@
 package com.mfptps.appdgessddi.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "grille_performance")
+@Table(name = "grille_performance",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"BORNE_INF","BORNE_SUP", "APPRECIATION"})})
 public class GrillePerformance extends CommonEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private double borneInferieur;
-    private double borneSuperieur;
+    
+    @Column(name = "BORNE_INF", nullable = false)
+    private Double borneInferieur;
+    
+    @Column(name = "BORNE_SUP", nullable = false)
+    private Double borneSuperieur;
+    
+    @Column(name = "APPRECIATION", nullable = false)
     private String appreciation;
     
     public GrillePerformance() {
@@ -28,19 +37,19 @@ public class GrillePerformance extends CommonEntity {
         this.id = id;
     }
 
-    public double getBorneInferieur() {
+    public Double getBorneInferieur() {
         return borneInferieur;
     }
 
-    public void setBorneInferieur(double borneInferieur) {
+    public void setBorneInferieur(Double borneInferieur) {
         this.borneInferieur = borneInferieur;
     }
 
-    public double getBorneSuperieur() {
+    public Double getBorneSuperieur() {
         return borneSuperieur;
     }
 
-    public void setBorneSuperieur(double borneSuperieur) {
+    public void setBorneSuperieur(Double borneSuperieur) {
         this.borneSuperieur = borneSuperieur;
     }
 
@@ -52,7 +61,7 @@ public class GrillePerformance extends CommonEntity {
         this.appreciation = appreciation;
     }
 
-    public GrillePerformance(double borneInferieur, double borneSuperieur, String appreciation) {
+    public GrillePerformance(Double borneInferieur, Double borneSuperieur, String appreciation) {
         this.borneInferieur = borneInferieur;
         this.borneSuperieur = borneSuperieur;
         this.appreciation = appreciation;

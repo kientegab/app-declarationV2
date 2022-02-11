@@ -7,7 +7,7 @@ package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.Document;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaRepository; 
 
 /**
  *

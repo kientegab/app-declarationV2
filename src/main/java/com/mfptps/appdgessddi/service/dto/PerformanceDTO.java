@@ -1,57 +1,23 @@
 package com.mfptps.appdgessddi.service.dto;
 
-import com.mfptps.appdgessddi.entities.Performer;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PerformanceDTO {
 
-    private double efficacité ;
+    private double efficacite ;
     private double efficience ;
     private double gouvernance ;
     private double impact ;
     private double pgs ;
-
-
-
-    public PerformanceDTO() {
-    }
-
-    public double getEfficacité() {
-        return efficacité;
-    }
-
-    public void setEfficacité(double efficacité) {
-        this.efficacité = efficacité;
-    }
-
-    public double getEfficience() {
-        return efficience;
-    }
-
-    public void setEfficience(double efficience) {
-        this.efficience = efficience;
-    }
-
-    public double getGouvernance() {
-        return gouvernance;
-    }
-
-    public void setGouvernance(double gouvernance) {
-        this.gouvernance = gouvernance;
-    }
-
-    public double getImpact() {
-        return impact;
-    }
-
-    public void setImpact(double impact) {
-        this.impact = impact;
-    }
-
-    public double getPgs() {
-        return pgs;
-    }
-
-    public void setPgs(double pgs) {
-        this.pgs = pgs;
-    }
+    private double pgm;
+    private String appreciation;
+    private boolean global;
+    
 }
