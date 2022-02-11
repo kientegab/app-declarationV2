@@ -25,6 +25,7 @@ import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.CommentaireService;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.ExerciceService;
+import com.mfptps.appdgessddi.service.ProgrammationPhysiqueService;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
@@ -63,7 +64,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.mfptps.appdgessddi.service.ProgrammationPhysiqueService;
 
 /**
  *
@@ -250,7 +250,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                     }
                     if ((SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) && programmation.isValidationInitial()) {
                         programmation.setValidationInterne(true);//validation DGESS
-                        programmation.setValidationFinal(true);//validation CASEM... A revoir
+                        //programmation.setValidationFinal(true);//validation CASEM... A revoir
                     }
                     return programmation;
                 });
@@ -278,7 +278,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 programmation.setValidationInterne(true);
                 return programmation;
             }).forEachOrdered(programmation -> {
-                programmation.setValidationFinal(true);
+                programmation.setValidationFinal(true);//validation CASEM... A revoir
             });
         }
     }

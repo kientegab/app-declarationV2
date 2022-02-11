@@ -1,31 +1,30 @@
 package com.mfptps.appdgessddi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.*;
 
 @Entity
-@Table(name = "EvaluationGouvernance")
-public class EvaluationGouvernance extends CommonEntity{
+@Table(name = "evaluation_gouvernance")
+public class EvaluationGouvernance extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private double valeur ;
-    private double valeurReference ;
-    private boolean applicable ;
+    private double valeur;
+    private double valeurReference;
+    private boolean applicable;
     @JsonIgnoreProperties(value = {"observation", "ponderation"})
     @ManyToOne
     @JoinColumn(unique = true)
-    private Exercice exercice ;
+    private Exercice exercice;
     @ManyToOne
     @JoinColumn(unique = true)
-    private CritereGouvernance critereGouvernance ;
+    private CritereGouvernance critereGouvernance;
 
     @JsonIgnoreProperties(value = {"parent"})
     @ManyToOne
     @JoinColumn(unique = true)
-    private Structure structure ;
+    private Structure structure;
 
     public EvaluationGouvernance() {
     }
@@ -88,14 +87,14 @@ public class EvaluationGouvernance extends CommonEntity{
 
     @Override
     public String toString() {
-        return "EvaluationGouvernance{" +
-                "id=" + id +
-                ", valeur=" + valeur +
-                ", valeurReference=" + valeurReference +
-                ", applicable=" + applicable +
-                ", exercice=" + exercice +
-                ", critereGouvernance=" + critereGouvernance +
-                ", structure=" + structure +
-                '}';
+        return "EvaluationGouvernance{"
+                + "id=" + id
+                + ", valeur=" + valeur
+                + ", valeurReference=" + valeurReference
+                + ", applicable=" + applicable
+                + ", exercice=" + exercice
+                + ", critereGouvernance=" + critereGouvernance
+                + ", structure=" + structure
+                + '}';
     }
 }

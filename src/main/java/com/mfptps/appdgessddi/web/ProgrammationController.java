@@ -179,14 +179,14 @@ public class ProgrammationController {
      */
     @PutMapping(path = "/validation-all")
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RS + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
-    public ResponseEntity<String> allValidationProgrammation(@RequestBody ValidProgammationVM validProgammationVM) {
+    public ResponseEntity<String> allValidationProgrammation(@RequestBody ValidProgammationVM params) {
         log.debug("Validation globale initiale/interne de Programmations");
         String message = "";
-        if (validProgammationVM.isInitiale()) {//all initial validation of RESP_STRUCT
-            programmationService.allValidationInitiale(validProgammationVM.getStructureId());
+        if (params.isValidatedBySTRUCT()) {//do all initial validation of RESP_STRUCT
+            programmationService.allValidationInitiale(params.getStructureId());
             message = "Validations initiales bien effectuées.";
-        } else if (!validProgammationVM.isInitiale()) {
-            programmationService.allValidationInterne(validProgammationVM.getStructureId());
+        } else if (!params.isValidatedBySTRUCT()) {//do all initial validation of RESP_DGESS
+            programmationService.allValidationInterne(params.getStructureId());
             message = "Validations initerne et finale bien effectuées.";
         }
         return ResponseEntity.ok().body(message);

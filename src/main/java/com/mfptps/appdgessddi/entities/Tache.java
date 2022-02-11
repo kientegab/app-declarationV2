@@ -77,7 +77,11 @@ public class Tache extends CommonEntity {
     }
 
     public void setValeur(double valeur) {
-        this.valeur = valeur;
+        if (valeur == 0) {
+            this.valeur = 1D;
+        } else {
+            this.valeur = valeur;
+        }
     }
 
     public boolean isExecute() {
