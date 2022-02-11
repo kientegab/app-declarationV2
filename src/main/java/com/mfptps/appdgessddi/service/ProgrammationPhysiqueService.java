@@ -5,7 +5,7 @@
  */
 package com.mfptps.appdgessddi.service;
 
-import com.mfptps.appdgessddi.entities.Evaluation;
+import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import java.util.List;
@@ -16,20 +16,20 @@ import org.springframework.data.domain.Pageable;
  *
  * @author Canisius <canisiushien@gmail.com>
  */
-public interface EvaluationService {
+public interface ProgrammationPhysiqueService {
 
-    Evaluation create(Evaluation evaluation);
+    ProgrammationPhysique create(ProgrammationPhysique programmationPhysique);
 
-    void addEvaluation(List<PeriodesDTO> periodes, Programmation programmation);
+    void addProgrammationPhysique(List<PeriodesDTO> periodes, Programmation programmation);
 
     /**
-     * Return the Id of Periode come from Evaluation ligne
+     * Return the Id of Periode come from ProgrammationPhysique ligne
      *
      * @param programmationId
      * @return
      * @throws CustomException
      */
-    Long checkPeriodeEvaluation(Long programmationId) throws CustomException;
+    Long checkProgrammationPhysique(Long programmationId) throws CustomException;
 
-    Page<Evaluation> findAllByProgrammation(Long progammationId, Pageable pageable);
+    Page<ProgrammationPhysique> findAllByProgrammation(Long progammationId, Pageable pageable);
 }

@@ -61,6 +61,12 @@ public class Programmation extends CommonEntity {
 
     private double taux;
 
+    @Column(length = 1000)
+    private String resultatsAttendus;
+
+    @Column(length = 1000)
+    private String resultatsAtteints;//Renseigne uniquement lors de l'evaluation de l'activite
+
     private String observations;
 
     @Column(name = "valid_initial")
@@ -169,6 +175,22 @@ public class Programmation extends CommonEntity {
 
     public void setTaux(double taux) {
         this.taux = taux;
+    }
+
+    public String getResultatsAttendus() {
+        return resultatsAttendus;
+    }
+
+    public void setResultatsAttendus(String resultatsAttendus) {
+        this.resultatsAttendus = resultatsAttendus;
+    }
+
+    public String getResultatsAtteints() {
+        return resultatsAtteints;
+    }
+
+    public void setResultatsAtteints(String resultatsAtteints) {
+        this.resultatsAtteints = resultatsAtteints;
     }
 
     public String getObservations() {

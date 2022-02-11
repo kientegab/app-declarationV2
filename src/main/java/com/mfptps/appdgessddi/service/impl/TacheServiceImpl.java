@@ -12,7 +12,7 @@ import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheEvaluerRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.service.CustomException;
-import com.mfptps.appdgessddi.service.EvaluationService;
+import com.mfptps.appdgessddi.service.ProgrammationPhysiqueService;
 import com.mfptps.appdgessddi.service.TacheService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -33,16 +33,16 @@ public class TacheServiceImpl implements TacheService {
     private final TacheRepository tacheRepository;
     private final TacheEvaluerRepository tacheEvaluerRepository;
     private final ProgrammationRepository programmationRepository;
-    private final EvaluationService evaluationService;
+    private final ProgrammationPhysiqueService programmationPhysiqueService;
 
     public TacheServiceImpl(TacheRepository tacheRepository,
             TacheEvaluerRepository tacheEvaluerRepository,
             ProgrammationRepository programmationRepository,
-            EvaluationService evaluationService) {
+            ProgrammationPhysiqueService programmationPhysiqueService) {
         this.tacheRepository = tacheRepository;
         this.tacheEvaluerRepository = tacheEvaluerRepository;
         this.programmationRepository = programmationRepository;
-        this.evaluationService = evaluationService;
+        this.programmationPhysiqueService = programmationPhysiqueService;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class TacheServiceImpl implements TacheService {
     /**
      * acts as deletion and update. Do at frontEnd : Modify fields and delete
      * tasks (checkBox for example). CAREFULNESS : run exclusively before task
-     * evaluation
+     * periodes
      *
      * @param taches : list of taches (deleted or no, updated or no)
      * @return
@@ -120,7 +120,7 @@ public class TacheServiceImpl implements TacheService {
 
         //on s'assure que la date du jour est dans l'intervalle de periode de la programmation
         //une exception sera levee au cas ou on voudra evaluer une programmation en dehors de sa periode
-        long periodeId = evaluationService.checkPeriodeEvaluation(programmation.getId());
+        long periodeId = programmationPhysiqueService.checkProgrammationPhysique(programmation.getId());
 
         //parcourons simultanement la liste des taches a evaluer et celle recupere depuis la bd(pour comparaison)
         for (Tache t : taches) {

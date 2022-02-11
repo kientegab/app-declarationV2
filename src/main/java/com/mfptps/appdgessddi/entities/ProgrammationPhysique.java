@@ -5,15 +5,13 @@
  */
 package com.mfptps.appdgessddi.entities;
 
-import javax.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +21,10 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 /**
+ * Cette classe sert a stocker toutes periodes cochees lors d'une programmation
  *
  * @author Canisius <canisiushien@gmail.com>
  */
@@ -36,29 +34,23 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "evaluation", uniqueConstraints = {
-    @UniqueConstraint(name = "unique_structure_exercice", columnNames = {"structure_id", "exercice_id"})})
-@SQLDelete(sql = "UPDATE evaluation SET deleted = true WHERE id=?")
+@Table(name = "programmation_physique")
+@SQLDelete(sql = "UPDATE programmation_physique SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 @FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
 @Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
-public class Evaluation extends CommonEntity {
+public class ProgrammationPhysique extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private double valeur;//Programmation with single tache
-
-    @Column(nullable = false)
-    @Type(type = "yes_no")
-    private boolean evaluer = false;
-
+    //=============================== RELATIONSHIPS
     @ManyToOne
-    @JoinColumn(name = "structure_id")
-    private Structure structure;
+    private Periode periode;
 
+    @JsonIgnoreProperties(value = {"sourceFinancement", "taches", "activite", "projet", "structure", "exercice", "objectif", "action", "programme"})
     @ManyToOne
-    @JoinColumn(name = "exercice_id")
-    private Exercice exercice;
+    private Programmation programmation;
+
 }
