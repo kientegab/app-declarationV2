@@ -8,6 +8,7 @@ package com.mfptps.appdgessddi.service;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
+import com.mfptps.appdgessddi.service.dto.ProgrammationForEvaluationDTO;
 import java.io.OutputStream;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -46,6 +47,14 @@ public interface ProgrammationService {
      * @return
      */
     Optional<Programmation> get(Long structureId, Long id);
+
+    /**
+     * Rechercher et Construire la programmation pour l'evaluation
+     *
+     * @param programationId
+     * @return
+     */
+    ProgrammationForEvaluationDTO getForEvaluation(Long programationId);
 
     /**
      * Liste des activites programmees d'une structure donnee

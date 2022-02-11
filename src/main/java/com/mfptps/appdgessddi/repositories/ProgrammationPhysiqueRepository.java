@@ -5,9 +5,11 @@
  */
 package com.mfptps.appdgessddi.repositories;
 
+import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,5 +33,10 @@ public interface ProgrammationPhysiqueRepository extends JpaRepository<Programma
     List<ProgrammationPhysique> findByProgrammationAndPeriode(Long id);
 
     Page<ProgrammationPhysique> findByProgrammationId(long id, Pageable pageable);
+
+    @Query("SELECT per FROM ProgrammationPhysique pph, Periode per, Programmation p "
+            + "WHERE pph.periode.id = per.id AND per.id = :periodeId "
+            + "AND pph.programmation.id = p.id AND p.id = :programmationId")
+    Optional<Periode> findByPeriodeAndProgrammation(long periodeId, long programmationId);
 
 }

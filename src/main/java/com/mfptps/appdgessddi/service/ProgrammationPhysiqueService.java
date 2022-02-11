@@ -5,8 +5,8 @@
  */
 package com.mfptps.appdgessddi.service;
 
-import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import com.mfptps.appdgessddi.entities.Programmation;
+import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -21,15 +21,6 @@ public interface ProgrammationPhysiqueService {
     ProgrammationPhysique create(ProgrammationPhysique programmationPhysique);
 
     void addProgrammationPhysique(List<PeriodesDTO> periodes, Programmation programmation);
-
-    /**
-     * Return the Id of Periode come from ProgrammationPhysique ligne
-     *
-     * @param programmationId
-     * @return
-     * @throws CustomException
-     */
-    Long checkProgrammationPhysique(Long programmationId) throws CustomException;
 
     Page<ProgrammationPhysique> findAllByProgrammation(Long progammationId, Pageable pageable);
 }

@@ -9,6 +9,7 @@ import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
+import com.mfptps.appdgessddi.service.dto.ProgrammationForEvaluationDTO;
 import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import com.mfptps.appdgessddi.web.vm.PrintGlobalVM;
@@ -152,6 +153,22 @@ public class ProgrammationController {
         log.debug("Consultation de la Programmation : {}", id);
         Optional<Programmation> programmation = programmationService.get(structureId, id);
         return ResponseUtil.wrapOrNotFound(programmation);
+    }
+
+    /**
+     * Presente une programmation pour son evaluation
+     *
+     * @param programmationId
+     * @return
+     */
+    @GetMapping(path = "/detail/{idp}")
+    public ResponseEntity<ProgrammationForEvaluationDTO> getProgrammationForEvaluation(@PathVariable(name = "idp", required = true) long programmationId) {
+        log.debug("Consultation de la Programmation {} pour l'evaluation", programmationId);
+        ProgrammationForEvaluationDTO programmation = programmationService.getForEvaluation(programmationId);
+
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, programmation.getId().toString()))
+                .body(programmation);
     }
 
     /**

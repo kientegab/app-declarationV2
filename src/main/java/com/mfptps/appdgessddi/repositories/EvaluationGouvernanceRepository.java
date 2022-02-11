@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface EvaluationGouvernanceRepository extends JpaRepository<EvaluationGouvernance,Long> {
+public interface EvaluationGouvernanceRepository extends JpaRepository<EvaluationGouvernance, Long> {
 
     @Query("SELECT eg FROM EvaluationGouvernance eg, Structure s, Exercice e "
-            + "WHERE p.deleted = false "
+            + "WHERE eg.deleted = false "
             + "AND eg.structure.id = s.id "
             + "AND eg.exercice.id = e.id "
             + "AND s.id=?1 "

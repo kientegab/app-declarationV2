@@ -13,10 +13,7 @@ import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.ProgrammationPhysiqueService;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
-import com.mfptps.appdgessddi.utils.AppUtil;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,9 +28,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProgrammationPhysiqueServiceImpl implements ProgrammationPhysiqueService {
 
-    private ProgrammationPhysiqueRepository programmationPhysiqueRepository;
+    private final ProgrammationPhysiqueRepository programmationPhysiqueRepository;
 
-    private PeriodeRepository periodeRepository;
+    private final PeriodeRepository periodeRepository;
 
     public ProgrammationPhysiqueServiceImpl(ProgrammationPhysiqueRepository programmationPhysiqueRepository,
             PeriodeRepository periodeRepository) {
@@ -94,36 +91,6 @@ public class ProgrammationPhysiqueServiceImpl implements ProgrammationPhysiqueSe
 //            }
 //        }
         programmationPhysiqueRepository.saveAll(programmationPhysiques);
-    }
-
-    /**
-     * Check if the current date is in the interval of the Activity realization
-     * periods
-     *
-     * @param programmationId
-     */
-    @Override
-    public Long checkProgrammationPhysique(Long programmationId) throws CustomException {
-        Date toDay = new Date();
-        boolean value = false;
-        List<ProgrammationPhysique> progsPhysiques = programmationPhysiqueRepository.findByProgrammationAndPeriode(programmationId);
-        for (ProgrammationPhysique pp : progsPhysiques) {
-            try {
-                Date dateDebut = AppUtil.normaliserDate(pp.getPeriode().getDebut());
-                Date dateFin = AppUtil.normaliserDate(pp.getPeriode().getFin());
-                value = value || (toDay.after(dateDebut) && toDay.before(dateFin));
-                if (value) {
-                    return pp.getPeriode().getId();
-                }
-            } catch (ParseException ex) {
-                log.error("Error when parsing data.");
-            }
-        }
-        if (!value) {
-            throw new CustomException("Opération non autorisée ! Rassurez-vous d'être dans la bonne période d'évaluation de l'activité.");
-        }
-
-        return null;
     }
 
     @Override

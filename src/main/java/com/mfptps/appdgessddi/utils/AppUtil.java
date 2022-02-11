@@ -8,12 +8,14 @@ package com.mfptps.appdgessddi.utils;
 import com.mfptps.appdgessddi.entities.Action;
 import com.mfptps.appdgessddi.entities.Objectif;
 import com.mfptps.appdgessddi.entities.Programmation;
+import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import com.mfptps.appdgessddi.entities.Programme;
 import com.mfptps.appdgessddi.enums.BaseStatus;
 import com.mfptps.appdgessddi.enums.TypeObjectif;
 import com.mfptps.appdgessddi.repositories.ActionRepository;
 import com.mfptps.appdgessddi.repositories.ActivitesRepository;
 import com.mfptps.appdgessddi.repositories.ObjectifRepository;
+import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammeRepository;
 import com.mfptps.appdgessddi.service.CustomException;
@@ -22,11 +24,14 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *
  * @author Canisius <canisiushien@gmail.com>
  */
+@Slf4j
 public class AppUtil {
 
     private static InputStream logoStream;
@@ -217,4 +222,33 @@ public class AppUtil {
         return df.parse(value);
     }
 
+    /**
+     * Check if the current date is in the interval of the Activity realization
+     * periods
+     *
+     * Return the Id of Periode come from ProgrammationPhysique ligne
+     *
+     * @param programmationId
+     */
+    public static ResponseCheckPeriode checkProgrammationPhysique(Long programmationId, ProgrammationPhysiqueRepository repository) throws CustomException {
+        Date toDay = new Date();
+        ResponseCheckPeriode response = new ResponseCheckPeriode();
+        List<ProgrammationPhysique> progsPhysiques = repository.findByProgrammationAndPeriode(programmationId);
+        for (ProgrammationPhysique pp : progsPhysiques) {
+            try {
+                Date dateDebut = AppUtil.normaliserDate(pp.getPeriode().getDebut());
+                Date dateFin = AppUtil.normaliserDate(pp.getPeriode().getFin());
+                response.setExists(response.isExists() || (toDay.after(dateDebut) && toDay.before(dateFin)));
+                if (response.isExists()) {
+                    response.setPeriode(pp.getPeriode().getId());
+                }
+            } catch (ParseException ex) {
+                log.error("Error when parsing data.");
+            }
+        }
+//        if (!value) {
+//            throw new CustomException("Opération non autorisée ! Rassurez-vous d'être dans la bonne période d'évaluation de l'activité.");
+//        }
+        return response;
+    }
 }

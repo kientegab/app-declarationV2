@@ -14,17 +14,14 @@ import com.mfptps.appdgessddi.entities.Projet;
 import com.mfptps.appdgessddi.entities.SourceFinancement;
 import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.entities.Tache;
+import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
- * Ce DTO est construit et renvoyer pour l'evaluation d'une programmation
+ * Ce DTO est construit et renvoye pour l'evaluation d'une programmation
  *
  * @author Canisius <canisiushien@gmail.com>
  */
-@Getter
-@Setter
 public class ProgrammationForEvaluationDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -45,9 +42,11 @@ public class ProgrammationForEvaluationDTO {
 
     private double taux;
 
-    private double valeurActuelle;
+    private String periodeActuelle = "";
 
-    private double tauxActuel;
+    private double valeurActuelle = 0;
+
+    private double tauxActuel = 0;
 
     private String resultatsAttendus;
 
@@ -63,7 +62,7 @@ public class ProgrammationForEvaluationDTO {
 
     private SourceFinancement sourceFinancement;
 
-    private List<Tache> taches;
+    private List<Tache> taches = new ArrayList<>();
 
     private Activites activite;
 
@@ -75,4 +74,201 @@ public class ProgrammationForEvaluationDTO {
     private Exercice exercice;
 
     private Objectif objectif;
+
+    //=========================================
+    public ProgrammationForEvaluationDTO() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public double getCoutPrevisionnel() {
+        return coutPrevisionnel;
+    }
+
+    public void setCoutPrevisionnel(double coutPrevisionnel) {
+        this.coutPrevisionnel = coutPrevisionnel;
+    }
+
+    public double getCoutReel() {
+        return coutReel;
+    }
+
+    public void setCoutReel(double coutReel) {
+        this.coutReel = coutReel;
+    }
+
+    public boolean isEstProgramme() {
+        return estProgramme;
+    }
+
+    public void setEstProgramme(boolean estProgramme) {
+        this.estProgramme = estProgramme;
+    }
+
+    public boolean isSingleton() {
+        return singleton;
+    }
+
+    public void setSingleton(boolean singleton) {
+        this.singleton = singleton;
+    }
+
+    public double getCible() {
+        return cible;
+    }
+
+    public void setCible(double cible) {
+        this.cible = cible;
+    }
+
+    public double getTaux() {
+        return taux;
+    }
+
+    public void setTaux(double taux) {
+        this.taux = taux;
+    }
+
+    public double getValeurActuelle() {
+        return valeurActuelle;
+    }
+
+    public void setValeurActuelle(double valeurActuelle) {
+        this.valeurActuelle = valeurActuelle;
+    }
+
+    public double getTauxActuel() {
+        return tauxActuel;
+    }
+
+    public void setTauxActuel(double tauxActuel) {
+        this.tauxActuel = tauxActuel;
+    }
+
+    public String getPeriodeActuelle() {
+        return periodeActuelle;
+    }
+
+    public void setPeriodeActuelle(String periodeActuelle) {
+        this.periodeActuelle = periodeActuelle;
+    }
+
+    public String getResultatsAttendus() {
+        return resultatsAttendus;
+    }
+
+    public void setResultatsAttendus(String resultatsAttendus) {
+        this.resultatsAttendus = resultatsAttendus;
+    }
+
+    public String getResultatsAtteints() {
+        return resultatsAtteints;
+    }
+
+    public void setResultatsAtteints(String resultatsAtteints) {
+        this.resultatsAtteints = resultatsAtteints;
+    }
+
+    public String getObservations() {
+        return observations;
+    }
+
+    public void setObservations(String observations) {
+        this.observations = observations;
+    }
+
+    public boolean isValidationInitial() {
+        return validationInitial;
+    }
+
+    public void setValidationInitial(boolean validationInitial) {
+        this.validationInitial = validationInitial;
+    }
+
+    public boolean isValidationInterne() {
+        return validationInterne;
+    }
+
+    public void setValidationInterne(boolean validationInterne) {
+        this.validationInterne = validationInterne;
+    }
+
+    public boolean isValidationFinal() {
+        return validationFinal;
+    }
+
+    public void setValidationFinal(boolean validationFinal) {
+        this.validationFinal = validationFinal;
+    }
+
+    public SourceFinancement getSourceFinancement() {
+        return sourceFinancement;
+    }
+
+    public void setSourceFinancement(SourceFinancement sourceFinancement) {
+        this.sourceFinancement = sourceFinancement;
+    }
+
+    public List<Tache> getTaches() {
+        return taches;
+    }
+
+    public void setTaches(List<Tache> taches) {
+        this.taches = taches;
+    }
+
+    public Activites getActivite() {
+        return activite;
+    }
+
+    public void setActivite(Activites activite) {
+        this.activite = activite;
+    }
+
+    public Projet getProjet() {
+        return projet;
+    }
+
+    public void setProjet(Projet projet) {
+        this.projet = projet;
+    }
+
+    public Structure getStructure() {
+        return structure;
+    }
+
+    public void setStructure(Structure structure) {
+        this.structure = structure;
+    }
+
+    public Exercice getExercice() {
+        return exercice;
+    }
+
+    public void setExercice(Exercice exercice) {
+        this.exercice = exercice;
+    }
+
+    public Objectif getObjectif() {
+        return objectif;
+    }
+
+    public void setObjectif(Objectif objectif) {
+        this.objectif = objectif;
+    }
+
 }

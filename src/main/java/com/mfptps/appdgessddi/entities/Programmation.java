@@ -86,8 +86,6 @@ public class Programmation extends CommonEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "programmation"/*, cascade = CascadeType.PERSIST*/)
     private List<Tache> taches;
 
-//    @OneToMany(mappedBy = "programmation")
-//    private List<Evaluation> evaluations;
     @ManyToOne
     @JoinColumn(nullable = false, updatable = false)
     private Activites activite;
@@ -110,7 +108,7 @@ public class Programmation extends CommonEntity {
     private Objectif objectif;//ObjectifOperationel
 
     //============== CONSTRUCTORS && GETTERS/SETTERS
-    public Programmation() {       
+    public Programmation() {
     }
 
     public Long getId() {
@@ -240,14 +238,6 @@ public class Programmation extends CommonEntity {
     public void setTaches(List<Tache> taches) {
         this.taches = taches;
     }
-//
-//    public List<Evaluation> getEvaluations() {
-//        return evaluations;
-//    }
-//
-//    public void setEvaluations(List<Evaluation> evaluations) {
-//        this.evaluations = evaluations;
-//    }
 
     public Activites getActivite() {
         return activite;
