@@ -7,6 +7,7 @@ package com.mfptps.appdgessddi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,11 +19,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
+
 
 /**
  * This entity is similar to Activite
@@ -45,21 +49,34 @@ public class Programmation extends CommonEntity {
     @Column(nullable = false, updatable = false)
     private String code;
 
+    @Column(name = "cout_previsionnel")
     private double coutPrevisionnel;
 
+    @Column(name = "cout_reel")
     private double coutReel;
 
-    @Column(nullable = false)
+    @Column(name = "est_programmme" ,nullable = false)
     @Type(type = "yes_no")
     private boolean estProgramme = true;//If activite is programmed
 
-    @Column(updatable = false)
+    @Column(name = "singleton", updatable = false)
     @Type(type = "yes_no")
     private boolean singleton; //If this Programmation have just one Tache
 
-    private double cible = 1D;
+    @Column(name = "cible")
+    private double cible = 1;
 
-    private double taux;
+    @Column(name = "taux")
+    private double taux;// taux exécution
+    
+    @Column(name = "last_eval_date")
+    @Temporal(TemporalType.DATE)
+    private Date lastEvalDate; // date de la dernière évaluation
+    
+    @Column(name = "dead_line")
+    @Temporal(TemporalType.DATE)
+    private Date deadLine; // date limite d'exécution des tâches de l'activités programmées
+
 
     @Column(length = 1000)
     private String resultatsAttendus;
@@ -69,12 +86,15 @@ public class Programmation extends CommonEntity {
 
     private String observations;
 
+    @Type(type = "yes_no")
     @Column(name = "valid_initial")
     private boolean validationInitial;//For validation RESP_STRUC
 
+    @Type(type = "yes_no")
     @Column(name = "valid_interne")
     private boolean validationInterne;//For validation RESP_DGESS
 
+    @Type(type = "yes_no")
     @Column(name = "valid_final")
     private boolean validationFinal;//For validation CASEM
 
@@ -300,4 +320,21 @@ public class Programmation extends CommonEntity {
                 .reduce(0D, (subtotal, element) -> subtotal + element);
         return total;
     }
+
+    public Date getLastEvalDate() {
+        return lastEvalDate;
+    }
+
+    public void setLastEvalDate(Date lastEvalDate) {
+        this.lastEvalDate = lastEvalDate;
+    }
+
+    public Date getDeadLine() {
+        return deadLine;
+    }
+
+    public void setDeadLine(Date deadLine) {
+        this.deadLine = deadLine;
+    }
+    
 }
