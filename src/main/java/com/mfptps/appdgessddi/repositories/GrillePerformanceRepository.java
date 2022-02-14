@@ -18,5 +18,5 @@ public interface GrillePerformanceRepository extends JpaRepository<GrillePerform
     List<GrillePerformance> findAllGrille();
     
     @Query("SELECT g.appreciation FROM GrillePerformance g WHERE g.deleted = false AND g.borneInferieur>=?1 AND g.borneSuperieur <=?1")
-    Optional<String> finGrilleAppreciation(double value);
+    Optional<String> findGrilleAppreciation(double value);
 }
