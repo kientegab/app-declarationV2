@@ -9,6 +9,7 @@ import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
+import com.mfptps.appdgessddi.service.dto.ProgrammationForEvaluationDTO;
 import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import com.mfptps.appdgessddi.web.vm.PrintGlobalVM;
@@ -155,6 +156,22 @@ public class ProgrammationController {
     }
 
     /**
+     * Presente une programmation pour son evaluation
+     *
+     * @param programmationId
+     * @return
+     */
+    @GetMapping(path = "/detail/{idp}")
+    public ResponseEntity<ProgrammationForEvaluationDTO> getProgrammationForEvaluation(@PathVariable(name = "idp", required = true) long programmationId) {
+        log.debug("Consultation de la Programmation {} pour l'evaluation", programmationId);
+        ProgrammationForEvaluationDTO programmation = programmationService.getForEvaluation(programmationId);
+
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, programmation.getId().toString()))
+                .body(programmation);
+    }
+
+    /**
      * Access granted to RESP_STRUCT, RESP_DGESS, (ADMIN)
      *
      * @param structureId : id of Structure of validator referency by ids in
@@ -179,14 +196,14 @@ public class ProgrammationController {
      */
     @PutMapping(path = "/validation-all")
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RS + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
-    public ResponseEntity<String> allValidationProgrammation(@RequestBody ValidProgammationVM validProgammationVM) {
+    public ResponseEntity<String> allValidationProgrammation(@RequestBody ValidProgammationVM params) {
         log.debug("Validation globale initiale/interne de Programmations");
         String message = "";
-        if (validProgammationVM.isInitiale()) {//all initial validation of RESP_STRUCT
-            programmationService.allValidationInitiale(validProgammationVM.getStructureId());
+        if (params.isValidatedBySTRUCT()) {//do all initial validation of RESP_STRUCT
+            programmationService.allValidationInitiale(params.getStructureId());
             message = "Validations initiales bien effectuées.";
-        } else if (!validProgammationVM.isInitiale()) {
-            programmationService.allValidationInterne(validProgammationVM.getStructureId());
+        } else if (!params.isValidatedBySTRUCT()) {//do all initial validation of RESP_DGESS
+            programmationService.allValidationInterne(params.getStructureId());
             message = "Validations initerne et finale bien effectuées.";
         }
         return ResponseEntity.ok().body(message);

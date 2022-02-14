@@ -7,6 +7,7 @@ package com.mfptps.appdgessddi.service.mapper;
 
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
+import com.mfptps.appdgessddi.service.dto.ProgrammationForEvaluationDTO;
 import org.mapstruct.Mapper;
 
 /**
@@ -38,5 +39,7 @@ public interface ProgrammationMapper {
 //        @Mapping(target = "activite", source = "activite"),
 //        @Mapping(target = "taches", source = "taches")})don't forgot code field
     Programmation toEntity(ProgrammationDTO programmationDTO);
+
+    ProgrammationForEvaluationDTO toEvaluationDTO(Programmation programmation);
 
 }

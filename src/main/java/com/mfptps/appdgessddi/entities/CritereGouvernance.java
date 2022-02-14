@@ -1,18 +1,17 @@
 package com.mfptps.appdgessddi.entities;
 
+import javax.persistence.*;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
-
 @Entity
-@Table(name = "CritereGouvernance")
-public class CritereGouvernance  extends CommonEntity {
+@Table(name = "critere_gouvernance")
+public class CritereGouvernance extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String indicateur ;
-    private boolean mode ;
+    private String indicateur;
+    private boolean mode;
     @Type(type = "yes_no")
     private boolean actif;
 

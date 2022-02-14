@@ -3,112 +3,80 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mfptps.appdgessddi.entities;
+package com.mfptps.appdgessddi.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mfptps.appdgessddi.entities.Activites;
+import com.mfptps.appdgessddi.entities.Exercice;
+import com.mfptps.appdgessddi.entities.Objectif;
+import com.mfptps.appdgessddi.entities.Projet;
+import com.mfptps.appdgessddi.entities.SourceFinancement;
+import com.mfptps.appdgessddi.entities.Structure;
+import com.mfptps.appdgessddi.entities.Tache;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
 
 /**
- * This entity is similar to Activite
+ * Ce DTO est construit et renvoye pour l'evaluation d'une programmation
  *
  * @author Canisius <canisiushien@gmail.com>
  */
-@Entity
-@Table(name = "programmation")
-//@SQLDelete(sql = "UPDATE programmation SET deleted = true WHERE id=?")
-@Where(clause = "deleted = false")
-@FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
-@Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
-public class Programmation extends CommonEntity {
+public class ProgrammationForEvaluationDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Column(nullable = false, updatable = false)
     private String code;
 
     private double coutPrevisionnel;
 
     private double coutReel;
 
-    @Column(nullable = false)
-    @Type(type = "yes_no")
-    private boolean estProgramme = true;//If activite is programmed
+    private boolean estProgramme;
 
-    @Column(updatable = false)
-    @Type(type = "yes_no")
-    private boolean singleton; //If this Programmation have just one Tache
+    private boolean singleton;
 
-    private double cible = 1D;
+    private double cible;
 
     private double taux;
 
-    @Column(length = 1000)
+    private String periodeActuelle = "";
+
+    private double valeurActuelle = 0;
+
+    private double tauxActuel = 0;
+
     private String resultatsAttendus;
 
-    @Column(length = 1000)
-    private String resultatsAtteints;//Renseigne uniquement lors de l'evaluation de l'activite
+    private String resultatsAtteints;
 
     private String observations;
 
-    @Column(name = "valid_initial")
-    private boolean validationInitial;//For validation RESP_STRUC
+    private boolean validationInitial;
 
-    @Column(name = "valid_interne")
-    private boolean validationInterne;//For validation RESP_DGESS
+    private boolean validationInterne;
 
-    @Column(name = "valid_final")
-    private boolean validationFinal;//For validation CASEM
+    private boolean validationFinal;
 
-    //============= relationships 
-    @ManyToOne
-    @JoinColumn(nullable = false, updatable = false)
     private SourceFinancement sourceFinancement;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "programmation"/*, cascade = CascadeType.PERSIST*/)
-    private List<Tache> taches;
+    private List<Tache> taches = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(nullable = false, updatable = false)
     private Activites activite;
 
-    @ManyToOne
-    @JoinColumn(nullable = false, updatable = false)
     private Projet projet;
 
     @JsonIgnoreProperties(value = {"parent"})
-    @ManyToOne
-    @JoinColumn(nullable = false, updatable = false)
     private Structure structure;
 
-    @ManyToOne
-    @JoinColumn(nullable = false, updatable = false)
     private Exercice exercice;
 
-    @ManyToOne
-    @JoinColumn(nullable = false, updatable = false)
-    private Objectif objectif;//ObjectifOperationel
+    private Objectif objectif;
 
-    //============== CONSTRUCTORS && GETTERS/SETTERS
-    public Programmation() {
+    //=========================================
+    public ProgrammationForEvaluationDTO() {
     }
 
     public Long getId() {
@@ -173,6 +141,30 @@ public class Programmation extends CommonEntity {
 
     public void setTaux(double taux) {
         this.taux = taux;
+    }
+
+    public double getValeurActuelle() {
+        return valeurActuelle;
+    }
+
+    public void setValeurActuelle(double valeurActuelle) {
+        this.valeurActuelle = valeurActuelle;
+    }
+
+    public double getTauxActuel() {
+        return tauxActuel;
+    }
+
+    public void setTauxActuel(double tauxActuel) {
+        this.tauxActuel = tauxActuel;
+    }
+
+    public String getPeriodeActuelle() {
+        return periodeActuelle;
+    }
+
+    public void setPeriodeActuelle(String periodeActuelle) {
+        this.periodeActuelle = periodeActuelle;
     }
 
     public String getResultatsAttendus() {
@@ -243,14 +235,6 @@ public class Programmation extends CommonEntity {
         return activite;
     }
 
-    public Objectif getObjectif() {
-        return objectif;
-    }
-
-    public void setObjectif(Objectif objectif) {
-        this.objectif = objectif;
-    }
-
     public void setActivite(Activites activite) {
         this.activite = activite;
     }
@@ -279,25 +263,12 @@ public class Programmation extends CommonEntity {
         this.exercice = exercice;
     }
 
-    /**
-     * Previous to check if sum of taches's ponderation equals 100%
-     *
-     * @return
-     */
-    public double checkPonderation() {
-        double total = this.taches.stream().map(tache -> tache.getPonderation())
-                .reduce(0D, (subtotal, element) -> subtotal + element);
-        return total;
+    public Objectif getObjectif() {
+        return objectif;
     }
 
-    /**
-     * Previous to check if sum of taches's valeur equals Porgrammation.cible
-     *
-     * @return
-     */
-    public double checkValeur() {
-        double total = this.taches.stream().map(tache -> tache.getValeur())
-                .reduce(0D, (subtotal, element) -> subtotal + element);
-        return total;
+    public void setObjectif(Objectif objectif) {
+        this.objectif = objectif;
     }
+
 }

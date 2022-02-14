@@ -16,6 +16,7 @@ import com.mfptps.appdgessddi.enums.TypeStructure;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
 import com.mfptps.appdgessddi.repositories.ObjectifRepository;
+import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.QueryManagerRepository;
 import com.mfptps.appdgessddi.repositories.StructureRepository;
@@ -25,10 +26,12 @@ import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.CommentaireService;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.ExerciceService;
+import com.mfptps.appdgessddi.service.ProgrammationPhysiqueService;
 import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
+import com.mfptps.appdgessddi.service.dto.ProgrammationForEvaluationDTO;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
 import com.mfptps.appdgessddi.service.reportentities.ProgrammeDataRE;
 import com.mfptps.appdgessddi.service.reportentities.ReportUtil;
@@ -41,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +67,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.mfptps.appdgessddi.service.ProgrammationPhysiqueService;
 
 /**
  *
@@ -82,6 +85,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private final MinistereStructureRepository ministereStructureRepository;
     private final StructureRepository structureRepository;
     private final ProgrammationPhysiqueService programmationPhysiqueService;
+    private final ProgrammationPhysiqueRepository programmationPhysiqueRepository;
     private final CommentaireService commentaireService;
     private final ProgrammationMapper programmationMapper;
     private final ExerciceService exerciceService;
@@ -95,6 +99,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             MinistereStructureRepository ministereStructureRepository,
             StructureRepository structureRepository,
             ProgrammationPhysiqueService programmationPhysiqueService,
+            ProgrammationPhysiqueRepository programmationPhysiqueRepository,
             CommentaireService commentaireService,
             ProgrammationMapper programmationMapper,
             ExerciceService exerciceService,
@@ -107,6 +112,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         this.ministereStructureRepository = ministereStructureRepository;
         this.structureRepository = structureRepository;
         this.programmationPhysiqueService = programmationPhysiqueService;
+        this.programmationPhysiqueRepository = programmationPhysiqueRepository;
         this.commentaireService = commentaireService;
         this.programmationMapper = programmationMapper;
         this.exerciceService = exerciceService;
@@ -194,6 +200,20 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     }
 
     @Override
+    public ProgrammationForEvaluationDTO getForEvaluation(Long programationId) {
+        Programmation programmation = programmationRepository.findById(programationId).orElseThrow(() -> new CustomException("Programmation d'id " + programationId + " inexistante"));
+        ProgrammationForEvaluationDTO response = programmationMapper.toEvaluationDTO(programmation);
+
+        long periodeId = AppUtil.checkProgrammationPhysique(response.getId(), programmationPhysiqueRepository).getPeriode();
+
+        response.setTauxActuel(this.tauxExecutionByExerciceOrPeriode(Arrays.asList(programmation), periodeId));
+        response.setValeurActuelle(this.valeurCibleAtteinte(programmation.getTaches()));
+        response.setPeriodeActuelle(programmationPhysiqueRepository.findByPeriodeAndProgrammation(periodeId, programmation.getId()).get().getLibelle());
+
+        return response;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Page<Programmation> findAll(Long structureId, Pageable pageable) {
         return programmationRepository.findAll(structureId, pageable);
@@ -250,7 +270,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                     }
                     if ((SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) && programmation.isValidationInitial()) {
                         programmation.setValidationInterne(true);//validation DGESS
-                        programmation.setValidationFinal(true);//validation CASEM... A revoir
+                        //programmation.setValidationFinal(true);//validation CASEM... A revoir
                     }
                     return programmation;
                 });
@@ -278,7 +298,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 programmation.setValidationInterne(true);
                 return programmation;
             }).forEachOrdered(programmation -> {
-                programmation.setValidationFinal(true);
+                programmation.setValidationFinal(true);//validation CASEM... A revoir
             });
         }
     }
@@ -439,6 +459,20 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             taux += tauxTaches;
         }
         return taux;
+    }
+
+    /**
+     * Calcul des valeurs cible atteintes des taches d'une programmation
+     *
+     * @param taches
+     * @return
+     */
+    private double valeurCibleAtteinte(List<Tache> taches) {
+        double valeur = 0;
+
+        valeur = taches.stream().filter(tache -> (tache.getValeur() != 1D)).map(tache -> tacheEvaluerRepository.cumuleeOfTache(tache.getId())).reduce(valeur, (accumulator, _item) -> accumulator + _item);
+
+        return valeur;
     }
 
     //SOUS FONCTION DE tauxExecutionByExerciceOrPeriode(...)

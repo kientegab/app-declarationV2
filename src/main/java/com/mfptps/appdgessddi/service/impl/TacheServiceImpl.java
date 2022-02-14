@@ -8,12 +8,15 @@ package com.mfptps.appdgessddi.service.impl;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.entities.TacheEvaluer;
+import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheEvaluerRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.ProgrammationPhysiqueService;
 import com.mfptps.appdgessddi.service.TacheService;
+import com.mfptps.appdgessddi.utils.AppUtil;
+import com.mfptps.appdgessddi.utils.ResponseCheckPeriode;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,15 +36,18 @@ public class TacheServiceImpl implements TacheService {
     private final TacheRepository tacheRepository;
     private final TacheEvaluerRepository tacheEvaluerRepository;
     private final ProgrammationRepository programmationRepository;
+    private final ProgrammationPhysiqueRepository programmationPhysiqueRepository;
     private final ProgrammationPhysiqueService programmationPhysiqueService;
 
     public TacheServiceImpl(TacheRepository tacheRepository,
             TacheEvaluerRepository tacheEvaluerRepository,
             ProgrammationRepository programmationRepository,
+            ProgrammationPhysiqueRepository programmationPhysiqueRepository,
             ProgrammationPhysiqueService programmationPhysiqueService) {
         this.tacheRepository = tacheRepository;
         this.tacheEvaluerRepository = tacheEvaluerRepository;
         this.programmationRepository = programmationRepository;
+        this.programmationPhysiqueRepository = programmationPhysiqueRepository;
         this.programmationPhysiqueService = programmationPhysiqueService;
     }
 
@@ -120,7 +126,10 @@ public class TacheServiceImpl implements TacheService {
 
         //on s'assure que la date du jour est dans l'intervalle de periode de la programmation
         //une exception sera levee au cas ou on voudra evaluer une programmation en dehors de sa periode
-        long periodeId = programmationPhysiqueService.checkProgrammationPhysique(programmation.getId());
+        ResponseCheckPeriode periode = AppUtil.checkProgrammationPhysique(programmation.getId(), programmationPhysiqueRepository);
+        if (!periode.isExists()) {
+            throw new CustomException("Opération non autorisée ! Rassurez-vous d'être dans la bonne période d'évaluation de l'activité.");
+        }
 
         //parcourons simultanement la liste des taches a evaluer et celle recupere depuis la bd(pour comparaison)
         for (Tache t : taches) {
@@ -134,7 +143,7 @@ public class TacheServiceImpl implements TacheService {
                     tacheEvaluerPrecedent = tacheEvaluerRepository.getByTacheAndActive(tdb.getId()).orElse(null); //===============
 //                    this.checkValeurCumulee(tacheEvaluerPrecedent, t, tdb);
                     //appel de la sous methode d'evaluation
-                    this.evaluerTacheAValeurCible(tacheEvaluerPrecedent, t, tdb, periodeId);
+                    this.evaluerTacheAValeurCible(tacheEvaluerPrecedent, t, tdb, periode.getPeriode());
                 } //instructions pour tache sans valeur cible et non encore executee
                 //dans ce cas, On met a jour la ligne Tache puis cree une ligne TacheEvaluer. 
                 else if (t.getId().equals(tdb.getId()) && (tdb.getValeur() == 1D) && !tdb.isExecute() && t.isExecute()) {
@@ -142,7 +151,7 @@ public class TacheServiceImpl implements TacheService {
                     tacheEvaluer.setCumuleeActive(true);
                     tacheEvaluer.setValeurCumulee(tdb.getPonderation());
                     tacheEvaluer.setValeurAtteinte(tdb.getPonderation());
-                    tacheEvaluer.setIdPeriode(periodeId);
+                    tacheEvaluer.setIdPeriode(periode.getPeriode());
                     tacheEvaluer.setTache(tdb);
 
                     tdb.setExecute(t.isExecute());
