@@ -93,12 +93,9 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     @Transactional
     public ResponseMessage create(DocumentDTO documentDTO, MultipartFile documentFile) {
+
         // Initialisation de la réponse
         ResponseMessage response = new ResponseMessage();
-        Document document = new Document();
-        document = documentMapper.toEntity(documentDTO);
-        Tache tache = tacheRepository.findById(document.getTache().getId()).orElseThrow(() -> new CustomException("Tache inexistante"));
-
         if (documentFile.isEmpty()) {
             response.setCode(500);
             response.setMessage("Données initiales incomplètes");
@@ -107,24 +104,34 @@ public class DocumentServiceImpl implements DocumentService {
             return response;
         }
 
+        Document document = new Document();
+        document = documentMapper.toEntity(documentDTO);
+
+        Tache tache = tacheRepository.findById(document.getTache().getId())
+                .orElseThrow(() -> new CustomException("Tache inexistante"));
+
         //Create a subFolder in user.home directory as name Structure ID and SIGLE fields
         Structure structure = structureRepository.findStructureById(tache.getId()).orElseThrow(() -> new CustomException("Structure inexistante"));
+
         Path path = this.initStoragePath(structure.getId().toString() + "_" + structure.getSigle().replaceAll("[^a-zA-Z0-9\\S+]", "_"));
         // Initialization and saving data+files
         try {
-            String filename = StringUtils.cleanPath(documentFile.getOriginalFilename());// Normalize filename
-
+            String filename = tache.getId() + "_" + StringUtils.cleanPath(documentFile.getOriginalFilename());// Normalize filename
             Files.copy(documentFile.getInputStream(),
                     path.resolve(filename), StandardCopyOption.REPLACE_EXISTING);// Copy file to the target location (Replacing existing file with the same name)
 
             document.setChemin(ServletUriComponentsBuilder.fromCurrentContextPath().path(filename).toUriString());
             document.setFormat(getFileExtension(filename));
 
+            tache.setFichierJoint(true);//indiquer qu'un fichier vient d'etre joint a cette tache
+
             //if some file with the same path exists in bd, we delete it
-            Optional<Document> existingDocument = documentRepository.findByDeletedFalseAndChemin(document.getChemin());
+            Optional<Document> existingDocument = Optional.ofNullable(documentRepository.findByChemin(document.getChemin()));
+
             if (existingDocument.isPresent()) {
                 this.delete(existingDocument.get().getId());
             }
+            tacheRepository.save(tache);
             documentRepository.save(document);
 
             response.setCode(HttpStatus.CREATED.value());
@@ -168,7 +175,7 @@ public class DocumentServiceImpl implements DocumentService {
     public Resource download(String fileUri) {
 //        try {
 //            Document document = new Document();
-//            document = documentRepository.findByDeletedFalseAndChemin(fileUri).orElseThrow(
+//            document = documentRepository.findByChemin(fileUri).orElseThrow(
 //                    () -> new CustomException("Document introuvable."));
 //
 //            if (document.isEstConfidentiel()) {

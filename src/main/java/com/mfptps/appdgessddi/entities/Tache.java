@@ -13,7 +13,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 
 /**
  *
@@ -21,6 +26,10 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = "tache")
+@SQLDelete(sql = "UPDATE tache SET deleted = true WHERE id=?")
+@Where(clause = "deleted = false")
+@FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
+@Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
 public class Tache extends CommonEntity {
 
     @Id
@@ -36,6 +45,9 @@ public class Tache extends CommonEntity {
     @Column(name = "est_execute", nullable = false)
     @Type(type = "yes_no")
     private boolean execute = false;//false means !execute.
+
+    @Type(type = "yes_no")
+    private boolean fichierJoint = false;//si fichier deja joint
 
     //================ relationships 
     //@JsonIgnore//to avoid an infinite loop when return Programmation object. COMMENTED 29112021 when implementing evaluerTache
@@ -90,6 +102,14 @@ public class Tache extends CommonEntity {
 
     public void setExecute(boolean execute) {
         this.execute = execute;
+    }
+
+    public boolean isFichierJoint() {
+        return fichierJoint;
+    }
+
+    public void setFichierJoint(boolean fichierJoint) {
+        this.fichierJoint = fichierJoint;
     }
 
     public Programmation getProgrammation() {

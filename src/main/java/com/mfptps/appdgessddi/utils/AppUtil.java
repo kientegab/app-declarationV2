@@ -230,10 +230,12 @@ public class AppUtil {
      *
      * @param programmationId
      */
-    public static ResponseCheckPeriode checkProgrammationPhysique(Long programmationId, ProgrammationPhysiqueRepository repository) throws CustomException {
+    public static ResponseCheckPeriode checkProgrammationPhysique(long programmationId, ProgrammationPhysiqueRepository repository) throws CustomException {
         Date toDay = new Date();
         ResponseCheckPeriode response = new ResponseCheckPeriode();
         List<ProgrammationPhysique> progsPhysiques = repository.findByProgrammationAndPeriode(programmationId);
+        response.setPeriodes(progsPhysiques);
+
         for (ProgrammationPhysique pp : progsPhysiques) {
             try {
                 Date dateDebut = AppUtil.normaliserDate(pp.getPeriode().getDebut());

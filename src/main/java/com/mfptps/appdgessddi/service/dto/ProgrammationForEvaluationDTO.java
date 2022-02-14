@@ -44,6 +44,8 @@ public class ProgrammationForEvaluationDTO {
 
     private String periodeActuelle = "";
 
+    private String periodes = "";
+
     private double valeurActuelle = 0;
 
     private double tauxActuel = 0;
@@ -149,6 +151,14 @@ public class ProgrammationForEvaluationDTO {
 
     public void setValeurActuelle(double valeurActuelle) {
         this.valeurActuelle = valeurActuelle;
+    }
+
+    public String getPeriodes() {
+        return periodes;
+    }
+
+    public void setPeriodes(String periodes) {
+        this.periodes = periodes;
     }
 
     public double getTauxActuel() {
