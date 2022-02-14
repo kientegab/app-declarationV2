@@ -205,6 +205,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     public ProgrammationForEvaluationDTO getForEvaluation(long programationId) {
         Programmation programmation = programmationRepository.findById(programationId).orElseThrow(() -> new CustomException("Programmation d'id " + programationId + " inexistante"));
         ProgrammationForEvaluationDTO response = programmationMapper.toEvaluationDTO(programmation);
+
         ResponseCheckPeriode checkPeriodes = AppUtil.checkProgrammationPhysique(response.getId(), programmationPhysiqueRepository);
 
         response.setTauxActuel(this.tauxExecutionByExerciceOrPeriode(Arrays.asList(programmation), checkPeriodes.getPeriode()));
@@ -216,7 +217,6 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             periodes = periodes + pph.getPeriode().getLibelle() + "-";
         }
         response.setPeriodes(periodes.substring(0, (periodes.length() - 1)));
-
         return response;
     }
 

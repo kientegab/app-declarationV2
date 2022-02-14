@@ -13,13 +13,12 @@ import org.springframework.data.jpa.repository.Query;
  *
  * @author aboubacary
  */
-
 public interface ContribuerRepository extends JpaRepository<Contribuer, Long> {
 
-    @Query("SELECT c FROM Contribuer c, ParametrerImpact p, Exercice e WHERE c.structure.id=?1 AND c.parametrerImpact.id=p.id AND p.exercice.id=?2 AND e.id=p.exercice.id AND c.nonapplicable=false AND p.")
+    @Query("SELECT c FROM Contribuer c, ParametrerImpact p, Exercice e WHERE c.structure.id=?1 AND c.parametrerImpact.id=p.id AND p.exercice.id=?2 AND e.id=p.exercice.id AND c.nonapplicable=false")
     public List<Contribuer> findStructureContribution(long structureId, long exerciceId);
-    
+
     @Query("SELECT c FROM Contribuer c, ParametrerImpact p, Exercice e WHERE c.structure.id=?1 AND c.parametrerImpact.id=p.id AND p.exercice.id=?2 AND e.id=p.exercice.id")
     public List<Contribuer> findAllStructureContribution(long structureId, long exerciceId);
-    
+
 }

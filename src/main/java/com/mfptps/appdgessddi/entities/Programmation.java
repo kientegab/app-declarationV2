@@ -27,7 +27,6 @@ import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
-
 /**
  * This entity is similar to Activite
  *
@@ -55,7 +54,7 @@ public class Programmation extends CommonEntity {
     @Column(name = "cout_reel")
     private double coutReel;
 
-    @Column(name = "est_programmme" ,nullable = false)
+    @Column(nullable = false)
     @Type(type = "yes_no")
     private boolean estProgramme = true;//If activite is programmed
 
@@ -68,15 +67,14 @@ public class Programmation extends CommonEntity {
 
     @Column(name = "taux")
     private double taux;// taux exécution
-    
+
     @Column(name = "last_eval_date")
     @Temporal(TemporalType.DATE)
     private Date lastEvalDate; // date de la dernière évaluation
-    
+
     @Column(name = "dead_line")
     @Temporal(TemporalType.DATE)
     private Date deadLine; // date limite d'exécution des tâches de l'activités programmées
-
 
     @Column(length = 1000)
     private String resultatsAttendus;
@@ -86,15 +84,12 @@ public class Programmation extends CommonEntity {
 
     private String observations;
 
-    @Type(type = "yes_no")
     @Column(name = "valid_initial")
     private boolean validationInitial;//For validation RESP_STRUC
 
-    @Type(type = "yes_no")
     @Column(name = "valid_interne")
     private boolean validationInterne;//For validation RESP_DGESS
 
-    @Type(type = "yes_no")
     @Column(name = "valid_final")
     private boolean validationFinal;//For validation CASEM
 
@@ -336,5 +331,5 @@ public class Programmation extends CommonEntity {
     public void setDeadLine(Date deadLine) {
         this.deadLine = deadLine;
     }
-    
+
 }

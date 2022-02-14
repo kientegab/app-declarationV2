@@ -243,14 +243,12 @@ public class AppUtil {
                 response.setExists(response.isExists() || (toDay.after(dateDebut) && toDay.before(dateFin)));
                 if (response.isExists()) {
                     response.setPeriode(pp.getPeriode().getId());
+                    break;
                 }
             } catch (ParseException ex) {
                 log.error("Error when parsing data.");
             }
         }
-//        if (!value) {
-//            throw new CustomException("Opération non autorisée ! Rassurez-vous d'être dans la bonne période d'évaluation de l'activité.");
-//        }
         return response;
     }
 }
