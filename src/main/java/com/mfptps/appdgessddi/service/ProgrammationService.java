@@ -110,8 +110,8 @@ public interface ProgrammationService {
     void delete(Long structureId, Long programmationId);
 
     /**
-     * Impression de programme d'activite d'une structure ou d'un ministere
-     * donne en fonction de l'exercice
+     * Impression de programme d'activites d'une structure ou d'un ministere en
+     * fonction de l'exercice
      *
      * @param ministereId
      * @param structureId
@@ -121,6 +121,19 @@ public interface ProgrammationService {
      * @param outputStream
      */
     void printProgrammeActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, String fileFormat, OutputStream outputStream);
+
+    /**
+     * Impression de rapport d'activites d'une structure ou d'un ministere en
+     * fonction de l'exercice
+     *
+     * @param ministereId
+     * @param structureId
+     * @param exerciceId : NOT NULLABLE
+     * @param currentStructureId : NOT NULLABLE
+     * @param fileFormat
+     * @param outputStream
+     */
+    void printRapportActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, String fileFormat, OutputStream outputStream);
 
     /**
      * Taux d'execution annuel ou pour periode d'une structure donnee

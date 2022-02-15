@@ -54,7 +54,7 @@
 	</variable>
 	<variable name="COUT_TEXT" class="java.lang.String">
 		<variableExpression><![CDATA[$V{COUT_TEXT}]]></variableExpression>
-		<initialValueExpression><![CDATA["COUT EFFECTIFS(en millier de FCFA)"]]></initialValueExpression>
+		<initialValueExpression><![CDATA["COUT EFFECTIFS (en millier de FCFA)"]]></initialValueExpression>
 	</variable>
 	<variable name="OBSERVATIONS_TEXT" class="java.lang.String">
 		<variableExpression><![CDATA[$V{OBSERVATIONS_TEXT}]]></variableExpression>
@@ -354,7 +354,7 @@
 				</reportElement>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
                   ($F{programmeREs})]]></dataSourceExpression>
-				<subreportExpression><![CDATA["niveau_programme.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["niveau_programme_rapport.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

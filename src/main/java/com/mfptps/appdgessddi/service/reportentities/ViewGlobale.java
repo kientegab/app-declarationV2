@@ -51,8 +51,14 @@ public class ViewGlobale {
     @Column(name = "coutreel")
     private double coutReel;
 
+    @Column(name = "resultatsattendus")
+    private String resultatsAttendus;
+
+    @Column(name = "resultatsatteints")
+    private String resultatsAtteints;
+
     @Column(name = "tauxprogrammation")
-    private String tauxProgrammation;
+    private double tauxProgrammation;
 
     @Column(name = "idfinancement")
     private long idFinancement;

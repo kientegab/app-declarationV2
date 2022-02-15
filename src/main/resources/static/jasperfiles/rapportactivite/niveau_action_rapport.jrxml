@@ -24,7 +24,6 @@
 	</style>
 	<field name="codeAction" class="java.lang.String"/>
 	<field name="libelleAction" class="java.lang.String"/>
-	<field name="structureAction" class="java.lang.String"/>
 	<field name="objectifOperationnelREs" class="java.util.List"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -33,22 +32,7 @@
 		<band height="30">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement mode="Opaque" x="0" y="0" width="90" height="30" backcolor="#D1D1D1" uuid="84707d98-36e3-4f8b-b55c-0c6b5d56387c">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-					<font fontName="Arial" size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{codeAction}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement mode="Opaque" x="90" y="0" width="602" height="30" backcolor="#D1D1D1" uuid="c44e7452-522a-4db1-8a5a-e24d5bf6460a">
+				<reportElement mode="Opaque" x="0" y="0" width="802" height="30" backcolor="#D1D1D1" uuid="c44e7452-522a-4db1-8a5a-e24d5bf6460a">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -61,23 +45,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle" markup="styled">
 					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{libelleAction}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement mode="Opaque" x="692" y="0" width="110" height="30" backcolor="#D1D1D1" uuid="7e79471d-44b5-41a4-bd8c-221e3397a1dc">
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
-					<font fontName="Arial" size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{structureAction}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Action " + $F{codeAction} + " : " + $F{libelleAction}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
@@ -94,7 +62,7 @@
 				</reportElement>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
                   ($F{objectifOperationnelREs})]]></dataSourceExpression>
-				<subreportExpression><![CDATA["niveau_objectif_operationnel.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["niveau_objectif_operationnel_rapport.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
