@@ -52,7 +52,7 @@ CREATE OR REPLACE VIEW dgessreportview AS
 
 -- programmationphysique
 CREATE OR REPLACE VIEW programmationphysique AS 
-    SELECT pe.libelle AS libelleperiode, e.id AS id, vue.id AS idprogrammation, vue.idexercice
-    FROM evaluation e, periode pe, dgessreportview vue
-    WHERE e.periode_id = pe.id
-    AND e.programmation_id = vue.id;
+    SELECT pe.libelle AS libelleperiode, pph.id AS id, vue.id AS idprogrammation, vue.idexercice
+    FROM programmation_physique pph, periode pe, dgessreportview vue
+    WHERE pph.periode_id = pe.id
+    AND pph.programmation_id = vue.id;
