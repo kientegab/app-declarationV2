@@ -9,6 +9,7 @@ import com.mfptps.appdgessddi.entities.Ponderation;
 import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.enums.TypeStructure;
 import com.mfptps.appdgessddi.repositories.EvaluationGouvernanceRepository;
+import com.mfptps.appdgessddi.repositories.EvaluationRepository;
 import com.mfptps.appdgessddi.repositories.GrillePerformanceRepository;
 import com.mfptps.appdgessddi.repositories.PerformanceRepository;
 import com.mfptps.appdgessddi.repositories.PerformerRepository;
@@ -42,11 +43,13 @@ public class PerformerServiceImpl  implements PerformerService {
     private final PonderationRepository ponderationRepository;
     private final EvaluationGouvernanceRepository evaluationGouvernanceRepository;
     private final PerformanceRepository performanceRepository;
+    private final EvaluationRepository evaluationRepository;
 
     public PerformerServiceImpl(PerformerRepository performerRepository, PerformerMapper performerMapper, 
             GrillePerformanceRepository grilleRepository, StructureRepository structureRepository,
             ProgrammationRepository programmationRepository, PonderationRepository ponderationRepository,
-            EvaluationGouvernanceRepository evaluationGouvernanceRepository,PerformanceRepository performanceRepository) {
+            EvaluationGouvernanceRepository evaluationGouvernanceRepository,PerformanceRepository performanceRepository,
+            EvaluationRepository evaluationRepository) {
         
         this.performerRepository = performerRepository;
         this.performerMapper = performerMapper;
@@ -56,6 +59,7 @@ public class PerformerServiceImpl  implements PerformerService {
         this.ponderationRepository = ponderationRepository;
         this.evaluationGouvernanceRepository = evaluationGouvernanceRepository;
         this.performanceRepository = performanceRepository;
+        this.evaluationRepository = evaluationRepository;
     }
 
     @Override
@@ -140,10 +144,10 @@ public class PerformerServiceImpl  implements PerformerService {
             
             // =+ taux global de réalisation des objectifs TGRO; 
             // ce taux vient de la somme des taux d'exécution par structure, cette valeur est stocquée dans la table évaluation
-            double tgro = 0;
+            double tgro = evaluationRepository.findEvaluation(structure.getId(), exerciceId);
             
-            // nombre activités réalisée à temps
-            double nart = 0; 
+            // nombre activités réalisées à temps
+            long nart = programmationRepository.countActiviteRealiserATemps(structure.getId(), exerciceId); 
             
             // =+ coefficient temps CT
             double coeffTemps = nart / nap;
@@ -178,8 +182,7 @@ public class PerformerServiceImpl  implements PerformerService {
             if(evalGouv != null && !evalGouv.isEmpty()){
                 for(EvaluationGouvernance eval : evalGouv){
                     gouv = gouv + (eval.getValeur()/eval.getValeurReference()) * 100;
-                }
-                
+                } 
                 // après addition on fait la moyenne
                 gouv = gouv/evalGouv.size();
             }
@@ -205,7 +208,8 @@ public class PerformerServiceImpl  implements PerformerService {
             perf.setPgs(pg);
              
             // Sauvegarde de la performance par structure
-            appreciation = grilleRepository.finGrilleAppreciation(pg).orElse("");
+            appreciation = grilleRepository.findGrilleAppreciation(pg).orElse("");
+            perf.setAppreciation(appreciation);
             performanceRepository.save(perf);
              
             pgs = pgs + pg;
@@ -217,12 +221,23 @@ public class PerformerServiceImpl  implements PerformerService {
         
         // calcul de la moyenne si nécéssaire
         
-        if(many){
-            
-        }
+        efficacite = efficacite / count;
+        efficience = efficience / count;
+        gouvernance = gouvernance / count;
+        impact = impact/ count;
+        pgs = pgs / count;
+        
+        appreciation = grilleRepository.findGrilleAppreciation(pgs).orElse("");
         
         // dernières données
         performance.setGlobal(mesStructures.size()>1);
+        performance.setEfficacite(efficacite);
+        performance.setEfficience(efficience);
+        performance.setImpact(impact);
+        performance.setGouvernance(gouvernance);
+        performance.setPgm(pgs);
+        performance.setPgs(pgs);
+        performance.setAppreciation(appreciation);
         
         return performance;
     }

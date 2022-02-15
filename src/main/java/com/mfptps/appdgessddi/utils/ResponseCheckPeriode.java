@@ -5,6 +5,9 @@
  */
 package com.mfptps.appdgessddi.utils;
 
+import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +19,9 @@ import lombok.Setter;
 @Setter
 public class ResponseCheckPeriode {
 
-    private long periode;
+    private long periode;//id de la periodeActuelle
 
     private boolean exists = false;
+
+    private List<ProgrammationPhysique> periodes = new ArrayList<>();
 }

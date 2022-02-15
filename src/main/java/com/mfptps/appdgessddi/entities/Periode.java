@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
@@ -41,9 +43,11 @@ public class Periode extends CommonEntity {
     private String libelle;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date debut;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date fin;
 
     @Type(type = "yes_no")

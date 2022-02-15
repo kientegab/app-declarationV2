@@ -8,6 +8,7 @@ package com.mfptps.appdgessddi.service.impl;
 import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.entities.Ministere;
 import com.mfptps.appdgessddi.entities.Programmation;
+import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.entities.TacheEvaluer;
@@ -37,6 +38,7 @@ import com.mfptps.appdgessddi.service.reportentities.ProgrammeDataRE;
 import com.mfptps.appdgessddi.service.reportentities.ReportUtil;
 import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import com.mfptps.appdgessddi.utils.AppUtil;
+import com.mfptps.appdgessddi.utils.ResponseCheckPeriode;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -200,16 +202,21 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     }
 
     @Override
-    public ProgrammationForEvaluationDTO getForEvaluation(Long programationId) {
+    public ProgrammationForEvaluationDTO getForEvaluation(long programationId) {
         Programmation programmation = programmationRepository.findById(programationId).orElseThrow(() -> new CustomException("Programmation d'id " + programationId + " inexistante"));
         ProgrammationForEvaluationDTO response = programmationMapper.toEvaluationDTO(programmation);
 
-        long periodeId = AppUtil.checkProgrammationPhysique(response.getId(), programmationPhysiqueRepository).getPeriode();
+        ResponseCheckPeriode checkPeriodes = AppUtil.checkProgrammationPhysique(response.getId(), programmationPhysiqueRepository);
 
-        response.setTauxActuel(this.tauxExecutionByExerciceOrPeriode(Arrays.asList(programmation), periodeId));
+        response.setTauxActuel(this.tauxExecutionByExerciceOrPeriode(Arrays.asList(programmation), checkPeriodes.getPeriode()));
         response.setValeurActuelle(this.valeurCibleAtteinte(programmation.getTaches()));
-        response.setPeriodeActuelle(programmationPhysiqueRepository.findByPeriodeAndProgrammation(periodeId, programmation.getId()).get().getLibelle());
+        response.setPeriodeActuelle(programmationPhysiqueRepository.findByPeriodeAndProgrammation(checkPeriodes.getPeriode(), programmation.getId()).get().getLibelle());
 
+        String periodes = "";
+        for (ProgrammationPhysique pph : checkPeriodes.getPeriodes()) {
+            periodes = periodes + pph.getPeriode().getLibelle() + "-";
+        }
+        response.setPeriodes(periodes.substring(0, (periodes.length() - 1)));
         return response;
     }
 
@@ -424,7 +431,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
             result = this.tauxExecutionByExerciceOrPeriode(programmations, null);
         } else {
-            //Recuperer toutes programmations concernees par l'exercice et la periode
+            //Recuperer toutes programmations concernees par l'exercice et la pph
             List<Programmation> programmations = programmationRepository.findByStructureAndExerciceAndPeriodeValided(structureId, exerciceId, periodeId);
 
             result = this.tauxExecutionByExerciceOrPeriode(programmations, periodeId);
@@ -433,7 +440,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     }
 
     /**
-     * SOUS FONCTION (TAUX PAR STRUCTURE): Taux d'execution par exercice/periode
+     * SOUS FONCTION (TAUX PAR STRUCTURE): Taux d'execution par exercice/pph
      *
      * @param structureId
      * @param exerciceId
@@ -516,7 +523,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
             tauxGlobal = this.tauxExecutionByExerciceOrPeriode(programmations, null);
         } else {
-            //Recuperer toutes programmations concernees par l'exercice et la periode
+            //Recuperer toutes programmations concernees par l'exercice et la pph
             List<Programmation> programmations = programmationRepository.findByMinistereAndExerciceAndPeriodeValided(ministereId, exerciceId, periodeId);
 
             tauxGlobal = this.tauxExecutionByExerciceOrPeriode(programmations, periodeId);

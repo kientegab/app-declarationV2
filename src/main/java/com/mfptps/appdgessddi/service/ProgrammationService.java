@@ -54,7 +54,7 @@ public interface ProgrammationService {
      * @param programationId
      * @return
      */
-    ProgrammationForEvaluationDTO getForEvaluation(Long programationId);
+    ProgrammationForEvaluationDTO getForEvaluation(long programationId);
 
     /**
      * Liste des activites programmees d'une structure donnee

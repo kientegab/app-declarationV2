@@ -2,21 +2,17 @@ package com.mfptps.appdgessddi.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
-
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import org.hibernate.annotations.Type;
-
 import org.springframework.data.annotation.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class CommonEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @CreatedBy
     @Column(name = "created_by", nullable = false, length = 50, updatable = false)
@@ -34,7 +30,6 @@ public abstract class CommonEntity implements Serializable {
     @Column(name = "last_modified_date")
     private Instant lastModifiedDate = Instant.now();
 
-    @Type(type = "yes_no")
     private boolean deleted = false;
 
     public String getCreatedBy() {
@@ -69,11 +64,11 @@ public abstract class CommonEntity implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-	public boolean isDeleted() {
-		return deleted;
-	}
+    public boolean isDeleted() {
+        return deleted;
+    }
 
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
-	}
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

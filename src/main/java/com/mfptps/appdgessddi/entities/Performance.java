@@ -124,6 +124,14 @@ public class Performance  extends CommonEntity {
     public void setPonderationId(long ponderationId) {
         this.ponderationId = ponderationId;
     }
+
+    public String getAppreciation() {
+        return appreciation;
+    }
+
+    public void setAppreciation(String appreciation) {
+        this.appreciation = appreciation;
+    }
     
     
 }

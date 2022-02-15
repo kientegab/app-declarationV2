@@ -39,4 +39,7 @@ public interface ProgrammationPhysiqueRepository extends JpaRepository<Programma
             + "AND pph.programmation.id = p.id AND p.id = :programmationId")
     Optional<Periode> findByPeriodeAndProgrammation(long periodeId, long programmationId);
 
+    @Query("SELECT MAX(per.fin) AS max_fin FROM Periode per, Programmation prog, ProgrammationPhysique pp WHERE prog.id = pp.programmation.id AND per.id = pp.periode.id AND prog.id = ?1")        
+    Date findPeriodeMaxDateForProgrammation(long programmationId);
+
 }

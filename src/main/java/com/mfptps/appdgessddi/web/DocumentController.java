@@ -5,6 +5,7 @@
  */
 package com.mfptps.appdgessddi.web;
 
+import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.DocumentService;
 import com.mfptps.appdgessddi.service.dto.DocumentDTO;
 import com.mfptps.appdgessddi.utils.AppUtil;
@@ -61,6 +62,9 @@ public class DocumentController {
         log.debug("Jointure d'un Document à une Tache : {}", documentDTO);
         if (documentDTO.getTacheId() == null) {
             throw new BadRequestAlertException("Aucune tache n'est associée. ", ENTITY_NAME, "idnull");
+        }
+        if (!documentFile.getOriginalFilename().endsWith(".pdf")) {
+            throw new CustomException("Ce format de fichier n'est pas autorisé. Réessayez avec un .pdf svp !");
         }
         ResponseMessage message = documentService.create(documentDTO, documentFile);
         return ResponseEntity.status(HttpStatus.OK).body(message);

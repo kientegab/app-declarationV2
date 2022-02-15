@@ -13,7 +13,6 @@ import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheEvaluerRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.service.CustomException;
-import com.mfptps.appdgessddi.service.ProgrammationPhysiqueService;
 import com.mfptps.appdgessddi.service.TacheService;
 import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.ResponseCheckPeriode;
@@ -37,18 +36,15 @@ public class TacheServiceImpl implements TacheService {
     private final TacheEvaluerRepository tacheEvaluerRepository;
     private final ProgrammationRepository programmationRepository;
     private final ProgrammationPhysiqueRepository programmationPhysiqueRepository;
-    private final ProgrammationPhysiqueService programmationPhysiqueService;
 
     public TacheServiceImpl(TacheRepository tacheRepository,
             TacheEvaluerRepository tacheEvaluerRepository,
             ProgrammationRepository programmationRepository,
-            ProgrammationPhysiqueRepository programmationPhysiqueRepository,
-            ProgrammationPhysiqueService programmationPhysiqueService) {
+            ProgrammationPhysiqueRepository programmationPhysiqueRepository) {
         this.tacheRepository = tacheRepository;
         this.tacheEvaluerRepository = tacheEvaluerRepository;
         this.programmationRepository = programmationRepository;
         this.programmationPhysiqueRepository = programmationPhysiqueRepository;
-        this.programmationPhysiqueService = programmationPhysiqueService;
     }
 
     @Override

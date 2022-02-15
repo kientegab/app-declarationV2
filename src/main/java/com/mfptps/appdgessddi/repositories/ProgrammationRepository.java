@@ -131,4 +131,8 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.deleted = false "
             + "AND p.validationFinal = true")
     double coutTotalStructureProgrammation(long structureId, long exerciceId);
+    
+    @Query("SELECT COUNT(p.id) FROM Programmation p WHERE p.structure.id=?1 AND p.exercice.id=?2 AND p.taux>=100 AND p.lastEvalDate<=p.deadLine ")
+    long countActiviteRealiserATemps(long structureId, long exerciceId);
+
 }
