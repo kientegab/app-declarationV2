@@ -213,8 +213,7 @@ public class PerformerServiceImpl  implements PerformerService {
             performanceRepository.save(perf);
              
             pgs = pgs + pg;
-            
-            
+                        
         }
         
         // chargement des évaluations par structure

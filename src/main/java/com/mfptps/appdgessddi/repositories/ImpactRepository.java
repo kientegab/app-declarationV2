@@ -5,7 +5,8 @@
 package com.mfptps.appdgessddi.repositories;
  
 import com.mfptps.appdgessddi.entities.Impact;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,7 +16,10 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface ImpactRepository extends JpaRepository<Impact, Long> {
     
-    @Query("SELECT i FROM Impact i WHERE i.ministere.id=?1 AND i.statistique=?2 AND i.deleted=false")
-    public List<Impact> findMinisterImpact(long ministereId, boolean statistique);
+    @Query("SELECT im FROM Impact im WHERE im.ministere.id=?1 AND im.statistique=?2 AND im.deleted=false")
+    public Page<Impact> findMinisterImpact(long ministereId, boolean statistique, Pageable pageable);
+    
+    @Query("SELECT imp FROM Impact imp WHERE imp.ministere.id=?1 AND imp.deleted=false")
+    public Page<Impact> findAllMinisterImpact(long ministereId, Pageable pageable);
     
 }
