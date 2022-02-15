@@ -40,5 +40,5 @@ public interface TacheEvaluerRepository extends JpaRepository<TacheEvaluer, Long
     @Query("SELECT SUM(te.valeurCumulee) FROM TacheEvaluer te, Tache t "
             + "WHERE te.tache.id = t.id AND t.id = :tacheId AND t.valeur != 1 "//tache a valeur
             + "AND te.cumuleeActive = true")
-    double cumuleeOfTache(long tacheId);
+    double cumuleeOfTache(Long tacheId);
 }
