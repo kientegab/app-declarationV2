@@ -79,7 +79,7 @@ public class AppDataInitializer {
 
         //save Basic Ministere and Structure
         Optional<Ministere> basicExisting = ministereRepository.findByCode(AppUtil.BASIC_MINISTERE_CODE);
-        if (basicExisting.isPresent()) {
+        if (!basicExisting.isPresent()) {
             this.recordBasicMinistereAndStrucuture();
         }
         

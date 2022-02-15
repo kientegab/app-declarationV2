@@ -175,7 +175,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                     return programmationRepository.save(programmation);
                 });
 
-        if (response.isPresent()) {
+        if (!response.isPresent()) {
             throw new CustomException("Modification non autorisée car la programmation est déjà validée.");
         }
         return response.get();
@@ -325,7 +325,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                         commentaireService.create(commentaireDTO);
                         return p;
                     });
-            if (programmation.isPresent()) {
+            if (!programmation.isPresent()) {
                 throw new CustomException("La programmation d'id " + commentaireDTO.getProgrammationId() + " est inexistante, ou déjà rejetée");
             }
         } catch (Exception e) {
@@ -484,7 +484,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     //SOUS FONCTION DE tauxExecutionByExerciceOrPeriode(...)
     private double tauxByValueOfPeriode(Programmation prog, Tache tache, Optional<TacheEvaluer> tacheEvaluee, double tauxTaches) {
-        if (tacheEvaluee.isPresent()) {
+        if (!tacheEvaluee.isPresent()) {
             if ((tache.getValeur() == 1D) && tache.isExecute()) {//tache sans cible(cible = 1)  deja execute
                 tauxTaches += tache.getPonderation();
             } else if ((tache.getValeur() != 1D) && tache.isExecute()) {//tache a cible deja execute(meme au dela de la cible prevue)
