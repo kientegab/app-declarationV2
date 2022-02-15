@@ -46,8 +46,7 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Action> get(Long id) {
-
+    public Optional<Action> get(Long id) { 
         return actionRepository.findById(id);
     }
 
