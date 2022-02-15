@@ -56,4 +56,16 @@ public class ActiviteRE implements Serializable {
 
     private String structureActivite;
 
+    /**
+     * WHEN CONSTRUCT OBJECT FOR RAPPORT_ACTIVITES
+     */
+    private String resultatsAttendus;
+
+    private String resultatsAtteints;
+
+    private double tauxRealisation;
+
+    private double coutReel;
+
+    private String observationsActivite;
 }

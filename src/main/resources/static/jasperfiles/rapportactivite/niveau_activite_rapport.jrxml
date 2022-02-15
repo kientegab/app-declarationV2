@@ -27,7 +27,7 @@
 	<field name="indicateurActivite" class="java.lang.String"/>
 	<field name="resultatsAttendus" class="java.lang.String"/>
 	<field name="resultatsAtteints" class="java.lang.String"/>
-	<field name="taux" class="java.lang.Double"/>
+	<field name="tauxRealisation" class="java.lang.Double"/>
 	<field name="coutReel" class="java.lang.Double"/>
 	<field name="observationsActivite" class="java.lang.String"/>
 	<field name="structureActivite" class="java.lang.String"/>
@@ -127,7 +127,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
 					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{taux} + "%"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tauxRealisation} + "%"]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement style="Detail" positionType="Float" stretchType="RelativeToTallestObject" x="502" y="0" width="100" height="30" uuid="89ba1757-478e-404c-a78d-45c51446f1e0">
