@@ -175,7 +175,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                     return programmationRepository.save(programmation);
                 });
 
-        if (response.isEmpty()) {
+        if (response.isPresent()) {
             throw new CustomException("Modification non autorisée car la programmation est déjà validée.");
         }
         return response.get();
@@ -325,7 +325,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                         commentaireService.create(commentaireDTO);
                         return p;
                     });
-            if (programmation.isEmpty()) {
+            if (programmation.isPresent()) {
                 throw new CustomException("La programmation d'id " + commentaireDTO.getProgrammationId() + " est inexistante, ou déjà rejetée");
             }
         } catch (Exception e) {
