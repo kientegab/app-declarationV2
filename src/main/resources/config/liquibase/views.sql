@@ -35,7 +35,8 @@ CREATE OR REPLACE VIEW objectifoperationnellist AS
 CREATE OR REPLACE VIEW dgessreportview AS 
     SELECT p.id AS id, p.code AS codeprogrammation, p.activite_id AS idactivite, a.libelle AS libelleactivite,
             p.cible AS cibleprogrammation, p.cout_previsionnel AS coutprevisionnel, p.cout_reel AS coutreel,
-            p.resultats_attendus AS resultatsattendus, p.resultats_atteints AS resultatsatteints, p.taux AS tauxprogrammation, f.id AS idfinancement, f.libelle AS libellefinancement, op.id AS idobjectifope,
+            p.resultats_attendus AS resultatsattendus, p.resultats_atteints AS resultatsatteints, p.indicateur AS indicateur,
+            p.taux AS tauxprogrammation, f.id AS idfinancement, f.libelle AS libellefinancement, op.id AS idobjectifope,
             op.code AS codeobjectifope, op.libelle AS libelleobjectifope, ac.id AS idaction, ac.code AS codeaction,
             ac.libelle AS libelleaction, ac.objectif_id AS idobjectifstra, os.code AS codeobjectifstra, os.libelle AS libelleobjectifstra,
             os.programme_id AS idprogramme, prog.code AS codeprogramme, prog.libelle AS libelleprogramme, 

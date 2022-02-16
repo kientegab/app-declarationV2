@@ -57,6 +57,9 @@ public class ViewGlobale {
     @Column(name = "resultatsatteints")
     private String resultatsAtteints;
 
+    @Column(name = "indicateur")
+    private String indicateur;
+
     @Column(name = "tauxprogrammation")
     private double tauxProgrammation;
 

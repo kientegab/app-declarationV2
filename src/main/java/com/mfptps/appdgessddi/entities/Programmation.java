@@ -82,6 +82,9 @@ public class Programmation extends CommonEntity {
     @Column(length = 1000)
     private String resultatsAtteints;//Renseigne uniquement lors de l'evaluation de l'activite
 
+    @Column(length = 1000)
+    private String indicateur;//equivaut a indicateurDeResultat
+
     private String observations;
 
     @Column(name = "valid_initial")
@@ -204,6 +207,14 @@ public class Programmation extends CommonEntity {
 
     public void setResultatsAtteints(String resultatsAtteints) {
         this.resultatsAtteints = resultatsAtteints;
+    }
+
+    public String getIndicateur() {
+        return indicateur;
+    }
+
+    public void setIndicateur(String indicateur) {
+        this.indicateur = indicateur;
     }
 
     public String getObservations() {
