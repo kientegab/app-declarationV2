@@ -22,13 +22,19 @@ import org.springframework.stereotype.Service;
 public class ContribuerServiceImpl implements ContribuerService {
     
     private final ContribuerRepository repository;
+    
+    private final ParametrerImpactServiceImpl impactRepository;
 
-    public ContribuerServiceImpl(ContribuerRepository repository){
+    public ContribuerServiceImpl(ContribuerRepository repository, ParametrerImpactServiceImpl impactRepository){
         this.repository = repository;
+        this.impactRepository = impactRepository;
     }
 
     @Override
     public Contribuer create(Contribuer data) {
+        // recherche
+        //ParametrerImpact parametrer = data.getParametrerImpact();
+        
        return repository.save(data);
     }
 

@@ -3,7 +3,9 @@ package com.mfptps.appdgessddi.web;
 
 import com.mfptps.appdgessddi.entities.Performer;
 import com.mfptps.appdgessddi.service.PerformerService;
+import com.mfptps.appdgessddi.service.dto.PerformanceDTO;
 import com.mfptps.appdgessddi.service.dto.PerformerDTO;
+import com.mfptps.appdgessddi.service.dto.RequeteDTO;
 import com.mfptps.appdgessddi.utils.HeaderUtil;
 import com.mfptps.appdgessddi.utils.PaginationUtil;
 import com.mfptps.appdgessddi.utils.ResponseUtil;
@@ -47,6 +49,14 @@ public class PerformerController {
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, performerSaved.getId().toString()))
                 .body(performerSaved);
     }
+    
+    @PostMapping(path = "/calculer")
+    public ResponseEntity<PerformanceDTO> calculer(@Valid @RequestBody RequeteDTO requete) throws URISyntaxException {
+        PerformanceDTO performance = performerService.calculatePerformance(requete.getMinisterId(), requete.getStructureId(), requete.getExerciceId(), requete.getUserId());
+        return ResponseEntity.created(new URI("/api/performers/calculer" + performance.getEfficacite()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, performance.getAppreciation()))
+                .body(performance);
+    }
 
 
     @PutMapping
@@ -67,12 +77,14 @@ public class PerformerController {
         Optional<Performer> performerFound = performerService.get(id);
         return ResponseUtil.wrapOrNotFound(performerFound);
     }
+    
     @GetMapping
     public ResponseEntity<List<Performer>> findAlPerfprmers(Pageable pageable) {
         Page<Performer> performers = performerService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), performers);
         return ResponseEntity.ok().headers(headers).body(performers.getContent());
     }
+    
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Suppression d un performer : {}", id);

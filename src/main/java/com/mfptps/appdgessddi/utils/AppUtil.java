@@ -229,6 +229,8 @@ public class AppUtil {
      * Return the Id of Periode come from ProgrammationPhysique ligne
      *
      * @param programmationId
+     * @param repository
+     * @return 
      */
     public static ResponseCheckPeriode checkProgrammationPhysique(long programmationId, ProgrammationPhysiqueRepository repository) throws CustomException {
         Date toDay = new Date();
