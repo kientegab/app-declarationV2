@@ -175,7 +175,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                     return programmationRepository.save(programmation);
                 });
 
-        if (response.isPresent()) {
+        if (!response.isPresent()) {
             throw new CustomException("Modification non autorisée car la programmation est déjà validée.");
         }
         return response.get();
@@ -327,7 +327,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                         commentaireService.create(commentaireDTO);
                         return p;
                     });
-            if (programmation.isPresent()) {
+            if (!programmation.isPresent()) {
                 throw new CustomException("La programmation d'id " + commentaireDTO.getProgrammationId() + " est inexistante, ou déjà rejetée");
             }
         } catch (CustomException e) {
@@ -365,17 +365,18 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             // conteneur des structures
             List<Structure> allStructures = new ArrayList<>();
 
+            // Construction des objet pour impression
+            List<ViewGlobale> globalData = new ArrayList<>();
+
             // cas de l'ensemble des structures
             if (structureId == null) {
                 allStructures = this.ministereStructureRepository.allNonInternalStructureByMinistere(ministereId, TypeStructure.INTERNE);
-                // cas d'une structure particulière
-            } else {
+                globalData = this.query.globalDataMinistere(exercice.get().getId());
+            } else {// cas d'une structure particulière
                 Structure structure = this.structureRepository.findById(structureId).get();
                 allStructures.add(structure);
+                globalData = this.query.globalDataStructure(exercice.get().getId(), structure.getId());
             }
-
-            // Construction des objet pour impression
-            List<ViewGlobale> globalData = this.query.globalDataList(exercice.get().getId());
 
             mainProgramData = ReportUtil.consctruct(ministere.getLibelle(), structureParent.getLibelle(), currentStructure.get().getLibelle(), currentStructure.get().getTelephone(), titre, logoStream, globalData);
 
@@ -411,6 +412,71 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             }
 
 //            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\test2.pdf");//exportReportToPdfStream(jasperPrint, outStream);
+        } catch (JRException e) {
+            log.error("Error when exporting data from", e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void printRapportActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, String fileFormat, OutputStream outputStream) {
+
+        try {
+            // chargement du ministère concerné
+            Ministere ministere = this.ministereStructureRepository.findByStructureIdAndStatutIsTrue(currentStructureId).get().getMinistere();
+
+            // structure génératrice du document
+            Optional<Structure> currentStructure = Optional.ofNullable(structureRepository.getById(currentStructureId));
+
+            Optional<Exercice> exercice = exerciceService.get(exerciceId);
+
+            Structure structureParent = new Structure();
+            if (currentStructure.get().getParent() != null) {
+                structureParent = this.structureRepository.findById(currentStructure.get().getParent().getId()).get();
+            }
+
+            // chargement du logo
+            InputStream logoStream = AppUtil.getAppDefaultLogo();
+
+            // le titre du rapport
+            String titre = "RAPPORT D'ACTIVITES " + exercice.get().getDebut().getYear();
+
+            // conteneurs de données à imprimer
+            List<ProgrammeDataRE> mainProgramData = new ArrayList<>();
+
+            // Construction des objet pour impression
+            List<ViewGlobale> globalData = new ArrayList<>();
+
+            // conteneur des structures
+            List<Structure> allStructures = new ArrayList<>();
+
+            // cas de l'ensemble des structures
+            if (structureId == null) {
+                allStructures = this.ministereStructureRepository.allNonInternalStructureByMinistere(ministereId, TypeStructure.INTERNE);
+                globalData = this.query.globalDataMinistere(exercice.get().getId());
+            } else {// cas d'une structure particulière
+                Structure structure = this.structureRepository.findById(structureId).get();
+                allStructures.add(structure);
+                globalData = this.query.globalDataStructure(exercice.get().getId(), structure.getId());
+            }
+
+            mainProgramData = ReportUtil.consctructRapport(ministere.getLibelle(), structureParent.getLibelle(), currentStructure.get().getLibelle(), currentStructure.get().getTelephone(), titre, logoStream, globalData);
+
+            InputStream reportStream = this.getClass().getResourceAsStream("/conteneur_principal_rapport.jasper");
+
+            Map<String, Object> parameters = new HashMap<>();
+
+            JRDataSource datasource = new JRBeanCollectionDataSource(mainProgramData);
+
+            JasperReport japerReport = (JasperReport) JRLoader.loadObject(reportStream);
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(japerReport, parameters, datasource);
+
+            if (fileFormat.trim().equals("pdf")) {//export to pdf file
+                //JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\Rapport_activites.pdf");
+                JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+            }
+
         } catch (JRException e) {
             log.error("Error when exporting data from", e);
         }

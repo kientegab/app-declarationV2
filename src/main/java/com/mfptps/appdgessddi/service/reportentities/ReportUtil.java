@@ -152,7 +152,10 @@ public class ReportUtil {
         List<ActiviteRE> data = new ArrayList<>();
         for (ViewGlobale elmt : globalData) {
             if (objectif.getCodeObjectifOp().equals(elmt.getCodeObjectifOpe())) {
-                ActiviteRE activite = new ActiviteRE(elmt.getCodeProgrammation(), elmt.getLibelleActivite(), "", elmt.getCibleProgrammation(), elmt.getCoutPrevisionnel(), null, null, null, null, null, null, elmt.getLibelleFinancement(), elmt.getSigleStructure());
+                ActiviteRE activite = new ActiviteRE(elmt.getCodeProgrammation(), elmt.getLibelleActivite(), "",
+                        elmt.getCibleProgrammation(), elmt.getCoutPrevisionnel(),
+                        null, null, null, null, null, null, elmt.getLibelleFinancement(), elmt.getSigleStructure(),
+                        null, null, 0, 0, "");
                 for (ProgrammationPhysiqueRE physique : programmationPhysiqueData) {
                     if (elmt.getId() == physique.getIdProgrammation()) {
                         switch (physique.getLibellePeriode()) {
@@ -179,6 +182,33 @@ public class ReportUtil {
                         }
                     }
                 }
+                if (!containsCodeActivite(data, elmt.getCodeProgrammation())) {
+                    data.add(activite);
+                }
+            }
+        }
+
+        return data;
+    }
+
+    protected static List<ActiviteRE> extractActivityForRapport(ObjectifOperationnelRE objectif, List<ViewGlobale> globalData) {
+        List<ProgrammationPhysiqueRE> programmationPhysiqueData = ReportUtil.query.programmationPhysiqueList();
+
+        List<ActiviteRE> data = new ArrayList<>();
+        for (ViewGlobale elmt : globalData) {
+            if (objectif.getCodeObjectifOp().equals(elmt.getCodeObjectifOpe())) {
+                ActiviteRE activite = new ActiviteRE(
+                        elmt.getCodeProgrammation(),
+                        elmt.getLibelleActivite(), "",
+                        elmt.getCibleProgrammation(),
+                        elmt.getCoutPrevisionnel(), null, null, null, null, null, null,
+                        elmt.getLibelleFinancement(), elmt.getSigleStructure(),
+                        elmt.getResultatsAttendus(), elmt.getResultatsAtteints(),
+                        elmt.getTauxProgrammation(),
+                        elmt.getCoutReel(),
+                        ""//observations
+                );
+
                 if (!containsCodeActivite(data, elmt.getCodeProgrammation())) {
                     data.add(activite);
                 }
@@ -224,6 +254,65 @@ public class ReportUtil {
 
                     for (ObjectifOperationnelRE obOp : listObjOp) {
                         List<ActiviteRE> listActivite = extractActivity(obOp, globalData);
+
+                        obOp.setActiviteREs(listActivite);
+                        objectifOperationnelData.add(obOp);
+                    }
+
+                    act.setObjectifOperationnelREs(objectifOperationnelData);
+                    actionData.add(act);
+                }
+
+                ostr.setActionREs(actionData);
+                objectifStrategiqueData.add(ostr);
+            }
+
+            programmeRE.setObjectifStrategiqueREs(objectifStrategiqueData);
+            programData.add(programmeRE);
+
+            mainProgramData.add(new ProgrammeDataRE(ministereLibelle, structureParentLibelle, currentStructureLibelle, currentStructureTelephone, titre, logoStream, programData));
+
+        }
+
+        return mainProgramData;
+    }
+
+    public static List<ProgrammeDataRE> consctructRapport(String ministereLibelle, String structureParentLibelle, String currentStructureLibelle, String currentStructureTelephone, String titre, InputStream logoStream, List<ViewGlobale> globalData) {
+        //ministere.getLibelle(), structureParent.getLibelle(), currentStructure.getLibelle(), currentStructure.getTelephone(), titre, logoStream
+
+        // Conteneurs intermédiaires utilisés pour construire les données
+        List<ProgrammeRE> allPrograms = extractPrograms(globalData);
+
+        // conteneurs de données à imprimer
+        List<ProgrammeDataRE> mainProgramData = new ArrayList<>();
+
+        List<ProgrammeRE> programData = new ArrayList<>();
+
+        // conteneur des structures
+        List<Structure> allStructures = new ArrayList<>();
+
+        // Construction des objet pour impression
+        for (ProgrammeRE programmeRE : allPrograms) {
+            programData = new ArrayList<>();
+            // chercher tous les objectifs stratégiques 
+            List<ObjectifStrategiqueRE> objectifStrategiqueData = new ArrayList<>();
+
+            List<ObjectifOperationnelRE> objectifOperationnelData = new ArrayList<>();
+
+            //List<ActiviteRE> activiteData = new ArrayList<>();
+            List<ActionRE> actionData = new ArrayList<>();
+
+            List<ObjectifStrategiqueRE> objStrData = extractStrategicPurpose(programmeRE, globalData);
+
+            //programmeRE.setObjectifStrategiqueREs(objStrData);
+            for (ObjectifStrategiqueRE ostr : objStrData) {
+                List<ActionRE> actData = extractAction(ostr, globalData);
+
+                for (ActionRE act : actData) {
+                    List<ObjectifOperationnelRE> listObjOp = extractOperationalPurpose(act, globalData);
+
+                    for (ObjectifOperationnelRE obOp : listObjOp) {
+                        List<ActiviteRE> listActivite = extractActivityForRapport(obOp, globalData);
 
                         obOp.setActiviteREs(listActivite);
                         objectifOperationnelData.add(obOp);

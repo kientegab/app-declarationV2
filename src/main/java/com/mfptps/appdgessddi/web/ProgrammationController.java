@@ -266,6 +266,25 @@ public class ProgrammationController {
 
     /**
      *
+     * @param response
+     * @param printGlobalVM
+     * @throws IOException
+     */
+    @PostMapping(value = "/print/rapport-activites")
+    public void imprimerRAGlobal(HttpServletResponse response, @RequestBody PrintGlobalVM printGlobalVM) throws IOException {
+        if (printGlobalVM.getExerciceId() == null) {
+            throw new BadRequestAlertException("Exercice non renseigné. ", ENTITY_NAME, "idnull");
+        }
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"Rapport_activite_" + printGlobalVM.getMinistereId() + ".pdf\""));
+        OutputStream outStream = response.getOutputStream();
+        programmationService.printRapportActivites(printGlobalVM.getMinistereId(),
+                printGlobalVM.getStructureId(), printGlobalVM.getExerciceId(),
+                printGlobalVM.getCurrentStructureId(), printGlobalVM.getFormat(), outStream);
+    }
+
+    /**
+     *
      * @param params
      * @return
      */

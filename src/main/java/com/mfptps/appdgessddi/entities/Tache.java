@@ -46,7 +46,6 @@ public class Tache extends CommonEntity {
     @Type(type = "yes_no")
     private boolean execute = false;//false means !execute.
 
-    @Column(nullable = true)
     @Type(type = "yes_no")
     private boolean fichierJoint = false;//si fichier deja joint
 
