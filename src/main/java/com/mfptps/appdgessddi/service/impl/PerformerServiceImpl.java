@@ -166,11 +166,11 @@ public class PerformerServiceImpl  implements PerformerService {
             double ei ;
             
             // =+ montant total dépensée
-            double montant_total = programmationRepository.coutTotalStructureProgrammation(structure.getId(), exerciceId); 
+            double montant_total = programmationRepository.coutReelStructureProgrammation(structure.getId(), exerciceId); 
             // =+ somme des couts prévisionnels des activités réalisées à 100%
-            double cout_previsionnel = 0;
+            double cout_previsionnel = programmationRepository.coutPrevsionnelStructureProgrammation(structure.getId(), exerciceId);
             // =+ somme des couts réels des activités réalisées à 100%
-            double cout_effectif = 0;
+            double cout_effectif = programmationRepository.coutEffectifStructureProgrammation(structure.getId(), exerciceId);
             
             ei = (cout_previsionnel - cout_effectif) / montant_total;  
             
