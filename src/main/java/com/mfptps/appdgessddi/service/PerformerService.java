@@ -2,6 +2,7 @@ package com.mfptps.appdgessddi.service;
 
 
 import com.mfptps.appdgessddi.entities.Performer;
+import com.mfptps.appdgessddi.service.dto.PerformanceDTO;
 import com.mfptps.appdgessddi.service.dto.PerformerDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,5 +21,7 @@ public interface PerformerService {
     Page<Performer> findAll(Pageable pageable);
 
     void delete(Long id);
+    
+    public PerformanceDTO calculatePerformance(Long ministerId, Long structureId, Long exerciceId, Long userId);
 
 }

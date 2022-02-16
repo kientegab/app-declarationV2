@@ -26,14 +26,14 @@ public class ReportUtil {
         this.query = query;
     }
 
-    public static boolean containsCodeProgramme(List<ProgrammeRE> programmes, final String codeProgramme) {
+    protected static boolean containsCodeProgramme(List<ProgrammeRE> programmes, final String codeProgramme) {
         return programmes.stream()
                 .map(ProgrammeRE::getCodeProgramme)
                 .filter(codeProgramme::equals).findFirst()
                 .isPresent();
     }
 
-    public static boolean containsCodeObjectifStrategique(List<ObjectifStrategiqueRE> objectifsStra, final String codeObjectifStra) {
+    protected static boolean containsCodeObjectifStrategique(List<ObjectifStrategiqueRE> objectifsStra, final String codeObjectifStra) {
         return objectifsStra.stream()
                 .map(ObjectifStrategiqueRE::getCodeObjectifStra)
                 .filter(codeObjectifStra::equals).findFirst()
