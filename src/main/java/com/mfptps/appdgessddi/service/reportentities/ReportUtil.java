@@ -152,9 +152,15 @@ public class ReportUtil {
         List<ActiviteRE> data = new ArrayList<>();
         for (ViewGlobale elmt : globalData) {
             if (objectif.getCodeObjectifOp().equals(elmt.getCodeObjectifOpe())) {
-                ActiviteRE activite = new ActiviteRE(elmt.getCodeProgrammation(), elmt.getLibelleActivite(), "",
-                        elmt.getCibleProgrammation(), elmt.getCoutPrevisionnel(),
-                        null, null, null, null, null, null, elmt.getLibelleFinancement(), elmt.getSigleStructure(),
+                ActiviteRE activite = new ActiviteRE(
+                        elmt.getCodeProgrammation(),
+                        elmt.getLibelleActivite(),
+                        elmt.getIndicateur(),
+                        elmt.getCibleProgrammation(),
+                        elmt.getCoutPrevisionnel(),
+                        null, null, null, null, null, null,
+                        elmt.getLibelleFinancement(),
+                        elmt.getSigleStructure(),
                         null, null, 0, 0, "");
                 for (ProgrammationPhysiqueRE physique : programmationPhysiqueData) {
                     if (elmt.getId() == physique.getIdProgrammation()) {
@@ -192,21 +198,24 @@ public class ReportUtil {
     }
 
     protected static List<ActiviteRE> extractActivityForRapport(ObjectifOperationnelRE objectif, List<ViewGlobale> globalData) {
-        List<ProgrammationPhysiqueRE> programmationPhysiqueData = ReportUtil.query.programmationPhysiqueList();
 
         List<ActiviteRE> data = new ArrayList<>();
         for (ViewGlobale elmt : globalData) {
             if (objectif.getCodeObjectifOp().equals(elmt.getCodeObjectifOpe())) {
                 ActiviteRE activite = new ActiviteRE(
                         elmt.getCodeProgrammation(),
-                        elmt.getLibelleActivite(), "",
+                        elmt.getLibelleActivite(),
+                        elmt.getIndicateur(),
                         elmt.getCibleProgrammation(),
-                        elmt.getCoutPrevisionnel(), null, null, null, null, null, null,
-                        elmt.getLibelleFinancement(), elmt.getSigleStructure(),
-                        elmt.getResultatsAttendus(), elmt.getResultatsAtteints(),
+                        elmt.getCoutPrevisionnel(),
+                        null, null, null, null, null, null,/*Periodes*/
+                        elmt.getLibelleFinancement(),
+                        elmt.getSigleStructure(),
+                        elmt.getResultatsAttendus(),
+                        elmt.getResultatsAtteints(),
                         elmt.getTauxProgrammation(),
                         elmt.getCoutReel(),
-                        ""//observations
+                        ""/*observations*/
                 );
 
                 if (!containsCodeActivite(data, elmt.getCodeProgrammation())) {
