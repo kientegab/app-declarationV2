@@ -36,9 +36,14 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
   data:
+    web:
+      pageable:
+        default-page-size: 2000         # Default page size.
+        #max-page-size: 2000           # Maximum
     jpa:
       repositories:
         bootstrap-mode: deferred
+      
   liquibase:
     change-log: classpath:config/liquibase/master.xml
   mail:
@@ -133,4 +138,5 @@ spring:
     password: admin #rootPostgresql admin
     hikari:
       auto-commit: false
+    
     
