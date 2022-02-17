@@ -94,11 +94,21 @@ public interface ProgrammationService {
 
     /**
      * Validation (par Responsable DGESS) de toutes les programmations d'une
-     * structure donnee
+     * structure donnee. Ces programmations sont prealablement validees par
+     * structure concernee
      *
      * @param structureId
      */
     void allValidationInterne(Long structureId);
+
+    /**
+     * Validation (par CASEM represente par responsable DGESS) de toutes les
+     * programmations (deja validees au sein de la structure et validees aussi
+     * au niveau DGESS) d'une structure donnee
+     *
+     * @param structureId
+     */
+    void allValidationCASEM(Long structureId);
 
     /**
      * Rejet d'une programmation

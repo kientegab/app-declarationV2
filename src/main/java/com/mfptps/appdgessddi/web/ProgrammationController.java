@@ -200,12 +200,15 @@ public class ProgrammationController {
     public ResponseEntity<String> allValidationProgrammation(@RequestBody ValidProgammationVM params) {
         log.debug("Validation globale initiale/interne de Programmations");
         String message = "";
-        if (params.isValidatedBySTRUCT()) {//do all initial validation of RESP_STRUCT
+        if (params.isValidatedBySTRUCT() && !params.isValidatedByDGESS() && !params.isValidatedByCASEM()) {//do all initial validation of RESP_STRUCT
             programmationService.allValidationInitiale(params.getStructureId());
             message = "Validations initiales bien effectuées.";
-        } else if (!params.isValidatedBySTRUCT()) {//do all initial validation of RESP_DGESS
+        } else if (params.isValidatedByDGESS() && !params.isValidatedBySTRUCT() && !params.isValidatedByCASEM()) {//do all interne validation of RESP_DGESS
             programmationService.allValidationInterne(params.getStructureId());
-            message = "Validations initerne et finale bien effectuées.";
+            message = "Validations internes bien effectuées.";
+        } else if (params.isValidatedByCASEM() && !params.isValidatedByDGESS() && !params.isValidatedBySTRUCT()) {//do all CASEM validation of CASEM
+            programmationService.allValidationCASEM(params.getStructureId());
+            message = "Validations finales (CASEM) bien effectuées.";
         }
         return ResponseEntity.ok().body(message);
     }

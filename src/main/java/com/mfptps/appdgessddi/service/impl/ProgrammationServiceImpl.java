@@ -279,7 +279,6 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                     }
                     if ((SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) && programmation.isValidationInitial()) {
                         programmation.setValidationInterne(true);//validation DGESS
-                        //programmation.setValidationFinal(true);//validation CASEM... A revoir
                     }
                     return programmation;
                 });
@@ -295,6 +294,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_STRUCT") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
             for (Programmation programmation : list) {
                 programmation.setValidationInitial(true);
+                programmationRepository.save(programmation);
             }
         }
     }
@@ -303,12 +303,27 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     public void allValidationInterne(Long structureId) {
         List<Programmation> list = programmationRepository.findAll(structureId);
         if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
-            list.stream().filter(programmation -> (programmation.isValidationInitial())).map(programmation -> {
-                programmation.setValidationInterne(true);
-                return programmation;
-            }).forEachOrdered(programmation -> {
-                programmation.setValidationFinal(true);//validation CASEM... A revoir
-            });
+            for (Programmation programmation : list) {
+                if (programmation.isValidationInitial()) {
+                    programmation.setValidationInterne(true);
+                    programmationRepository.save(programmation);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void allValidationCASEM(Long structureId) {
+        List<Programmation> list = programmationRepository.findAll(structureId);
+        if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
+
+            for (Programmation programmation : list) {
+                if (programmation.isValidationInitial() && programmation.isValidationInterne()) {
+                    programmation.setValidationFinal(true);
+                    programmationRepository.save(programmation);
+                }
+            }
+
         }
     }
 
