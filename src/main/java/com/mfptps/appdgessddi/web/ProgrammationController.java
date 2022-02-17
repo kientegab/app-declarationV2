@@ -198,17 +198,14 @@ public class ProgrammationController {
     @PutMapping(path = "/validation-all")
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RS + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<String> allValidationProgrammation(@RequestBody ValidProgammationVM params) {
-        log.debug("Validation globale initiale/interne de Programmations");
+        log.debug("Validation globale initiale/interne/finale de Programmations");
         String message = "";
         if (params.isValidatedBySTRUCT() && !params.isValidatedByDGESS() && !params.isValidatedByCASEM()) {//do all initial validation of RESP_STRUCT
-            programmationService.allValidationInitiale(params.getStructureId());
-            message = "Validations initiales bien effectuées.";
+            message = programmationService.allValidationInitiale(params.getStructureId());
         } else if (params.isValidatedByDGESS() && !params.isValidatedBySTRUCT() && !params.isValidatedByCASEM()) {//do all interne validation of RESP_DGESS
-            programmationService.allValidationInterne(params.getStructureId());
-            message = "Validations internes bien effectuées.";
+            message = programmationService.allValidationInterne(params.getStructureId());
         } else if (params.isValidatedByCASEM() && !params.isValidatedByDGESS() && !params.isValidatedBySTRUCT()) {//do all CASEM validation of CASEM
-            programmationService.allValidationCASEM(params.getStructureId());
-            message = "Validations finales (CASEM) bien effectuées.";
+            message = programmationService.allValidationCASEM(params.getStructureId());
         }
         return ResponseEntity.ok().body(message);
     }

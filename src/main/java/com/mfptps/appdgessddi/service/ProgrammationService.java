@@ -90,7 +90,7 @@ public interface ProgrammationService {
      *
      * @param structureId
      */
-    void allValidationInitiale(Long structureId);
+    String allValidationInitiale(Long structureId);
 
     /**
      * Validation (par Responsable DGESS) de toutes les programmations d'une
@@ -99,7 +99,7 @@ public interface ProgrammationService {
      *
      * @param structureId
      */
-    void allValidationInterne(Long structureId);
+    String allValidationInterne(Long structureId);
 
     /**
      * Validation (par CASEM represente par responsable DGESS) de toutes les
@@ -108,7 +108,7 @@ public interface ProgrammationService {
      *
      * @param structureId
      */
-    void allValidationCASEM(Long structureId);
+    String allValidationCASEM(Long structureId);
 
     /**
      * Rejet d'une programmation

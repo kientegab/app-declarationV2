@@ -289,42 +289,60 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     }
 
     @Override
-    public void allValidationInitiale(Long structureId) {
+    public String allValidationInitiale(Long structureId) {
         List<Programmation> list = programmationRepository.findAll(structureId);
+        List<Programmation> updater = new ArrayList<>();
+
         if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_STRUCT") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
             for (Programmation programmation : list) {
                 programmation.setValidationInitial(true);
-                programmationRepository.save(programmation);
+                updater.add(programmation);
             }
+            programmationRepository.saveAll(updater);
         }
+        return "Validations initiales bien effectuées.";
     }
 
     @Override
-    public void allValidationInterne(Long structureId) {
+    public String allValidationInterne(Long structureId) {
         List<Programmation> list = programmationRepository.findAll(structureId);
+        List<Programmation> updater = new ArrayList<>();
+        boolean echec = false;
+
         if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
             for (Programmation programmation : list) {
                 if (programmation.isValidationInitial()) {
                     programmation.setValidationInterne(true);
-                    programmationRepository.save(programmation);
+                    updater.add(programmation);
+                } else {
+                    echec = true;
                 }
             }
+            programmationRepository.saveAll(updater);
         }
+        return echec ? "Validation effectuée partiellement, car certaines activités n'ont pas été validées par " + list.get(0).getStructure().getSigle() : "Validations internes bien effectuées.";
     }
 
     @Override
-    public void allValidationCASEM(Long structureId) {
+    public String allValidationCASEM(Long structureId) {
         List<Programmation> list = programmationRepository.findAll(structureId);
+        List<Programmation> updater = new ArrayList<>();
+        boolean echec = false;
+
         if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
 
             for (Programmation programmation : list) {
                 if (programmation.isValidationInitial() && programmation.isValidationInterne()) {
                     programmation.setValidationFinal(true);
-                    programmationRepository.save(programmation);
+                    updater.add(programmation);
+                } else {
+                    echec = true;
                 }
             }
-
+            programmationRepository.saveAll(updater);
         }
+
+        return echec ? "Validation effectuée partiellement, car certaines activités n'ont pas été validées précédemment." : "Validations finales (CASEM) bien effectuées.";
     }
 
     /**
@@ -560,7 +578,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private double valeurCibleAtteinte(List<Tache> taches) {
         double valeur = 0;
 
-        valeur = taches.stream().filter(tache -> (tache.getValeur() != 1D)).map(tache -> tacheEvaluerRepository.cumuleeOfTache(tache.getId())).reduce(valeur, (accumulator, _item) -> accumulator + _item);
+        valeur = taches.stream().filter(tache -> (tache.getValeur() != 1D)).filter(tache -> (tacheEvaluerRepository.getByTacheAndActive(tache.getId()).isPresent())).map(tache -> tacheEvaluerRepository.cumuleeOfTache(tache.getId())).reduce(valeur, (accumulator, _item) -> accumulator + _item);
 
         return valeur;
     }
