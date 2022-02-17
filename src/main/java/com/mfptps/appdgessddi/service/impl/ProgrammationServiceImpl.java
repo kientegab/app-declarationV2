@@ -183,7 +183,9 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     /**
      *
+     * @param structureId
      * @param libelle : libelle of Activite
+     * @param pageable
      * @return
      */
     @Override
@@ -328,7 +330,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             if (!programmation.isPresent()) {
                 throw new CustomException("La programmation d'id " + commentaireDTO.getProgrammationId() + " est inexistante, ou déjà rejetée");
             }
-        } catch (Exception e) {
+        } catch (CustomException e) {
             throw new CustomException("Une erreur s'est produite lors du rejet de la programmation. " + e);
         }
     }

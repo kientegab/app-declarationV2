@@ -49,7 +49,7 @@ public class ParametrerImpactServiceImpl implements ParametrerImpactService {
 
     @Override
     public Page<ParametrerImpact> findExerciceParameter(Long ministerId, Long exercieId, Pageable pageable) {
-         return repository.findExerciceImpact(ministerId, exercieId, pageable);
+        return repository.findExerciceImpact(ministerId, exercieId, pageable);
     }
 
     @Override

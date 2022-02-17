@@ -54,7 +54,7 @@
 	</variable>
 	<variable name="COUT_TEXT" class="java.lang.String">
 		<variableExpression><![CDATA[$V{COUT_TEXT}]]></variableExpression>
-		<initialValueExpression><![CDATA["COUT EFFECTIFS (en millier de FCFA)"]]></initialValueExpression>
+		<initialValueExpression><![CDATA["COUT EFFECTIF (en millier de FCFA)"]]></initialValueExpression>
 	</variable>
 	<variable name="OBSERVATIONS_TEXT" class="java.lang.String">
 		<variableExpression><![CDATA[$V{OBSERVATIONS_TEXT}]]></variableExpression>

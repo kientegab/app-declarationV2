@@ -54,6 +54,8 @@ public class ProgrammationForEvaluationDTO {
 
     private String resultatsAtteints;
 
+    private String indicateur;
+
     private String observations;
 
     private boolean validationInitial;
@@ -191,6 +193,14 @@ public class ProgrammationForEvaluationDTO {
 
     public void setResultatsAtteints(String resultatsAtteints) {
         this.resultatsAtteints = resultatsAtteints;
+    }
+
+    public String getIndicateur() {
+        return indicateur;
+    }
+
+    public void setIndicateur(String indicateur) {
+        this.indicateur = indicateur;
     }
 
     public String getObservations() {
