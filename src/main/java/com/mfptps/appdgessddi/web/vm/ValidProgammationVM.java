@@ -15,26 +15,42 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ValidProgammationVM {
-//////////////////////////////////////////////// 
-//    INACHEVE: L'IDEE EST D'AVOIR UN SEUL ENDPOINT POUR LISTER LES PROGRAMMATIONS
-//      /all/valide/{ids} ===> /all/validity-state   
-/////////////////////////////////////////////////
 
     /**
      * A FOURNIR OBLIGATOIREMENT
      */
     private Long structureId;
 
-    //Si TRUE, retourne la liste des programmations non encore validees par RESP_STRUCT
+    //POUR LISTER: Si TRUE, retourne la liste des programmations non encore validees par RESP_STRUCT
     private boolean noValidatedBySTRUCT;
 
-    //POUR LISTER: Si TRUE, retourne la liste des programmations validees par RESP_STRUCT
-    //POUR VALIDER: si TRUE, validation globale a faire par RESP_STRUCT
+    /**
+     * POUR LISTER: Si TRUE, retourne la liste des programmations validees par
+     * RESP_STRUCT
+     *
+     *
+     * POUR VALIDER: si TRUE, validation globale a faire par RESP_STRUCT.
+     * validatedByDGESS et validatedByCASEM devront etre a FALSE
+     */
     private boolean validatedBySTRUCT;
 
-    //Si TRUE, retourne la liste des programmations validees par RESP_DGESS
+    /**
+     * POUR LISTER: Si TRUE, retourne la liste des programmations validees par
+     * RESP_DGESS
+     *
+     *
+     * POUR VALIDER: si TRUE, validation globale a faire par RESP_DGESS.
+     * validatedBySTRUCT et validatedByCASEM devront etre a FALSE
+     */
     private boolean validatedByDGESS;
 
-    //Si TRUE, retourne la liste des programmations validees par CASEM
+    /**
+     * POUR LISTER: Si TRUE, retourne la liste des programmations validees par
+     * CASEM
+     *
+     *
+     * POUR VALIDER: si TRUE, validation globale a faire par CASEM (represente
+     * par DGESS). validatedBySTRUCT et validatedByDGESS devront etre a FALSE
+     */
     private boolean validatedByCASEM;
 }

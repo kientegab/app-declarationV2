@@ -7,6 +7,7 @@ package com.mfptps.appdgessddi.service.impl;
 
 import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.entities.Ministere;
+import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import com.mfptps.appdgessddi.entities.Structure;
@@ -204,21 +205,30 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     }
 
     @Override
-    public ProgrammationForEvaluationDTO getForEvaluation(long programationId) {
-        Programmation programmation = programmationRepository.findById(programationId).orElseThrow(() -> new CustomException("Programmation d'id " + programationId + " inexistante"));
+    public ProgrammationForEvaluationDTO getForEvaluation(long programmationId) {
+        Programmation programmation = programmationRepository.findById(programmationId).orElseThrow(() -> new CustomException("Programmation d'id " + programmationId + " inexistante"));
+
+        return this.constructProgrammationForEvaluationDTO(programmation);
+    }
+
+    public ProgrammationForEvaluationDTO constructProgrammationForEvaluationDTO(Programmation programmation) {
         ProgrammationForEvaluationDTO response = programmationMapper.toEvaluationDTO(programmation);
 
         ResponseCheckPeriode checkPeriodes = AppUtil.checkProgrammationPhysique(response.getId(), programmationPhysiqueRepository);
 
         response.setTauxActuel(this.tauxExecutionByExerciceOrPeriode(Arrays.asList(programmation), checkPeriodes.getPeriode()));
         response.setValeurActuelle(this.valeurCibleAtteinte(programmation.getTaches()));
-        response.setPeriodeActuelle(programmationPhysiqueRepository.findByPeriodeAndProgrammation(checkPeriodes.getPeriode(), programmation.getId()).get().getLibelle());
+        Optional<Periode> periode = programmationPhysiqueRepository.findByPeriodeAndProgrammation(checkPeriodes.getPeriode(), programmation.getId());
+        if (periode.isPresent()) {
+            response.setPeriodeActuelle(periode.get().getLibelle());
+        }
 
         String periodes = "";
         for (ProgrammationPhysique pph : checkPeriodes.getPeriodes()) {
             periodes = periodes + pph.getPeriode().getLibelle() + "-";
         }
         response.setPeriodes(periodes.substring(0, (periodes.length() - 1)));
+
         return response;
     }
 
@@ -232,6 +242,18 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     @Transactional(readOnly = true)
     public Page<Programmation> findAllValided(Long structureId, Pageable pageable) {
         return programmationRepository.findAllValided(structureId, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProgrammationForEvaluationDTO> findAllAfterEvaluation(long structureId, long exerciceId) {
+        List<Programmation> list = programmationRepository.findByStructureAndExerciceValided(structureId, exerciceId);
+        List<ProgrammationForEvaluationDTO> response = new ArrayList<>();
+
+        for (Programmation prog : list) {
+            response.add(this.constructProgrammationForEvaluationDTO(prog));
+        }
+        return response;
     }
 
     /**
@@ -279,7 +301,6 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                     }
                     if ((SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) && programmation.isValidationInitial()) {
                         programmation.setValidationInterne(true);//validation DGESS
-                        //programmation.setValidationFinal(true);//validation CASEM... A revoir
                     }
                     return programmation;
                 });
@@ -290,26 +311,60 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     }
 
     @Override
-    public void allValidationInitiale(Long structureId) {
+    public String allValidationInitiale(Long structureId) {
         List<Programmation> list = programmationRepository.findAll(structureId);
+        List<Programmation> updater = new ArrayList<>();
+
         if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_STRUCT") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
             for (Programmation programmation : list) {
                 programmation.setValidationInitial(true);
+                updater.add(programmation);
             }
+            programmationRepository.saveAll(updater);
         }
+        return "Validations initiales bien effectuées.";
     }
 
     @Override
-    public void allValidationInterne(Long structureId) {
+    public String allValidationInterne(Long structureId) {
         List<Programmation> list = programmationRepository.findAll(structureId);
+        List<Programmation> updater = new ArrayList<>();
+        boolean echec = false;
+
         if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
-            list.stream().filter(programmation -> (programmation.isValidationInitial())).map(programmation -> {
-                programmation.setValidationInterne(true);
-                return programmation;
-            }).forEachOrdered(programmation -> {
-                programmation.setValidationFinal(true);//validation CASEM... A revoir
-            });
+            for (Programmation programmation : list) {
+                if (programmation.isValidationInitial()) {
+                    programmation.setValidationInterne(true);
+                    updater.add(programmation);
+                } else {
+                    echec = true;
+                }
+            }
+            programmationRepository.saveAll(updater);
         }
+        return echec ? "Validation effectuée partiellement, car certaines activités n'ont pas été validées par " + list.get(0).getStructure().getSigle() : "Validations internes bien effectuées.";
+    }
+
+    @Override
+    public String allValidationCASEM(Long structureId) {
+        List<Programmation> list = programmationRepository.findAll(structureId);
+        List<Programmation> updater = new ArrayList<>();
+        boolean echec = false;
+
+        if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
+
+            for (Programmation programmation : list) {
+                if (programmation.isValidationInitial() && programmation.isValidationInterne()) {
+                    programmation.setValidationFinal(true);
+                    updater.add(programmation);
+                } else {
+                    echec = true;
+                }
+            }
+            programmationRepository.saveAll(updater);
+        }
+
+        return echec ? "Validation effectuée partiellement, car certaines activités n'ont pas été validées précédemment." : "Validations finales (CASEM) bien effectuées.";
     }
 
     /**
@@ -545,7 +600,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private double valeurCibleAtteinte(List<Tache> taches) {
         double valeur = 0;
 
-        valeur = taches.stream().filter(tache -> (tache.getValeur() != 1D)).map(tache -> tacheEvaluerRepository.cumuleeOfTache(tache.getId())).reduce(valeur, (accumulator, _item) -> accumulator + _item);
+        valeur = taches.stream().filter(tache -> (tache.getValeur() != 1D)).filter(tache -> (tacheEvaluerRepository.getByTacheAndActive(tache.getId()).isPresent())).map(tache -> tacheEvaluerRepository.cumuleeOfTache(tache.getId())).reduce(valeur, (accumulator, _item) -> accumulator + _item);
 
         return valeur;
     }
