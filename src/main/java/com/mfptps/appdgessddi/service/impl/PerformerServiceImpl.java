@@ -45,16 +45,14 @@ public class PerformerServiceImpl  implements PerformerService {
     private final PonderationRepository ponderationRepository;
     private final EvaluationGouvernanceRepository evaluationGouvernanceRepository;
     private final PerformanceRepository performanceRepository;
-    private final EvaluationRepository evaluationRepository;
-    private final ParametrerImpactServiceImpl impactRepository;
+    private final EvaluationRepository evaluationRepository; 
     private final ContribuerRepository contribuerRepository;
 
     public PerformerServiceImpl(PerformerRepository performerRepository, PerformerMapper performerMapper, 
             GrillePerformanceRepository grilleRepository, StructureRepository structureRepository,
             ProgrammationRepository programmationRepository, PonderationRepository ponderationRepository,
             EvaluationGouvernanceRepository evaluationGouvernanceRepository,PerformanceRepository performanceRepository,
-            EvaluationRepository evaluationRepository, ParametrerImpactServiceImpl impactRepository,
-            ContribuerRepository contribuerRepository) {
+            EvaluationRepository evaluationRepository,ContribuerRepository contribuerRepository) {
         
         this.performerRepository = performerRepository;
         this.performerMapper = performerMapper;
@@ -64,8 +62,7 @@ public class PerformerServiceImpl  implements PerformerService {
         this.ponderationRepository = ponderationRepository;
         this.evaluationGouvernanceRepository = evaluationGouvernanceRepository;
         this.performanceRepository = performanceRepository;
-        this.evaluationRepository = evaluationRepository;
-        this.impactRepository = impactRepository;
+        this.evaluationRepository = evaluationRepository; 
         this.contribuerRepository = contribuerRepository;
     }
 
@@ -97,6 +94,7 @@ public class PerformerServiceImpl  implements PerformerService {
     
     //======= section de calcul des performances
     
+    @Override
     public PerformanceDTO calculatePerformance(Long ministerId, Long structureId, Long exerciceId, Long userId){
         
         PerformanceDTO performance = new PerformanceDTO();

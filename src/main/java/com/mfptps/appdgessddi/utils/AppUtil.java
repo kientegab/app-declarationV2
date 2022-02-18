@@ -7,6 +7,7 @@ package com.mfptps.appdgessddi.utils;
 
 import com.mfptps.appdgessddi.entities.Action;
 import com.mfptps.appdgessddi.entities.Objectif;
+import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import com.mfptps.appdgessddi.entities.Programme;
@@ -23,8 +24,13 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Year;
+import java.util.Calendar;
+import static java.util.Calendar.YEAR;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -253,4 +259,42 @@ public class AppUtil {
         }
         return response;
     }
+    
+    public static Periode checkExactPeriode(List<Periode> periodes, Date currentDate){
+        Periode foundOne = null;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        
+        int year = calendar.get(YEAR);
+        
+        for(Periode per : periodes){ 
+            Date start  = repairDate(per.getDebut(), year);
+            Date end  = repairDate(per.getFin(), year); 
+            if(currentDate.after(start) && currentDate.before(end)){
+                foundOne = per;
+                break;
+            }
+        }  
+        
+        return foundOne;
+    }
+    
+    protected static Date repairDate(Date givenDate, int year){
+        try {
+            DateFormat dateFormant = new SimpleDateFormat("dd-MM-yyyy");
+            Date repaired ;
+            
+            String dateString = dateFormant.format(givenDate);
+            //cutting dateString
+            dateString = dateString.substring(0, dateString.length()-4);
+            //concat the new year
+            dateString = dateString + String.valueOf(year);
+            
+            repaired = dateFormant.parse(dateString);
+            
+            return repaired;
+        } catch (ParseException ex) {
+          return null;
+        }
+    } 
 }
