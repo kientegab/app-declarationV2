@@ -7,6 +7,7 @@ package com.mfptps.appdgessddi.service.impl;
 
 import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.entities.Ministere;
+import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import com.mfptps.appdgessddi.entities.Structure;
@@ -204,21 +205,30 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     }
 
     @Override
-    public ProgrammationForEvaluationDTO getForEvaluation(long programationId) {
-        Programmation programmation = programmationRepository.findById(programationId).orElseThrow(() -> new CustomException("Programmation d'id " + programationId + " inexistante"));
+    public ProgrammationForEvaluationDTO getForEvaluation(long programmationId) {
+        Programmation programmation = programmationRepository.findById(programmationId).orElseThrow(() -> new CustomException("Programmation d'id " + programmationId + " inexistante"));
+
+        return this.constructProgrammationForEvaluationDTO(programmation);
+    }
+
+    public ProgrammationForEvaluationDTO constructProgrammationForEvaluationDTO(Programmation programmation) {
         ProgrammationForEvaluationDTO response = programmationMapper.toEvaluationDTO(programmation);
 
         ResponseCheckPeriode checkPeriodes = AppUtil.checkProgrammationPhysique(response.getId(), programmationPhysiqueRepository);
 
         response.setTauxActuel(this.tauxExecutionByExerciceOrPeriode(Arrays.asList(programmation), checkPeriodes.getPeriode()));
         response.setValeurActuelle(this.valeurCibleAtteinte(programmation.getTaches()));
-        response.setPeriodeActuelle(programmationPhysiqueRepository.findByPeriodeAndProgrammation(checkPeriodes.getPeriode(), programmation.getId()).get().getLibelle());
+        Optional<Periode> periode = programmationPhysiqueRepository.findByPeriodeAndProgrammation(checkPeriodes.getPeriode(), programmation.getId());
+        if (periode.isPresent()) {
+            response.setPeriodeActuelle(periode.get().getLibelle());
+        }
 
         String periodes = "";
         for (ProgrammationPhysique pph : checkPeriodes.getPeriodes()) {
             periodes = periodes + pph.getPeriode().getLibelle() + "-";
         }
         response.setPeriodes(periodes.substring(0, (periodes.length() - 1)));
+
         return response;
     }
 
@@ -232,6 +242,18 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     @Transactional(readOnly = true)
     public Page<Programmation> findAllValided(Long structureId, Pageable pageable) {
         return programmationRepository.findAllValided(structureId, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProgrammationForEvaluationDTO> findAllAfterEvaluation(long structureId, long exerciceId) {
+        List<Programmation> list = programmationRepository.findByStructureAndExerciceValided(structureId, exerciceId);
+        List<ProgrammationForEvaluationDTO> response = new ArrayList<>();
+
+        for (Programmation prog : list) {
+            response.add(this.constructProgrammationForEvaluationDTO(prog));
+        }
+        return response;
     }
 
     /**

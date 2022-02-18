@@ -10,6 +10,7 @@ import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationForEvaluationDTO;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -73,6 +74,17 @@ public interface ProgrammationService {
      * @return
      */
     Page<Programmation> findAllValided(Long structureId, Pageable pageable);
+
+    /**
+     * Liste les programmations (apres evaluation) contenant les taux, periodes,
+     * taches, ...
+     *
+     * @param structureId
+     * @param exerciceId
+     * @param pageable
+     * @return
+     */
+    List<ProgrammationForEvaluationDTO> findAllAfterEvaluation(long structureId, long exerciceId);
 
     /**
      * Validation (par Responsable DGESS ou Responsable Structure) d'une
