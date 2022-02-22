@@ -17,6 +17,11 @@ public interface MinistereService {
 
     Optional<Ministere> get(Long id);
     
+    /**
+     * 
+     * @param structureId
+     * @return 
+     */
     Optional<MinistereBundleData> getBundledData(Long structureId); 
 
     Page<Ministere> findAll(Pageable pageable);

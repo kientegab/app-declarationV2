@@ -5,7 +5,7 @@
 package com.mfptps.appdgessddi.service.dto.statisticresponses;
 
 /**
- *
+ * entité utilisée dans l'affichage des données statistiques
  * @author aboubacary
  */
 public class MinistereBundleData {
@@ -25,6 +25,8 @@ public class MinistereBundleData {
     private String periode;
     
     private String periodicite;
+    
+    private String dateJour;
 
     public String getMinistereLibelle() {
         return ministereLibelle;
@@ -89,5 +91,13 @@ public class MinistereBundleData {
     public void setStructureCode(String structureCode) {
         this.structureCode = structureCode;
     }
+
+    public String getDateJour() {
+        return dateJour;
+    }
+
+    public void setDateJour(String dateJour) {
+        this.dateJour = dateJour;
+    } 
     
 }
