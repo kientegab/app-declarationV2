@@ -13,6 +13,7 @@ import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroup
 import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereGlobalStatsBundleData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerActiviteData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerDepenseData;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerSectorielData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerStructureData;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,17 +142,35 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
         
         MinistereGlobalStatsBundleData data = new MinistereGlobalStatsBundleData();
         
-         List<ResumerStructureData> resumes = resumerActiviteParStructure(ministereId, exerciceId);
-         data.setResumes(resumes);
-         
-         ResumerDepenseData depense = resumerDepenseParMinistere(ministereId, exerciceId);
-         data.setDepense(depense);
-        
-         ResumerActiviteData activite = resumerActiviteParMinistere(ministereId, exerciceId);
-         data.setActivite(activite);
+        List<ResumerStructureData> resumes = resumerActiviteParStructure(ministereId, exerciceId);
+        data.setResumes(resumes);
+
+        ResumerDepenseData depense = resumerDepenseParMinistere(ministereId, exerciceId);
+        data.setDepense(depense);
+
+        ResumerActiviteData activite = resumerActiviteParMinistere(ministereId, exerciceId);
+        data.setActivite(activite);
         
         return data;
          
+    }
+
+    @Override
+    public ResumerSectorielData resumerSectoriel(Long ministereId, Long exerciceId) {
+        
+        // Initialisation des données
+        ResumerSectorielData data = new ResumerSectorielData();
+        
+        List<String> periodes = new ArrayList<>();
+    
+        List<Double> physiques = new ArrayList<>();
+
+        List<Double> finances = new ArrayList<>();
+        
+        // Chargement 
+        
+        
+        return data; 
     }
 
 }

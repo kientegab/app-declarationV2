@@ -9,6 +9,7 @@ import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroup
 import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereGlobalStatsBundleData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerActiviteData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerDepenseData;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerSectorielData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerStructureData;
 import java.util.List;
 
@@ -27,6 +28,8 @@ public interface StatisticParameterService {
     List<ResumerStructureData> resumerActiviteParStructure(Long ministereId,Long exerciceId);
     
     MinistereGlobalStatsBundleData resumerMinistere(Long ministereId,Long exerciceId);
+    
+    ResumerSectorielData resumerSectoriel(Long ministereId, Long exerciceId);   
 
     List<CountStructureGroupByType> nbStructuresByGroupType(long ministereId);
 }

@@ -10,6 +10,7 @@ import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroup
 import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereGlobalStatsBundleData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerActiviteData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerDepenseData;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerSectorielData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerStructureData;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +58,12 @@ public class StatisticParameterController {
     @GetMapping(path = "/resumer/{ministereId}/{exerciceId}")
     public ResponseEntity<MinistereGlobalStatsBundleData> resumerMinistere(@PathVariable(name = "ministereId") Long ministereId, @PathVariable(name = "exerciceId") Long exerciceId) { 
         MinistereGlobalStatsBundleData data = service.resumerMinistere(ministereId,exerciceId);// 
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+    
+    @GetMapping(path = "/sectoriel/{ministereId}/{exerciceId}")
+    public ResponseEntity<ResumerSectorielData> resumerSectoriel(@PathVariable(name = "ministereId") Long ministereId, @PathVariable(name = "exerciceId") Long exerciceId) { 
+        ResumerSectorielData data = service.resumerSectoriel(ministereId,exerciceId);// 
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
