@@ -100,6 +100,7 @@ public class ProgrammationController {
     }
 
     /**
+     * Liste les programmations ENCOURS de cette structure
      *
      * @param structureId : id of Structure referency by ids in path
      * @param pageable
@@ -204,7 +205,6 @@ public class ProgrammationController {
     /**
      *
      * @param params
-     * @param validProgammationDTO
      * @return
      */
     @PutMapping(path = "/validation-all")

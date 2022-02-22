@@ -1,22 +1,18 @@
 package com.mfptps.appdgessddi.service.dto;
 
-import com.mfptps.appdgessddi.entities.CritereGouvernance;
 import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.entities.Structure;
-
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import java.util.List;
 
 public class EvaluationGouvernanceDTO {
 
     private Long id;
-    private double valeur ;
-    private double valeurReference ;
-    private boolean applicable ;
-    private Exercice exercice ;
-    private CritereGouvernance critereGouvernance ;
-    private Structure structure ;
+    private double valeur;//A renseigner lors de l'evaluation des structures
+    private List<CritereDTO> critereGouvernances;
+    private Exercice exercice;
+    private Structure structure;
 
+    //========================================
     public EvaluationGouvernanceDTO() {
     }
 
@@ -36,22 +32,6 @@ public class EvaluationGouvernanceDTO {
         this.valeur = valeur;
     }
 
-    public double getValeurReference() {
-        return valeurReference;
-    }
-
-    public void setValeurReference(double valeurReference) {
-        this.valeurReference = valeurReference;
-    }
-
-    public boolean isApplicable() {
-        return applicable;
-    }
-
-    public void setApplicable(boolean applicable) {
-        this.applicable = applicable;
-    }
-
     public Exercice getExercice() {
         return exercice;
     }
@@ -60,12 +40,12 @@ public class EvaluationGouvernanceDTO {
         this.exercice = exercice;
     }
 
-    public CritereGouvernance getCritereGouvernance() {
-        return critereGouvernance;
+    public List<CritereDTO> getCritereGouvernances() {
+        return critereGouvernances;
     }
 
-    public void setCritereGouvernance(CritereGouvernance critereGouvernance) {
-        this.critereGouvernance = critereGouvernance;
+    public void setCritereGouvernances(List<CritereDTO> critereGouvernances) {
+        this.critereGouvernances = critereGouvernances;
     }
 
     public Structure getStructure() {
@@ -75,4 +55,5 @@ public class EvaluationGouvernanceDTO {
     public void setStructure(Structure structure) {
         this.structure = structure;
     }
+
 }
