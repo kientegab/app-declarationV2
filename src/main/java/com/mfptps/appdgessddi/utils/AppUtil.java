@@ -297,4 +297,10 @@ public class AppUtil {
           return null;
         }
     } 
+    
+    public static String convertToShortDate(Date date){
+        DateFormat dateFormant = new SimpleDateFormat("dd-MM-yyyy");
+        String value = dateFormant.format(date);
+        return value;
+    }
 }
