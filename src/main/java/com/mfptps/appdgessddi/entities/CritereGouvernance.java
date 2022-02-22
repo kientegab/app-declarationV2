@@ -13,7 +13,7 @@ public class CritereGouvernance extends CommonEntity {
     private String indicateur;
     private boolean mode;
     @Type(type = "yes_no")
-    private boolean actif;
+    private boolean actif = true;
 
     public CritereGouvernance() {
     }

@@ -7,7 +7,7 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "evaluation_gouvernance",
         uniqueConstraints = {
-            @UniqueConstraint(columnNames = {"EXERCICE_ID", "CRITERE_ID", "STRUCTURE_ID"})})
+            @UniqueConstraint(name = "uniquekeys_EXERCICE_CRITERE_STRUCTURE", columnNames = {"EXERCICE_ID", "CRITERE_ID", "STRUCTURE_ID"})})
 public class EvaluationGouvernance extends CommonEntity {
 
     @Id
@@ -15,10 +15,10 @@ public class EvaluationGouvernance extends CommonEntity {
     private Long id;
 
     @Column(name = "VALEUR")
-    private double valeur;
+    private double valeur = 0;
 
     @Column(name = "VALEUR_REFERENCE")
-    private double valeurReference;
+    private double valeurReference = 1;
 
     @Type(type = "yes_no")
     @Column(name = "NON_APPLICABLE")
@@ -28,6 +28,7 @@ public class EvaluationGouvernance extends CommonEntity {
     @ManyToOne
     @JoinColumn(name = "EXERCICE_ID", nullable = false)
     private Exercice exercice;
+
     @ManyToOne
     @JoinColumn(name = "CRITERE_ID", nullable = false)
     private CritereGouvernance critereGouvernance;

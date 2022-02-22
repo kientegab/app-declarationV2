@@ -16,19 +16,19 @@ import com.mfptps.appdgessddi.repositories.PerformerRepository;
 import com.mfptps.appdgessddi.repositories.PonderationRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.StructureRepository;
+import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.PerformerService;
 import com.mfptps.appdgessddi.service.dto.PerformanceDTO;
 import com.mfptps.appdgessddi.service.dto.PerformerDTO;
 import com.mfptps.appdgessddi.service.mapper.PerformerMapper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -43,15 +43,15 @@ public class PerformerServiceImpl implements PerformerService {
     private final PonderationRepository ponderationRepository;
     private final EvaluationGouvernanceRepository evaluationGouvernanceRepository;
     private final PerformanceRepository performanceRepository;
-    private final EvaluationRepository evaluationRepository; 
+    private final EvaluationRepository evaluationRepository;
     private final ContribuerRepository contribuerRepository;
 
     public PerformerServiceImpl(PerformerRepository performerRepository, PerformerMapper performerMapper,
             GrillePerformanceRepository grilleRepository, StructureRepository structureRepository,
             ProgrammationRepository programmationRepository, PonderationRepository ponderationRepository,
-            EvaluationGouvernanceRepository evaluationGouvernanceRepository,PerformanceRepository performanceRepository,
-            EvaluationRepository evaluationRepository,ContribuerRepository contribuerRepository) {
-        
+            EvaluationGouvernanceRepository evaluationGouvernanceRepository, PerformanceRepository performanceRepository,
+            EvaluationRepository evaluationRepository, ContribuerRepository contribuerRepository) {
+
         this.performerRepository = performerRepository;
         this.performerMapper = performerMapper;
         this.grilleRepository = grilleRepository;
@@ -60,7 +60,7 @@ public class PerformerServiceImpl implements PerformerService {
         this.ponderationRepository = ponderationRepository;
         this.evaluationGouvernanceRepository = evaluationGouvernanceRepository;
         this.performanceRepository = performanceRepository;
-        this.evaluationRepository = evaluationRepository; 
+        this.evaluationRepository = evaluationRepository;
         this.contribuerRepository = contribuerRepository;
     }
 
@@ -91,10 +91,8 @@ public class PerformerServiceImpl implements PerformerService {
     }
 
     //======= section de calcul des performances
-    
     @Override
-    public PerformanceDTO calculatePerformance(Long ministerId, Long structureId, Long exerciceId, Long userId){
-        
+    public PerformanceDTO calculatePerformance(Long ministerId, Long structureId, Long exerciceId, Long userId) {
         PerformanceDTO performance = new PerformanceDTO();
 
         // variables de stockage des éléments de performance
@@ -136,6 +134,9 @@ public class PerformerServiceImpl implements PerformerService {
             // récupération des évaluations de gouvernance
             List<EvaluationGouvernance> evalGouv = evaluationGouvernanceRepository.findStructureEvaluation(structure.getId(), exerciceId); // changment du type
 
+            if (evalGouv.isEmpty()) {
+                throw new CustomException("Données de gouvernance non renseignées !");
+            }
             // nombre total d'activités programmées
             double nap = programmationRepository.countStructureProgrammation(structure.getId(), exerciceId);
 

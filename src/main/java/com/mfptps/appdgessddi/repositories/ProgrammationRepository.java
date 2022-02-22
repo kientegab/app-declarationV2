@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.Programmation;
+import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -27,11 +28,11 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND s.id = :structureId")
     List<Programmation> findAll(Long structureId);
 
-    @Query("SELECT p FROM Programmation p, Structure s "
+    @Query("SELECT p FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.deleted = false "
-            + "AND p.structure.id = s.id "
-            + "AND s.id = :structureId")
-    Page<Programmation> findAll(Long structureId, Pageable Pageable);
+            + "AND p.structure.id = s.id AND s.id = :structureId "
+            + "AND p.exercice.id = e.id AND e.statut = :statut")//filtrer par exercice en cours
+    Page<Programmation> findAll(Long structureId, ExerciceStatus statut, Pageable Pageable);
 
     @Query("SELECT p FROM Programmation p, Structure s "
             + "WHERE p.deleted = false "
@@ -131,7 +132,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.deleted = false "
             + "AND p.validationFinal = true")
     double coutReelStructureProgrammation(long structureId, long exerciceId);
-    
+
     @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
@@ -139,7 +140,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.deleted = false "
             + "AND p.validationFinal = true")
     double coutPrevsionnelStructureProgrammation(long structureId, long exerciceId);
-    
+
     @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
@@ -148,7 +149,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.validationFinal = true "
             + "AND p.taux>=100 AND p.lastEvalDate<=p.deadLine")
     double coutEffectifStructureProgrammation(long structureId, long exerciceId);
-    
+
     @Query("SELECT COUNT(p.id) FROM Programmation p WHERE p.structure.id=?1 AND p.exercice.id=?2 AND p.taux>=100 AND p.lastEvalDate<=p.deadLine ")
     long countActiviteRealiserATemps(long structureId, long exerciceId);
 
