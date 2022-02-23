@@ -63,4 +63,9 @@ public class EvaluationGouvernanaceServiceImpl implements EvaluationGouvernanace
     public Page<EvaluationGouvernance> get(Pageable pageable) {
         return evaluationGouvernanceRepository.findAll(pageable);
     }
+
+    @Override
+    public List<EvaluationGouvernance> findStructureEvaluation(Long structureId, Long exerciceId) {
+        return evaluationGouvernanceRepository.findStructureEvaluation(structureId, exerciceId);
+    }
 }

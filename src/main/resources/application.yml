@@ -37,12 +37,13 @@ spring:
       max-request-size: 10MB
   data:
     web:
-        pageable:
-            default-page-size: 2000
-            #max-page-size: 2000
+      pageable:
+        default-page-size: 2000         # Default page size.
+        #max-page-size: 2000           # Maximum
     jpa:
       repositories:
         bootstrap-mode: deferred
+      
   liquibase:
     change-log: classpath:config/liquibase/master.xml
   mail:
@@ -103,7 +104,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://localhost:5432/dgessdb
     username: postgres
-    password: rootPostgresql #admin #rootPostgresql
+    password: admin #admin #rootPostgresql
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -134,7 +135,8 @@ spring:
     platform: postgres
     url: jdbc:postgresql:localhost:5432/dgessdb
     username: postgres
-    password: rootPostgresql #rootPostgresql admin
+    password: admin #rootPostgresql admin
     hikari:
       auto-commit: false
+    
     
