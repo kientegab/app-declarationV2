@@ -1,7 +1,6 @@
 package com.mfptps.appdgessddi.service.impl;
 
 import com.mfptps.appdgessddi.entities.EvaluationGouvernance;
-import com.mfptps.appdgessddi.repositories.CritereGouvernanceRepository;
 import com.mfptps.appdgessddi.repositories.EvaluationGouvernanceRepository;
 import com.mfptps.appdgessddi.service.EvaluationGouvernanaceService;
 import com.mfptps.appdgessddi.service.dto.CritereDTO;
@@ -21,11 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class EvaluationGouvernanaceServiceImpl implements EvaluationGouvernanaceService {
 
     private final EvaluationGouvernanceRepository evaluationGouvernanceRepository;
-    private final CritereGouvernanceRepository critereGouvernanceRepository;
 
-    public EvaluationGouvernanaceServiceImpl(EvaluationGouvernanceRepository evaluationGouvernanceRepository, CritereGouvernanceRepository critereGouvernanceRepository) {
+    public EvaluationGouvernanaceServiceImpl(EvaluationGouvernanceRepository evaluationGouvernanceRepository) {
         this.evaluationGouvernanceRepository = evaluationGouvernanceRepository;
-        this.critereGouvernanceRepository = critereGouvernanceRepository;
     }
 
     @Override

@@ -62,7 +62,11 @@ public class EvaluationGouvernance extends CommonEntity {
     }
 
     public void setValeurReference(double valeurReference) {
-        this.valeurReference = valeurReference;
+        if (valeurReference <= 0) {
+            this.valeurReference = 1;
+        } else {
+            this.valeurReference = valeurReference;
+        }
     }
 
     public boolean isNonapplicable() {
