@@ -45,6 +45,11 @@ public class CritereGouvernanceServiceImpl implements CritereGouvernanceService 
 
     @Override
     public Page<CritereGouvernance> findAll(Pageable pageable) {
+        return critereGouvernanceRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<CritereGouvernance> findAllActifs(Pageable pageable) {
         return critereGouvernanceRepository.findByActifTrue(pageable);
     }
 }
