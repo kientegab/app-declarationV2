@@ -61,9 +61,16 @@ public class CritereGouvernanceController {
                 .body(critereGouvernance1);
     }
 
+    @GetMapping
+    public ResponseEntity<List<CritereGouvernance>> findCriteres(Pageable pageable) {
+        Page<CritereGouvernance> critereGouvernances = critereGouvernanceService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), critereGouvernances);
+        return ResponseEntity.ok().headers(headers).body(critereGouvernances.getContent());
+    }
+
     @GetMapping("/actif")
     public ResponseEntity<List<CritereGouvernance>> findCriteresActifs(Pageable pageable) {
-        Page<CritereGouvernance> critereGouvernances = critereGouvernanceService.findAll(pageable);
+        Page<CritereGouvernance> critereGouvernances = critereGouvernanceService.findAllActifs(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), critereGouvernances);
         return ResponseEntity.ok().headers(headers).body(critereGouvernances.getContent());
     }
