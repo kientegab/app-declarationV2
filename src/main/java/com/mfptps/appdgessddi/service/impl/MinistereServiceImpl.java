@@ -73,9 +73,19 @@ public class MinistereServiceImpl implements MinistereService {
         return ministereRepository.findById(id);
     }
 
+    /**
+     * Construit une entité MinistereBundleData
+     * à partir de l'ID de la structure fournie en paramètre
+     * @param structureId
+     * @return 
+     */
     @Override
     public Optional<MinistereBundleData> getBundledData(Long structureId) {
-       
+        
+        // Date du jour du serveur
+        Date date = new Date();
+        
+        // Instance de l'entitée à retourner
         MinistereBundleData data = new MinistereBundleData();
         
         // Recherche de la structure
@@ -84,25 +94,31 @@ public class MinistereServiceImpl implements MinistereService {
         // Recherche du ministère et de la Structure
         Ministere ministere = ministereRepository.findMinistereStructureCode(structureId).orElse(null);
         
+        // Aucun ministère trouvé
         if(ministere == null){
             throw new CustomException("Aucune donnée trouvée");
         }
         
+        // Renseigner les informations du ministère
         data.setMinisterId(ministere.getId());
         data.setMinistereCode(ministere.getSigle());
         data.setMinistereLibelle(ministere.getLibelle());
         
+        // Renseigner les informations de la structure
         data.setStructureId(structure.getId());
         data.setStructureCode(structure.getSigle());
         data.setStructureLibelle(structure.getLibelle());
         
         // Recherche de la période
         List<Periode> periodes =  periodeRepository.findByPeriodiciteActif();
-        Periode periode = AppUtil.checkExactPeriode(periodes, new Date());
+        Periode periode = AppUtil.checkExactPeriode(periodes, date);
         
+        // Renseigner les informations de la période et de la périodicité
         data.setPeriode(periode.getLibelle());
         data.setPeriodicite(periode.getPeriodicite().getLibelle());
         
+        // Renseigner la date du jour en la formattant en string
+        data.setDateJour(AppUtil.convertToShortDate(date));
         
         
         return Optional.of(data);

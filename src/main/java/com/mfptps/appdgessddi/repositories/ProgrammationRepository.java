@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.Programmation;
+import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -27,11 +28,11 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND s.id = :structureId")
     List<Programmation> findAll(Long structureId);
 
-    @Query("SELECT p FROM Programmation p, Structure s "
+    @Query("SELECT p FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.deleted = false "
-            + "AND p.structure.id = s.id "
-            + "AND s.id = :structureId")
-    Page<Programmation> findAll(Long structureId, Pageable Pageable);
+            + "AND p.structure.id = s.id AND s.id = :structureId "
+            + "AND p.exercice.id = e.id AND e.statut = :statut")//filtrer par exercice en cours
+    Page<Programmation> findAll(Long structureId, ExerciceStatus statut, Pageable Pageable);
 
     @Query("SELECT p FROM Programmation p, Structure s "
             + "WHERE p.deleted = false "
@@ -131,7 +132,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.deleted = false "
             + "AND p.validationFinal = true")
     double coutReelStructureProgrammation(long structureId, long exerciceId);
-    
+
     @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
@@ -139,7 +140,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.deleted = false "
             + "AND p.validationFinal = true")
     double coutPrevsionnelStructureProgrammation(long structureId, long exerciceId);
-    
+
     @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
@@ -148,8 +149,118 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.validationFinal = true "
             + "AND p.taux>=100 AND p.lastEvalDate<=p.deadLine")
     double coutEffectifStructureProgrammation(long structureId, long exerciceId);
-    
+
     @Query("SELECT COUNT(p.id) FROM Programmation p WHERE p.structure.id=?1 AND p.exercice.id=?2 AND p.taux>=100 AND p.lastEvalDate<=p.deadLine ")
     long countActiviteRealiserATemps(long structureId, long exerciceId);
+    
+    // requetes pour des comptages plus précis
+    
+    @Query("SELECT COUNT(p) FROM Programmation p, Structure s, Exercice e "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND p.deleted = false "
+            + "AND p.taux>=100 "
+            + "AND p.validationFinal = true")
+    long countStructureProgrammationTerminer(long structureId, long exerciceId);
+    
+    @Query("SELECT COUNT(p) FROM Programmation p, Structure s, Exercice e "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND p.deleted = false "
+            + "AND p.taux < 100 "
+            + "AND p.taux > 0 "
+            + "AND p.validationFinal = true")
+    long countStructureProgrammationEncours(long structureId, long exerciceId);
+    
+    @Query("SELECT COUNT(p) FROM Programmation p, Structure s, Exercice e "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND p.deleted = false "
+            + "AND p.taux = 0 "
+            + "AND p.validationFinal = true")
+    long countStructureProgrammationEnattente(long structureId, long exerciceId);
 
+    // calculs pour un ministère sans passer par la structure
+   
+    @Query("SELECT COUNT(p) FROM Programmation p, Structure s,  MinistereStructure m "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id = m.structure.id "
+            + "AND m.ministere.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND m.statut=true "
+            + "AND p.deleted = false "
+            + "AND p.validationFinal = true")
+    long countMinistereProgrammation(long ministereId, long exerciceId);
+    
+    @Query("SELECT COUNT(p) FROM Programmation p, Structure s,  MinistereStructure m "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id = m.structure.id "
+            + "AND m.ministere.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND m.statut=true "
+            + "AND p.deleted = false "
+            + "AND p.taux>=100 "
+            + "AND p.validationFinal = true")
+    long countMinistereTermine(long ministereId, long exerciceId);
+    
+    @Query("SELECT COUNT(p) FROM Programmation p, Structure s,  MinistereStructure m "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id = m.structure.id "
+            + "AND m.ministere.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND m.statut=true "
+            + "AND p.deleted = false "
+            + "AND p.taux < 100 "
+            + "AND p.taux > 0 "
+            + "AND p.validationFinal = true")
+    long countMinistereEncours(long ministereId, long exerciceId);
+    
+    @Query("SELECT COUNT(p) FROM Programmation p, Structure s,  MinistereStructure m "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id = m.structure.id "
+            + "AND m.ministere.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND m.statut=true "
+            + "AND p.deleted = false " 
+            + "AND p.taux = 0 "
+            + "AND p.validationFinal = true")
+    long countMinistereAttente(long ministereId, long exerciceId);
+
+    @Query("SELECT SUM(p.coutReel) FROM Programmation p, Structure s,  MinistereStructure m "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id = m.structure.id "
+            + "AND m.ministere.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND m.statut=true "
+            + "AND p.deleted = false "
+            + "AND p.validationFinal = true")
+    double coutReelMinistereProgrammation(long ministereId, long exerciceId);
+    
+    @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s,  MinistereStructure m "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id = m.structure.id "
+            + "AND m.ministere.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND m.statut=true "
+            + "AND p.deleted = false "
+            + "AND p.validationFinal = true")
+    double coutPrevisionnelMinistreProgrammation(long ministereId, long exerciceId);
+    
+    @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, MinistereStructure m "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id = m.structure.id "
+            + "AND m.ministere.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND m.statut=true "
+            + "AND p.deleted = false "
+            + "AND p.validationFinal = true "
+            + "AND p.taux>=100 AND p.lastEvalDate<=p.deadLine")
+    double coutEffectifMinistereProgrammation(long ministereId, long exerciceId);
+    
+    @Query("SELECT COUNT(p.id) FROM Programmation p, Structure s, MinistereStructure m WHERE p.structure.id=s.id AND s.id=m.structure.id AND m.ministere.id=?1 AND m.statut=true AND p.exercice.id=?2 AND p.taux>=100 AND p.lastEvalDate<=p.deadLine ")
+    long countMinistereActiviteRealiserATemps(long ministereId, long exerciceId);
+    
 }

@@ -235,7 +235,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     @Override
     @Transactional(readOnly = true)
     public Page<Programmation> findAll(Long structureId, Pageable pageable) {
-        return programmationRepository.findAll(structureId, pageable);
+        return programmationRepository.findAll(structureId, ExerciceStatus.EN_COURS, pageable);
     }
 
     @Override
@@ -621,13 +621,13 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     //SOUS FONCTION DE tauxByValueOfPeriode(...)
     private double tauxByValueOfProgrammationCible(Programmation prog, Tache tache, Optional<TacheEvaluer> tacheEvaluee, double tauxTaches) {
-       if(tacheEvaluee.isPresent()){
+        if (tacheEvaluee.isPresent()) {
             if (prog.getCible() != 1D) {//programmation a cible 
-            tauxTaches += (tacheEvaluee.get().getValeurCumulee() / prog.getCible()) * tache.getPonderation();
-        } else {//programmation sans cible (cible = 1) 
-            tauxTaches += (tacheEvaluee.get().getValeurCumulee() / tache.getValeur()) * tache.getPonderation();
+                tauxTaches += (tacheEvaluee.get().getValeurCumulee() / prog.getCible()) * tache.getPonderation();
+            } else {//programmation sans cible (cible = 1) 
+                tauxTaches += (tacheEvaluee.get().getValeurCumulee() / tache.getValeur()) * tache.getPonderation();
+            }
         }
-       }
         return tauxTaches;
     }
 
