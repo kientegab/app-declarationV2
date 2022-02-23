@@ -127,12 +127,24 @@ public class ProgrammationController {
     }
 
     /**
+     * Liste les programmations contenant tous les champs apres evaluation
      *
-     * @param structureId : id of Structure referency by ids in path
-     * @param libelle : field libelle of Activite
-     * @param pageable
+     * @param structureId: id de la structure representee par ids
+     * @param exerciceId: id de l'exercice representee par ide
      * @return
      */
+    @GetMapping(path = "/programmations-evaluees/{ids}/{ide}")
+    public ResponseEntity<List<ProgrammationForEvaluationDTO>> findAllProgrammationsEvaluees(
+            @PathVariable(name = "ids", required = true) Long structureId,
+            @PathVariable(name = "ide", required = true) Long exerciceId) {
+        log.debug("List des programmations evaluees");
+        if (structureId == null || exerciceId == null) {
+            throw new BadRequestAlertException("Structure ou Exercice non renseigné.", ENTITY_NAME, "idnull");
+        }
+        List<ProgrammationForEvaluationDTO> programmations = programmationService.findAllAfterEvaluation(structureId, exerciceId);
+        return ResponseEntity.ok().body(programmations);
+    }
+
     @GetMapping(path = "/libelle/{ids}")
     public ResponseEntity<List<Programmation>> findAllProgrammationsByLibelle(
             @PathVariable(name = "ids", required = true) Long structureId,
@@ -198,14 +210,14 @@ public class ProgrammationController {
     @PutMapping(path = "/validation-all")
     @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RS + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<String> allValidationProgrammation(@RequestBody ValidProgammationVM params) {
-        log.debug("Validation globale initiale/interne de Programmations");
+        log.debug("Validation globale initiale/interne/finale de Programmations");
         String message = "";
-        if (params.isValidatedBySTRUCT()) {//do all initial validation of RESP_STRUCT
-            programmationService.allValidationInitiale(params.getStructureId());
-            message = "Validations initiales bien effectuées.";
-        } else if (!params.isValidatedBySTRUCT()) {//do all initial validation of RESP_DGESS
-            programmationService.allValidationInterne(params.getStructureId());
-            message = "Validations initerne et finale bien effectuées.";
+        if (params.isValidatedBySTRUCT() && !params.isValidatedByDGESS() && !params.isValidatedByCASEM()) {//do all initial validation of RESP_STRUCT
+            message = programmationService.allValidationInitiale(params.getStructureId());
+        } else if (params.isValidatedByDGESS() && !params.isValidatedBySTRUCT() && !params.isValidatedByCASEM()) {//do all interne validation of RESP_DGESS
+            message = programmationService.allValidationInterne(params.getStructureId());
+        } else if (params.isValidatedByCASEM() && !params.isValidatedByDGESS() && !params.isValidatedBySTRUCT()) {//do all CASEM validation of CASEM
+            message = programmationService.allValidationCASEM(params.getStructureId());
         }
         return ResponseEntity.ok().body(message);
     }

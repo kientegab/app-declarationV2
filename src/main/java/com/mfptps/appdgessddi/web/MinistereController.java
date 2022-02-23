@@ -3,6 +3,7 @@ package com.mfptps.appdgessddi.web;
 import com.mfptps.appdgessddi.entities.Ministere;
 import com.mfptps.appdgessddi.service.MinistereService;
 import com.mfptps.appdgessddi.service.dto.MinistereDTO;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereBundleData;
 import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import java.net.URI;
@@ -80,12 +81,12 @@ public class MinistereController {
         return ResponseUtil.wrapOrNotFound(ministere);
     }
 
-//    @GetMapping(path = "/ministeres/{id}")
-//    public ResponseEntity<Ministere> getMinistereById(@PathVariable(name = "id") Long id) {
-//        log.debug("Consultation du Ministere : {}", id);
-//        Optional<Ministere> ministere = ministereService.get(id);
-//        return ResponseUtil.wrapOrNotFound(ministere);
-//    }
+    @GetMapping(path = "/ministeres/bundle/{structureId}")
+    public ResponseEntity<MinistereBundleData> getMinistereById(@PathVariable(name = "structureId") Long structureId) {  
+        Optional<MinistereBundleData> ministere = ministereService.getBundledData(structureId);
+        return ResponseUtil.wrapOrNotFound(ministere);
+    }
+    
     @GetMapping(path = "/ministeres")
     public ResponseEntity<List<Ministere>> findAllMinisteres(Pageable pageable) {
         Page<Ministere> minsiteres = ministereService.findAll(pageable);

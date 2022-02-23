@@ -157,7 +157,7 @@ public class ReportUtil {
                         elmt.getLibelleActivite(),
                         elmt.getIndicateur(),
                         elmt.getCibleProgrammation(),
-                        elmt.getCoutPrevisionnel(),
+                        elmt.getCoutPrevisionnel() / 1000, /*En millier de FCFA*/
                         null, null, null, null, null, null,
                         elmt.getLibelleFinancement(),
                         elmt.getSigleStructure(),
@@ -207,15 +207,15 @@ public class ReportUtil {
                         elmt.getLibelleActivite(),
                         elmt.getIndicateur(),
                         elmt.getCibleProgrammation(),
-                        elmt.getCoutPrevisionnel(),
+                        elmt.getCoutPrevisionnel() / 1000, /*En millier de FCFA*/
                         null, null, null, null, null, null,/*Periodes*/
                         elmt.getLibelleFinancement(),
                         elmt.getSigleStructure(),
                         elmt.getResultatsAttendus(),
                         elmt.getResultatsAtteints(),
                         elmt.getTauxProgrammation(),
-                        elmt.getCoutReel(),
-                        ""/*observations*/
+                        elmt.getCoutReel() / 1000, /*En millier de FCFA*/
+                        "" /*observations*/
                 );
 
                 if (!containsCodeActivite(data, elmt.getCodeProgrammation())) {

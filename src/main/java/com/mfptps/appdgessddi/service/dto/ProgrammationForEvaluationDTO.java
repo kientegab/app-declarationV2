@@ -77,6 +77,7 @@ public class ProgrammationForEvaluationDTO {
 
     private Exercice exercice;
 
+    @JsonIgnoreProperties(value = {"parent"})//Ne pas remonter avec l'objectif operationnel parent
     private Objectif objectif;
 
     //=========================================
