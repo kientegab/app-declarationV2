@@ -35,7 +35,7 @@ public class EvaluationGouvernanaceServiceImpl implements EvaluationGouvernanace
         for (CritereDTO critere : evaluationGouvernanceDTO.getCritereGouvernances()) {
             EvaluationGouvernance eg = new EvaluationGouvernance();
 
-            eg.setValeurReference(!critere.getCritereGouvernance().isMode() ? critere.getValeurReference() : 1);
+            eg.setValeurReference(!critere.getCritereGouvernance().isMode() ? critere.getValeurReference() : 1D);
             eg.setCritereGouvernance(critere.getCritereGouvernance());
             eg.setNonapplicable(critere.isNonapplicable());
             eg.setExercice(evaluationGouvernanceDTO.getExercice());

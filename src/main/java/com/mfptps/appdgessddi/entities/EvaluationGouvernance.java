@@ -18,7 +18,7 @@ public class EvaluationGouvernance extends CommonEntity {
     private double valeur = 0;
 
     @Column(name = "VALEUR_REFERENCE")
-    private double valeurReference = 1;
+    private double valeurReference = 1D;
 
     @Type(type = "yes_no")
     @Column(name = "NON_APPLICABLE")
