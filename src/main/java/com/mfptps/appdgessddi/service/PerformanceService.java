@@ -22,7 +22,7 @@ public interface PerformanceService {
      * @param exerciceId
      * @return
      */
-    Optional<PerformanceEntityDTO> getByStructure(long structureId, long exerciceId);
+    Page<PerformanceEntityDTO> getByStructure(long structureId, long exerciceId, Pageable pageable);
 
     /**
      * Recherche la performance d'une structure pour l'exercice en cours
@@ -30,7 +30,7 @@ public interface PerformanceService {
      * @param structureId
      * @return
      */
-    Optional<PerformanceEntityDTO> getByStructureAndExerciceENCOURS(long structureId);
+    Page<PerformanceEntityDTO> getByStructureAndExerciceENCOURS(long structureId);
 
     Page<Performance> findAll(Pageable pageable);
 

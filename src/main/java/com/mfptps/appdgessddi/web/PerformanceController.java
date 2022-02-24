@@ -68,49 +68,41 @@ public class PerformanceController {
     }
 
     /**
-     * Recherche la performance d'une structure
+     * (1) Liste les performances (de toutes les structures) d'un ministere: NE
+     * PAS RENSEIGNER structureId
      *
-     * ! NE PAS RENSEIGNER ministerId
+     * (2) Recherche la performance d'une structure: NE PAS RENSEIGNER
+     * ministerId
      *
-     * @param requete : Renseigner la structure uniquement (si besoin de sa
-     * performance de l'exercice en cours) ou renseigner la structure et
-     * l'exercice (si besoin de sa performance pour un exercice donne)
+     * @param requete : Respecter ci-dessous
      *
-     * @return
-     */
-    @PostMapping(path = "/structure")
-    public ResponseEntity<PerformanceEntityDTO> getPerformanceByStructure(@RequestBody RequeteDTO requete) {
-        log.debug("Consultation de la Performance de la structure: {}", requete.getStructureId());
-        Optional<PerformanceEntityDTO> performanceFound = null;
-        if (requete.getStructureId() != null && requete.getExerciceId() != null) {
-            performanceFound = performanceService.getByStructure(requete.getStructureId(), requete.getExerciceId());
-        } else if (requete.getStructureId() != null && requete.getExerciceId() == null) {
-            performanceFound = performanceService.getByStructureAndExerciceENCOURS(requete.getStructureId());
-        } else {
-            throw new BadRequestAlertException("Veuillez renseigner les bon paramètres.", ENTITY_NAME, "idincorrects");
-        }
-        return ResponseUtil.wrapOrNotFound(performanceFound);
-    }
-
-    /**
-     * Liste les performances (de toutes les structures) d'un ministere
+     * (1) Renseigner le ministere uniquement (si besoin de sa performance de
+     * l'exercice en cours) ou renseigner le ministere et l'exercice (si besoin
+     * de sa performance pour un exercice donne)
      *
-     * ! NE PAS RENSEIGNER structureId
-     *
-     * @param requete : Renseigner le ministere uniquement (si besoin de sa
-     * performance de l'exercice en cours) ou renseigner le ministere et
-     * l'exercice (si besoin de sa performance pour un exercice donne)
+     * (2) Renseigner la structure uniquement (si besoin de sa performance de
+     * l'exercice en cours) ou renseigner la structure et l'exercice (si besoin
+     * de sa performance pour un exercice donne)
      *
      * @return
      */
-    @PostMapping(path = "/ministere")
+    @PostMapping(path = "/ministere-structure")
     public ResponseEntity<List<PerformanceEntityDTO>> findPerformanceByMinistere(@RequestBody RequeteDTO requete, Pageable pageable) {
         log.debug("Consultation de la Performance du Ministere: {}", requete.getMinisterId());
         Page<PerformanceEntityDTO> performancesFound = null;
-        if (requete.getMinisterId() != null && requete.getExerciceId() != null) {
+
+        if (requete.getMinisterId() != null && requete.getExerciceId() != null && requete.getStructureId() == null) {//PERFORMANCE DE MINISTERE
+            //performance d'un ministere pour un exercice quelconque
             performancesFound = performanceService.findAllByMinistere(requete.getMinisterId(), requete.getExerciceId(), pageable);
-        } else if (requete.getMinisterId() != null && requete.getExerciceId() == null) {
+        } else if (requete.getMinisterId() != null && requete.getExerciceId() == null && requete.getStructureId() == null) {
+            //performance d'un ministere pour l'exercice en cours
             performancesFound = performanceService.findAllByMinistereAndExerciceENCOURS(requete.getMinisterId(), pageable);
+        } else if (requete.getStructureId() != null && requete.getExerciceId() != null && requete.getMinisterId() == null) {//PERFORMANCE DE STRUCTURE
+            //performance d'une structure pour un exercice quelconque
+            performancesFound = performanceService.getByStructure(requete.getStructureId(), requete.getExerciceId(), pageable);
+        } else if (requete.getStructureId() != null && requete.getExerciceId() == null && requete.getMinisterId() == null) {
+            //performance d'une structure pour l'exercice en cours
+            performancesFound = performanceService.getByStructureAndExerciceENCOURS(requete.getStructureId());
         } else {
             throw new BadRequestAlertException("Veuillez renseigner les bon paramètres.", ENTITY_NAME, "idincorrects");
         }

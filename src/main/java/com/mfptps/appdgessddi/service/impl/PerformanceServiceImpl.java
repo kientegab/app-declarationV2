@@ -5,13 +5,16 @@ import com.mfptps.appdgessddi.entities.Performance;
 import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.PerformanceRepository;
+import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.PerformanceService;
 import com.mfptps.appdgessddi.service.dto.PerformanceDTO;
 import com.mfptps.appdgessddi.service.dto.PerformanceEntityDTO;
 import com.mfptps.appdgessddi.service.mapper.PerformanceMapper;
+import java.util.Arrays;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class PerformanceServiceImpl implements PerformanceService {
-    
+
     private final PerformanceRepository performanceRepository;
     private final ExerciceRepository exerciceRepository;
     private final PerformanceMapper performanceMapper;
-    
+
     public PerformanceServiceImpl(PerformanceRepository performanceRepository,
             ExerciceRepository exerciceRepository,
             PerformanceMapper performanceMapper) {
@@ -32,52 +35,69 @@ public class PerformanceServiceImpl implements PerformanceService {
         this.exerciceRepository = exerciceRepository;
         this.performanceMapper = performanceMapper;
     }
-    
+
     @Override
     public Performance create(PerformanceDTO performanceDTO) {
         Performance performance = performanceMapper.toEntity(performanceDTO);
         return performanceRepository.save(performance);
     }
-    
+
     @Override
     public Performance update(Performance performance) {
         return performanceRepository.save(performance);
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public Optional<Performance> get(Long id) {
         return performanceRepository.findById(id);
     }
-    
+
     @Override
-    public Optional<PerformanceEntityDTO> getByStructure(long structureId, long exerciceId) {
-        return performanceRepository.findCurrentStructurePerformance(structureId, exerciceId)
+    public Page<PerformanceEntityDTO> getByStructure(long structureId, long exerciceId, Pageable pageable) {
+        Page<PerformanceEntityDTO> pageConstruct = null;
+
+        Optional<PerformanceEntityDTO> perf = performanceRepository.findCurrentStructurePerformance(structureId, exerciceId)
                 .map(performanceMapper::toEntityOrigin);
-    }
-    
-    @Override
-    public Optional<PerformanceEntityDTO> getByStructureAndExerciceENCOURS(long structureId) {
-        Optional<Exercice> exercice = exerciceRepository.findByStatut(ExerciceStatus.EN_COURS);
-        if (exercice.isPresent()) {
-            return performanceRepository.findCurrentStructurePerformance(structureId, exercice.get().getId())
-                    .map(performanceMapper::toEntityOrigin);
+
+        if (perf.isPresent()) {
+            pageConstruct = new PageImpl<PerformanceEntityDTO>(Arrays.asList(perf.get()), pageable, Arrays.asList(perf.get()).size());
+        } else {
+            throw new CustomException("Aucun element (structure - performance - exercice) trouvé !");
         }
-        return null;
+
+        return pageConstruct;
     }
-    
+
+    @Override
+    public Page<PerformanceEntityDTO> getByStructureAndExerciceENCOURS(long structureId) {
+        Page<PerformanceEntityDTO> pageConstruct = null;
+        Exercice exercice = exerciceRepository.findByStatut(ExerciceStatus.EN_COURS).orElseThrow(() -> new CustomException("Aucun exercice en cours"));
+
+        Optional<PerformanceEntityDTO> perf = performanceRepository.findCurrentStructurePerformance(structureId, exercice.getId())
+                .map(performanceMapper::toEntityOrigin);
+
+        if (perf.isPresent()) {
+            pageConstruct = new PageImpl<PerformanceEntityDTO>(Arrays.asList(perf.get()));//SANS PAGEABLE
+        } else {
+            throw new CustomException("Aucun element (structure - performance) trouvé !");
+        }
+
+        return pageConstruct;
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Page<Performance> findAll(Pageable pageable) {
         return performanceRepository.findAll(pageable);
     }
-    
+
     @Override
     public Page<PerformanceEntityDTO> findAllByMinistere(long ministereId, long exerciceId, Pageable pageable) {
         return performanceRepository.findAllByMinistere(ministereId, exerciceId, pageable)
                 .map(performanceMapper::toEntityOrigin);
     }
-    
+
     @Override
     public Page<PerformanceEntityDTO> findAllByMinistereAndExerciceENCOURS(long ministereId, Pageable pageable) {
         Optional<Exercice> exercice = exerciceRepository.findByStatut(ExerciceStatus.EN_COURS);
@@ -87,10 +107,10 @@ public class PerformanceServiceImpl implements PerformanceService {
         }
         return null;
     }
-    
+
     @Override
     public void delete(Long id) {
         performanceRepository.deleteById(id);
     }
-    
+
 }
