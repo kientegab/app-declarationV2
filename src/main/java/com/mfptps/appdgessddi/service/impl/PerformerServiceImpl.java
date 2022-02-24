@@ -102,6 +102,7 @@ public class PerformerServiceImpl implements PerformerService {
 
         double pgs = 0;
         String appreciation;
+        Optional<Double> tmp;//variable temporaire utilisee pour controles et affectations
 
         // Déclaration de la liste des structures concernées
         List<Structure> mesStructures = new ArrayList<>();
@@ -142,7 +143,8 @@ public class PerformerServiceImpl implements PerformerService {
 
             // =+ taux global de réalisation des objectifs TGRO; 
             // ce taux vient de la somme des taux d'exécution par structure, cette valeur est stocquée dans la table évaluation
-            double tgro = (evaluationRepository.findEvaluation(structure.getId(), exerciceId).isPresent() ? evaluationRepository.findEvaluation(structure.getId(), exerciceId).get() : 0);
+            tmp = evaluationRepository.findEvaluation(structure.getId(), exerciceId);
+            double tgro = tmp.isPresent() ? tmp.get() : 0;
 
             // nombre activités réalisées à temps
             long nart = programmationRepository.countActiviteRealiserATemps(structure.getId(), exerciceId);
@@ -162,11 +164,14 @@ public class PerformerServiceImpl implements PerformerService {
             double ei = 0;
 
             // =+ montant total dépensée
-            double montant_total = programmationRepository.coutReelStructureProgrammation(structure.getId(), exerciceId).isPresent() ? programmationRepository.coutReelStructureProgrammation(structure.getId(), exerciceId).get() : 1;
+            tmp = programmationRepository.coutReelStructureProgrammation(structure.getId(), exerciceId);
+            double montant_total = tmp.isPresent() ? tmp.get() : 1;
             // =+ somme des couts prévisionnels des activités réalisées à 100%
-            double cout_previsionnel = programmationRepository.coutPrevsionnelStructureProgrammation(structure.getId(), exerciceId).isPresent() ? programmationRepository.coutPrevsionnelStructureProgrammation(structure.getId(), exerciceId).get() : 0;
+            tmp = programmationRepository.coutPrevsionnelStructureProgrammation(structure.getId(), exerciceId);
+            double cout_previsionnel = tmp.isPresent() ? tmp.get() : 0;
             // =+ somme des couts réels des activités réalisées à 100%
-            double cout_effectif = programmationRepository.coutEffectifStructureProgrammation(structure.getId(), exerciceId).isPresent() ? programmationRepository.coutEffectifStructureProgrammation(structure.getId(), exerciceId).get() : 0;
+            tmp = programmationRepository.coutEffectifStructureProgrammation(structure.getId(), exerciceId);
+            double cout_effectif = tmp.isPresent() ? tmp.get() : 0;
 
             if (montant_total > 0) {
                 ei = (cout_previsionnel - cout_effectif) / montant_total;
