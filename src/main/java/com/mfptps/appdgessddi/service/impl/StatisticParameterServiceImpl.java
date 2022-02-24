@@ -5,16 +5,26 @@
  */
 package com.mfptps.appdgessddi.service.impl;
 
+import com.mfptps.appdgessddi.entities.Exercice;
+import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.entities.Structure;
+import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
+import com.mfptps.appdgessddi.repositories.PeriodeRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.service.StatisticParameterService;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroupByType;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereGlobalStatsBundleData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerActiviteData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerDepenseData;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerSectorielData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerStructureData;
+import com.mfptps.appdgessddi.utils.AppUtil;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
+import static java.util.Calendar.YEAR;
+import java.util.Date;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +37,18 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
 
     private final MinistereStructureRepository repository;
     private final ProgrammationRepository programmationRepository;
+    private final PeriodeRepository periodeRepository;
+    private final ExerciceRepository exerciceRepository;
 
-    public StatisticParameterServiceImpl(MinistereStructureRepository repository, ProgrammationRepository programmationRepository) {
+    public StatisticParameterServiceImpl(MinistereStructureRepository repository, 
+            ProgrammationRepository programmationRepository,
+            PeriodeRepository periodeRepository,
+            ExerciceRepository exerciceRepository) {
+        
         this.repository = repository;
         this.programmationRepository = programmationRepository;
+        this.periodeRepository = periodeRepository;
+        this.exerciceRepository = exerciceRepository;
     }
 
     @Override
@@ -56,11 +74,11 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
         data.setLibelle("-");
          
         // Somme des couts prévisionnels pour le ministere et l'exercice donné
-        double previsionnel = programmationRepository.coutPrevisionnelMinistreProgrammation(ministereId, exerciceId);
+        double previsionnel = programmationRepository.coutPrevisionnelMinistereProgrammation(ministereId, exerciceId).orElse(0d);
         data.setPrevisionnel(previsionnel);
        
        // Somme des couts réels pour le ministere et l'exercice donné
-       double reel = programmationRepository.coutReelMinistereProgrammation(ministereId, exerciceId);
+       double reel = programmationRepository.coutReelMinistereProgrammation(ministereId, exerciceId).orElse(0d);
        data.setReel(reel);
         
         return data;
@@ -141,17 +159,74 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
         
         MinistereGlobalStatsBundleData data = new MinistereGlobalStatsBundleData();
         
-         List<ResumerStructureData> resumes = resumerActiviteParStructure(ministereId, exerciceId);
-         data.setResumes(resumes);
-         
-         ResumerDepenseData depense = resumerDepenseParMinistere(ministereId, exerciceId);
-         data.setDepense(depense);
-        
-         ResumerActiviteData activite = resumerActiviteParMinistere(ministereId, exerciceId);
-         data.setActivite(activite);
+        List<ResumerStructureData> resumes = resumerActiviteParStructure(ministereId, exerciceId);
+        data.setResumes(resumes);
+
+        ResumerDepenseData depense = resumerDepenseParMinistere(ministereId, exerciceId);
+        data.setDepense(depense);
+
+        ResumerActiviteData activite = resumerActiviteParMinistere(ministereId, exerciceId);
+        data.setActivite(activite);
         
         return data;
          
+    }
+
+    @Override
+    public ResumerSectorielData resumerSectoriel(Long ministereId, Long exerciceId) {
+        
+        // Initialisation des données
+        ResumerSectorielData data = new ResumerSectorielData();
+        
+        List<String> periodes = new ArrayList<>();
+    
+        List<Double> physiques = new ArrayList<>();
+
+        List<Double> finances = new ArrayList<>();
+        
+        // Chargement de l'exercice (pour récuperer l'année)
+        Exercice exercice = exerciceRepository.findById(exerciceId).get();
+        
+        // Chargement des périodes 
+        List<Periode> periods =  periodeRepository.findByPeriodiciteActif();
+        
+        // Calendrier pour extraction de l'année 
+        Calendar calendrier = Calendar.getInstance();
+        calendrier.setTime(java.util.Date.from(exercice.getDebut().atStartOfDay().atZone(ZoneId.systemDefault()) .toInstant()));  
+        
+        for(Periode period : periods){
+            
+            // Correction de la date de début de la période pour la conformité avec l'année réelle de l'exercice
+            Date debut = AppUtil.repairDate(period.getDebut(), calendrier.get(YEAR));
+            
+            // Correction de la date de fin de la période pour la conformité avec l'année réelle de l'exercice
+            Date fin = AppUtil.repairDate(period.getFin(), calendrier.get(YEAR));
+            
+            // Recherche du nombre d'activités programmées pour l'exercice pour la période
+            long nbActivites = programmationRepository.countActivitesMinistereParPeriode(ministereId, exerciceId, debut, fin).orElse(0l);
+            
+            // recherche de la somme des taux d'exécution des activités programmées sur la période
+            double taux = programmationRepository.additionnerTauxActivitesMinistereParPeriode(ministereId, exerciceId, debut, fin).orElse(0d);
+            
+            // recherche de la somme des couts réels d'exécution des activités programmées sur la période
+            double cout = programmationRepository.additionnerCoutActivitesMinistereParPeriode(ministereId, exerciceId, debut, fin).orElse(0d);
+            
+            periodes.add(period.getLibelle());
+            
+            if(nbActivites != 0){
+                physiques.add(taux/nbActivites);
+            }
+            
+            finances.add(cout);
+        } 
+        
+        data.setFinances(finances);
+        data.setLibelle("-");
+        data.setPeriodes(periodes);
+        data.setPhysiques(physiques);
+        
+        
+        return data; 
     }
 
 }
