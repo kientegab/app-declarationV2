@@ -279,7 +279,7 @@ public class AppUtil {
         return foundOne;
     }
     
-    protected static Date repairDate(Date givenDate, int year){
+    public static Date repairDate(Date givenDate, int year){
         try {
             DateFormat dateFormant = new SimpleDateFormat("dd-MM-yyyy");
             Date repaired ;
