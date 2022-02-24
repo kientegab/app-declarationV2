@@ -175,7 +175,7 @@ public class ProgrammationController {
      * @return
      */
     @GetMapping(path = "/detail/{idp}")
-    public ResponseEntity<ProgrammationForEvaluationDTO> getProgrammationForEvaluation(@PathVariable(name = "idp", required = true) long programmationId) {
+    public ResponseEntity<ProgrammationForEvaluationDTO> getProgrammationForEvaluation(@PathVariable(name = "idp", required = true) Long programmationId) {
         log.debug("Consultation de la Programmation {} pour l'evaluation", programmationId);
         ProgrammationForEvaluationDTO programmation = programmationService.getForEvaluation(programmationId);
 

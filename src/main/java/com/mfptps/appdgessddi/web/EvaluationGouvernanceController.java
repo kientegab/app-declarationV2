@@ -76,4 +76,11 @@ public class EvaluationGouvernanceController {
         Optional<EvaluationGouvernance> evaluationGouvernanceOptional = evaluationGouvernanaceService.get(id);
         return ResponseUtil.wrapOrNotFound(evaluationGouvernanceOptional);
     }
+    
+    @GetMapping(path = "/{structureId}/{exerciceId}")
+    public ResponseEntity<List<EvaluationGouvernance>> findAllEvaluatsBystruc(@PathVariable(name = "structureId") Long structureId,@PathVariable(name = "exerciceId") Long exerciceId) {
+        List<EvaluationGouvernance> evaluationGouvernances = evaluationGouvernanaceService.findStructureEvaluation(structureId, exerciceId);
+        //HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), evaluationGouvernances);
+        return ResponseEntity.ok().body(evaluationGouvernances);
+    }
 }

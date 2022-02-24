@@ -607,7 +607,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     //SOUS FONCTION DE tauxExecutionByExerciceOrPeriode(...)
     private double tauxByValueOfPeriode(Programmation prog, Tache tache, Optional<TacheEvaluer> tacheEvaluee, double tauxTaches) {
-        if (tacheEvaluee.isPresent()) {
+        if (!tacheEvaluee.isPresent()) {
             if ((tache.getValeur() == 1D) && tache.isExecute()) {//tache sans cible(cible = 1)  deja execute
                 tauxTaches += tache.getPonderation();
             } else if ((tache.getValeur() != 1D) && tache.isExecute()) {//tache a cible deja execute(meme au dela de la cible prevue)

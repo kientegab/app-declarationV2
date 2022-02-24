@@ -41,7 +41,7 @@ public class ProgrammationForEvaluationDTO {
     private double cible;
 
     private double taux;
-
+    
     private String periodeActuelle = "";
 
     private String periodes = "";
@@ -292,4 +292,6 @@ public class ProgrammationForEvaluationDTO {
         this.objectif = objectif;
     }
 
+
+    
 }

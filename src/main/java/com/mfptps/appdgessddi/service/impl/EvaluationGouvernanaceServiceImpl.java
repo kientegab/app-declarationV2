@@ -1,7 +1,6 @@
 package com.mfptps.appdgessddi.service.impl;
 
 import com.mfptps.appdgessddi.entities.EvaluationGouvernance;
-import com.mfptps.appdgessddi.repositories.CritereGouvernanceRepository;
 import com.mfptps.appdgessddi.repositories.EvaluationGouvernanceRepository;
 import com.mfptps.appdgessddi.service.EvaluationGouvernanaceService;
 import com.mfptps.appdgessddi.service.dto.CritereDTO;
@@ -21,11 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class EvaluationGouvernanaceServiceImpl implements EvaluationGouvernanaceService {
 
     private final EvaluationGouvernanceRepository evaluationGouvernanceRepository;
-    private final CritereGouvernanceRepository critereGouvernanceRepository;
 
-    public EvaluationGouvernanaceServiceImpl(EvaluationGouvernanceRepository evaluationGouvernanceRepository, CritereGouvernanceRepository critereGouvernanceRepository) {
+    public EvaluationGouvernanaceServiceImpl(EvaluationGouvernanceRepository evaluationGouvernanceRepository) {
         this.evaluationGouvernanceRepository = evaluationGouvernanceRepository;
-        this.critereGouvernanceRepository = critereGouvernanceRepository;
     }
 
     @Override
@@ -35,7 +32,7 @@ public class EvaluationGouvernanaceServiceImpl implements EvaluationGouvernanace
         for (CritereDTO critere : evaluationGouvernanceDTO.getCritereGouvernances()) {
             EvaluationGouvernance eg = new EvaluationGouvernance();
 
-            eg.setValeurReference(!critere.getCritereGouvernance().isMode() ? critere.getValeurReference() : 1);
+            eg.setValeurReference(!critere.getCritereGouvernance().isMode() ? critere.getValeurReference() : 1D);
             eg.setCritereGouvernance(critere.getCritereGouvernance());
             eg.setNonapplicable(critere.isNonapplicable());
             eg.setExercice(evaluationGouvernanceDTO.getExercice());
@@ -62,5 +59,10 @@ public class EvaluationGouvernanaceServiceImpl implements EvaluationGouvernanace
     @Override
     public Page<EvaluationGouvernance> get(Pageable pageable) {
         return evaluationGouvernanceRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<EvaluationGouvernance> findStructureEvaluation(Long structureId, Long exerciceId) {
+        return evaluationGouvernanceRepository.findStructureEvaluation(structureId, exerciceId);
     }
 }
