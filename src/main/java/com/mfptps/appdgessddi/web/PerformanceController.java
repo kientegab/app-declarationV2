@@ -103,6 +103,9 @@ public class PerformanceController {
         } else if (requete.getStructureId() != null && requete.getExerciceId() == null && requete.getMinisterId() == null) {
             //performance d'une structure pour l'exercice en cours
             performancesFound = performanceService.getByStructureAndExerciceENCOURS(requete.getStructureId());
+        } else  if (requete.getMinisterId() != null && requete.getExerciceId() != null && requete.getStructureId() != null) {//PERFORMANCE DE MINISTERE
+            //performance d'une structure pour un exercice quelconque
+            performancesFound = performanceService.getByStructure(requete.getStructureId(), requete.getExerciceId(), pageable);
         } else {
             throw new BadRequestAlertException("Veuillez renseigner les bon paramètres.", ENTITY_NAME, "idincorrects");
         }
