@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.Calendar;
 import static java.util.Calendar.YEAR;
@@ -302,5 +303,10 @@ public class AppUtil {
         DateFormat dateFormant = new SimpleDateFormat("dd-MM-yyyy");
         String value = dateFormant.format(date);
         return value;
+    }
+    
+    public static String convertAndConcatDates(LocalDate startDate, LocalDate endDate){
+        String dateStrValue = startDate.getYear() + "-" + endDate.getYear();  
+        return dateStrValue;
     }
 }

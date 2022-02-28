@@ -6,12 +6,18 @@
 package com.mfptps.appdgessddi.service.impl;
 
 import com.mfptps.appdgessddi.entities.Exercice;
+import com.mfptps.appdgessddi.entities.Ministere;
 import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.entities.Structure;
+import com.mfptps.appdgessddi.enums.TypeStructure;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
+import com.mfptps.appdgessddi.repositories.GrillePerformanceRepository;
+import com.mfptps.appdgessddi.repositories.MinistereRepository;
 import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
+import com.mfptps.appdgessddi.repositories.PerformanceRepository;
 import com.mfptps.appdgessddi.repositories.PeriodeRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
+import com.mfptps.appdgessddi.repositories.StructureRepository;
 import com.mfptps.appdgessddi.service.StatisticParameterService;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.AllEvolutionData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroupByType;
@@ -30,6 +36,7 @@ import java.util.Calendar;
 import static java.util.Calendar.YEAR;
 import java.util.Date;
 import java.util.List;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 /**
@@ -43,16 +50,28 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
     private final ProgrammationRepository programmationRepository;
     private final PeriodeRepository periodeRepository;
     private final ExerciceRepository exerciceRepository;
+    private final StructureRepository structureRepository;
+    private final MinistereRepository ministereRepository; 
+    private final GrillePerformanceRepository grilleRepository;
+    private final PerformanceRepository performanceRepository;
 
     public StatisticParameterServiceImpl(MinistereStructureRepository repository, 
             ProgrammationRepository programmationRepository,
             PeriodeRepository periodeRepository,
-            ExerciceRepository exerciceRepository) {
+            ExerciceRepository exerciceRepository,
+            StructureRepository structureRepository,
+            MinistereRepository ministereRepository,
+            GrillePerformanceRepository grilleRepository,
+            PerformanceRepository performanceRepository) {
         
         this.repository = repository;
         this.programmationRepository = programmationRepository;
         this.periodeRepository = periodeRepository;
         this.exerciceRepository = exerciceRepository;
+        this.structureRepository = structureRepository;
+        this.ministereRepository = ministereRepository;
+        this.grilleRepository = grilleRepository;
+        this.performanceRepository = performanceRepository;
     }
 
     @Override
@@ -308,10 +327,70 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
         
         List<MinistereEvolutionBundle> liste = new ArrayList<>();
         
+        // Déclaration de la liste des structures concernées
+        List<Structure> mesStructures = new ArrayList<>();
+
+        // vérification, savoir si c'est tout le ministère ou si c'est juste une structure 
+        boolean many = ((params.getStructureId() != null) && (params.getStructureId() == null)); 
+        
+        // Chargement du ministère
+        Ministere ministere = ministereRepository.getById(params.getMinistereId());
+;
+        if (many) {
+            mesStructures = structureRepository.findMinistereStructure(params.getMinistereId(), TypeStructure.INTERNE);
+        } else {
+            Structure singleStructure = structureRepository.getById(params.getStructureId()); 
+            mesStructures.add(singleStructure);
+        }
+        
+        // Chargement de la liste des exercices en tenant en compte la couverture
+        List<Exercice> exercices = exerciceRepository.checkXfirtsElement(PageRequest.of(0,params.getCouverture()));
+        
+        // Parcours des structure
+        for(Structure structure : mesStructures) { 
+            
+            List<Double> taux = new ArrayList<>(); 
+            List<String> exos = new ArrayList<>(); 
+            String idStr = ministere.getId()+""+structure.getId();
+            
+            double moyenne = 0d;
+            
+            String exoStr = "[";
+            
+            // Parcours de la liste des exercices
+            for(Exercice exo : exercices){
+                double valeur = performanceRepository.findCurrentStructurePerformanceValue(structure.getId(), exo.getId()).orElse(0d);
+                taux.add(valeur);
+                exos.add(AppUtil.convertAndConcatDates(exo.getDebut(), exo.getFin()));
+                moyenne = moyenne + valeur;
+            }
+            
+            if(!exercices.isEmpty()){
+                moyenne = moyenne / exercices.size();
+                int size = exercices.size();
+                exoStr = exoStr + exercices.get(0).getDebut().getYear() + " = " + exercices.get(size-1).getDebut().getYear();
+            } 
+            
+            String appreciation = grilleRepository.findGrilleAppreciation(moyenne).orElse("-");
+             
+            // Construction
+            MinistereEvolutionBundle evolution = new MinistereEvolutionBundle();
+            evolution.setMinistere(ministere.getCode());
+            evolution.setStructure(structure.getSigle());
+            
+            evolution.setAppreciation(appreciation);
+            evolution.setExercices(exos);
+            evolution.setTaux(taux);
+            
+            evolution.setId(idStr);
+            evolution.setExercice(exoStr);
+            evolution.setMoyenne(moyenne);
+            
+            liste.add(evolution);
+        }
         
         
-        
-        
+        libelle = libelle + " Résumé des données sur : " + ministere.getCode() + " avec sa/ses " + mesStructures.size() + " structure-s centrale-s, rattachée-s et/ou déconcentrée-s";
         
         data.setLibelle(libelle);
         data.setData(liste);

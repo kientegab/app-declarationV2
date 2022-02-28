@@ -4,6 +4,8 @@
  */
 package com.mfptps.appdgessddi.utils;
 
+import java.util.List;
+
 /**
  *
  * @author aboubacary
@@ -18,7 +20,9 @@ public class MinistereEvolutionBundle {
     
     private String structure;
     
-    private Double taux;
+    private List<Double> taux;
+    
+    private List<String> exercices;
     
     private String appreciation;
     
@@ -54,15 +58,7 @@ public class MinistereEvolutionBundle {
 
     public void setStructure(String structure) {
         this.structure = structure;
-    }
-
-    public Double getTaux() {
-        return taux;
-    }
-
-    public void setTaux(Double taux) {
-        this.taux = taux;
-    }
+    } 
 
     public String getAppreciation() {
         return appreciation;
@@ -78,6 +74,22 @@ public class MinistereEvolutionBundle {
 
     public void setMoyenne(Double moyenne) {
         this.moyenne = moyenne;
+    }
+
+    public List<Double> getTaux() {
+        return taux;
+    }
+
+    public void setTaux(List<Double> taux) {
+        this.taux = taux;
+    }
+
+    public List<String> getExercices() {
+        return exercices;
+    }
+
+    public void setExercices(List<String> exercices) {
+        this.exercices = exercices;
     }
        
 }

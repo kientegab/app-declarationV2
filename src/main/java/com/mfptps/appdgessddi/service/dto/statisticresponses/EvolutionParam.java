@@ -10,18 +10,18 @@ package com.mfptps.appdgessddi.service.dto.statisticresponses;
  */
 public class EvolutionParam {
     
-    private Long ministreId;
+    private Long ministereId;
     
     private Long structureId;
     
     private int couverture; // nombre d'exercice à couvrir par les recherches
 
-    public Long getMinistreId() {
-        return ministreId;
+    public Long getMinistereId() {
+        return ministereId;
     }
 
-    public void setMinistreId(Long ministreId) {
-        this.ministreId = ministreId;
+    public void setMinistereId(Long ministereId) {
+        this.ministereId = ministereId;
     }
 
     public Long getStructureId() {

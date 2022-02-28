@@ -5,6 +5,7 @@
  */
 package com.mfptps.appdgessddi.service;
 
+import com.mfptps.appdgessddi.service.dto.statisticresponses.AllEvolutionData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroupByType;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.EvolutionParam;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereGlobalStatsBundleData;
@@ -35,7 +36,7 @@ public interface StatisticParameterService {
     
     ResumerSectorielDepenseData resumerSectorielDepense(Long ministereId, Long exerciceId);
     
-    void resumerEvolution(EvolutionParam params);
+    AllEvolutionData resumerEvolution(EvolutionParam params);
 
     List<CountStructureGroupByType> nbStructuresByGroupType(long ministereId);
 }
