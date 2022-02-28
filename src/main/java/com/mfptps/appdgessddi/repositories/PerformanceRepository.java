@@ -11,10 +11,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
 
-    @Query("SELECT p FROM Performance p WHERE p.deleted = false AND p.structure.id=?1  AND p.exercice.id =?2 ")
+    @Query("SELECT p FROM Performance p WHERE p.deleted = false AND p.structure.id=?1 AND p.exercice.id =?2 ")
     Optional<Performance> findCurrentStructurePerformance(long structureId, long exerciceId);
-    
-    @Query("SELECT p.pgs FROM Performance p WHERE p.deleted = false AND p.structureId=?1  AND p.exerciceId =?2 ")
+
+    @Query("SELECT p.pgs FROM Performance p WHERE p.deleted = false AND p.structure.id=?1 AND p.exercice.id =?2 ")
     Optional<Double> findCurrentStructurePerformanceValue(long structureId, long exerciceId);
 
     @Query("SELECT p FROM Performance p, MinistereStructure ms "
