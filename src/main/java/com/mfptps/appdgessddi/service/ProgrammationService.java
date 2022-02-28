@@ -67,6 +67,16 @@ public interface ProgrammationService {
     Page<Programmation> findAll(Long structureId, Pageable pageable);
 
     /**
+     * Liste des activites programmees d'une structure donnee de l'exercice en
+     * cours
+     *
+     * @param structureId
+     * @param pageable
+     * @return
+     */
+    Page<Programmation> findAllENCOURS(Long structureId, Pageable pageable);
+
+    /**
      * Liste des activites programmees (d'une structure) et validees au CASEM
      *
      * @param structureId
@@ -176,4 +186,7 @@ public interface ProgrammationService {
      * @return
      */
     double tauxExecutionGlobal(long ministereId, long exerciceId, Long periodeId);
+
+    // pour calculer le taux d'une programmation. DECONSEILLE !
+    double tauxExecutionByExerciceOrPeriode(List<Programmation> programmations, Long periodeId);
 }

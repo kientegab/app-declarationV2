@@ -2,6 +2,7 @@ package com.mfptps.appdgessddi.service.impl;
 
 import com.mfptps.appdgessddi.entities.Contribuer;
 import com.mfptps.appdgessddi.entities.EvaluationGouvernance;
+import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.entities.Performance;
 import com.mfptps.appdgessddi.entities.Performer;
 import com.mfptps.appdgessddi.entities.Ponderation;
@@ -10,6 +11,7 @@ import com.mfptps.appdgessddi.enums.TypeStructure;
 import com.mfptps.appdgessddi.repositories.ContribuerRepository;
 import com.mfptps.appdgessddi.repositories.EvaluationGouvernanceRepository;
 import com.mfptps.appdgessddi.repositories.EvaluationRepository;
+import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.GrillePerformanceRepository;
 import com.mfptps.appdgessddi.repositories.PerformanceRepository;
 import com.mfptps.appdgessddi.repositories.PerformerRepository;
@@ -44,12 +46,13 @@ public class PerformerServiceImpl implements PerformerService {
     private final PerformanceRepository performanceRepository;
     private final EvaluationRepository evaluationRepository;
     private final ContribuerRepository contribuerRepository;
+    private final ExerciceRepository exerciceRepository;
 
     public PerformerServiceImpl(PerformerRepository performerRepository, PerformerMapper performerMapper,
             GrillePerformanceRepository grilleRepository, StructureRepository structureRepository,
             ProgrammationRepository programmationRepository, PonderationRepository ponderationRepository,
             EvaluationGouvernanceRepository evaluationGouvernanceRepository, PerformanceRepository performanceRepository,
-            EvaluationRepository evaluationRepository, ContribuerRepository contribuerRepository) {
+            EvaluationRepository evaluationRepository, ContribuerRepository contribuerRepository, ExerciceRepository exerciceRepository) {
 
         this.performerRepository = performerRepository;
         this.performerMapper = performerMapper;
@@ -61,6 +64,7 @@ public class PerformerServiceImpl implements PerformerService {
         this.performanceRepository = performanceRepository;
         this.evaluationRepository = evaluationRepository;
         this.contribuerRepository = contribuerRepository;
+        this.exerciceRepository = exerciceRepository;
     }
 
     @Override
@@ -113,6 +117,9 @@ public class PerformerServiceImpl implements PerformerService {
         // récupération de la podération par défaut
         Ponderation ponderation = ponderationRepository.findActivePonderation().orElse(null);
 
+        // récupération de l'exercice par défaut
+        Exercice exercice = exerciceRepository.findById(exerciceId).orElse(null);
+
         if (many) {
             mesStructures = structureRepository.findMinistereStructure(ministerId, TypeStructure.INTERNE);
         } else {
@@ -127,27 +134,27 @@ public class PerformerServiceImpl implements PerformerService {
         // Parcours des structures
         for (Structure structure : mesStructures) {
 
-            Performance perf = performanceRepository.findCurrentStructurePerformance(structure.getId(), exerciceId).orElse(new Performance());
-            perf.setPonderationId(ponderation.getId());
-            perf.setExerciceId(exerciceId);
-            perf.setStructureId(structure.getId());
+            Performance perf = performanceRepository.findCurrentStructurePerformance(structure.getId(), exercice.getId()).orElse(new Performance());
+            perf.setPonderation(ponderation);
+            perf.setExercice(exercice);
+            perf.setStructure(structure);
 
             // récupération des évaluations de gouvernance
-            List<EvaluationGouvernance> evalGouv = evaluationGouvernanceRepository.findStructureEvaluation(structure.getId(), exerciceId); // changment du type
+            List<EvaluationGouvernance> evalGouv = evaluationGouvernanceRepository.findStructureEvaluation(structure.getId(), exercice.getId()); // changment du type
 
 //            if (evalGouv.isEmpty()) {
 //                throw new CustomException("Données de gouvernance non renseignées !");
 //            }
             // nombre total d'activités programmées
-            double nap = programmationRepository.countStructureProgrammation(structure.getId(), exerciceId);
+            double nap = programmationRepository.countStructureProgrammation(structure.getId(), exercice.getId());
 
             // =+ taux global de réalisation des objectifs TGRO; 
             // ce taux vient de la somme des taux d'exécution par structure, cette valeur est stocquée dans la table évaluation
-            tmp = evaluationRepository.findEvaluation(structure.getId(), exerciceId);
+            tmp = evaluationRepository.findEvaluation(structure.getId(), exercice.getId());
             double tgro = tmp.isPresent() ? tmp.get() : 0;
 
             // nombre activités réalisées à temps
-            long nart = programmationRepository.countActiviteRealiserATemps(structure.getId(), exerciceId);
+            long nart = programmationRepository.countActiviteRealiserATemps(structure.getId(), exercice.getId());
 
             // =+ coefficient temps CT
             double coeffTemps = nart / ((nap > 0) ? nap : 1);
@@ -164,13 +171,13 @@ public class PerformerServiceImpl implements PerformerService {
             double ei = 0;
 
             // =+ montant total dépensée
-            tmp = programmationRepository.coutReelStructureProgrammation(structure.getId(), exerciceId);
+            tmp = programmationRepository.coutReelStructureProgrammation(structure.getId(), exercice.getId());
             double montant_total = tmp.isPresent() ? tmp.get() : 1;
             // =+ somme des couts prévisionnels des activités réalisées à 100%
-            tmp = programmationRepository.coutPrevsionnelStructureProgrammation(structure.getId(), exerciceId);
+            tmp = programmationRepository.coutPrevsionnelStructureProgrammation(structure.getId(), exercice.getId());
             double cout_previsionnel = tmp.isPresent() ? tmp.get() : 0;
             // =+ somme des couts réels des activités réalisées à 100%
-            tmp = programmationRepository.coutEffectifStructureProgrammation(structure.getId(), exerciceId);
+            tmp = programmationRepository.coutEffectifStructureProgrammation(structure.getId(), exercice.getId());
             double cout_effectif = tmp.isPresent() ? tmp.get() : 0;
 
             if (montant_total > 0) {
@@ -200,7 +207,7 @@ public class PerformerServiceImpl implements PerformerService {
                 // traitement spécifique ici
                 // list des impacts définis par la DGESS
 
-                List<Contribuer> contribs = contribuerRepository.findAllStructureContribution(structure.getId(), exerciceId);
+                List<Contribuer> contribs = contribuerRepository.findAllStructureContribution(structure.getId(), exercice.getId());
                 int nombre = contribs.size();
 
                 for (Contribuer contrib : contribs) {

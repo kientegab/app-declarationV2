@@ -7,8 +7,8 @@ package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.enums.ExerciceStatus;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +28,11 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.structure.id = s.id "
             + "AND s.id = :structureId")
     List<Programmation> findAll(Long structureId);
+
+    @Query("SELECT p FROM Programmation p, Structure s "
+            + "WHERE p.deleted = false "
+            + "AND p.structure.id = s.id AND s.id = :structureId ")
+    Page<Programmation> findAll(Long structureId, Pageable Pageable);
 
     @Query("SELECT p FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.deleted = false "
@@ -238,12 +243,9 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.validationFinal = true")
     Optional<Double> coutReelMinistereProgrammation(long ministereId, long exerciceId);
 
-    
-
     @Query("SELECT COUNT(p.id) FROM Programmation p, Structure s, MinistereStructure m WHERE p.structure.id=s.id AND s.id=m.structure.id AND m.ministere.id=?1 AND m.statut=true AND p.exercice.id=?2 AND p.taux>=100 AND p.lastEvalDate<=p.deadLine ")
-    long countMinistereActiviteRealiserATemps(long ministereId, long exerciceId); 
-        
-    
+    long countMinistereActiviteRealiserATemps(long ministereId, long exerciceId);
+
     @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s,  MinistereStructure m "
             + "WHERE p.structure.id = s.id "
             + "AND s.id = m.structure.id "
@@ -253,7 +255,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.deleted = false "
             + "AND p.validationFinal = true")
     Optional<Double> coutPrevisionnelMinistereProgrammation(long ministereId, long exerciceId);
-    
+
     @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, MinistereStructure m "
             + "WHERE p.structure.id = s.id "
             + "AND s.id = m.structure.id "
@@ -263,18 +265,18 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.deleted = false "
             + "AND p.validationFinal = true "
             + "AND p.taux>=100 AND p.lastEvalDate<=p.deadLine")
-    Optional<Double> coutEffectifMinistereProgrammation(long ministereId, long exerciceId); 
-    
-    // Gestion des requêtes globales par ministère
-    
+    Optional<Double> coutEffectifMinistereProgrammation(long ministereId, long exerciceId);
 
+    // Gestion des requêtes globales par ministère
     /**
-     * comptage des activités programmées pour un ministère sur la période définie par les deux dates en paramètres
+     * comptage des activités programmées pour un ministère sur la période
+     * définie par les deux dates en paramètres
+     *
      * @param ministereId
      * @param exerciceId
      * @param debut
      * @param fin
-     * @return 
+     * @return
      */
     @Query("SELECT COUNT(p) FROM Programmation p, Structure s,  MinistereStructure m "
             + "WHERE p.structure.id = s.id "
@@ -287,14 +289,16 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.deadLine >=?3 "
             + "AND p.validationFinal = true")
     Optional<Long> countActivitesMinistereParPeriode(long ministereId, long exerciceId, Date debut, Date fin);
-    
+
     /**
-     * addition des taux d'exécution des activités programmées pour un ministère sur la période définie par les deux dates en paramètres
+     * addition des taux d'exécution des activités programmées pour un ministère
+     * sur la période définie par les deux dates en paramètres
+     *
      * @param ministereId
      * @param exerciceId
      * @param debut
      * @param fin
-     * @return 
+     * @return
      */
     @Query("SELECT SUM(p.taux) FROM Programmation p, Structure s,  MinistereStructure m "
             + "WHERE p.structure.id = s.id "
@@ -307,14 +311,16 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.deadLine >=?3 "
             + "AND p.validationFinal = true")
     Optional<Double> additionnerTauxActivitesMinistereParPeriode(long ministereId, long exerciceId, Date debut, Date fin);
-    
+
     /**
-     * addition des couts d'exécution des activités programmées pour un ministère sur la période définie par les deux dates en paramètres
+     * addition des couts d'exécution des activités programmées pour un
+     * ministère sur la période définie par les deux dates en paramètres
+     *
      * @param ministereId
      * @param exerciceId
      * @param debut
      * @param fin
-     * @return 
+     * @return
      */
     @Query("SELECT SUM(p.coutReel) FROM Programmation p, Structure s,  MinistereStructure m "
             + "WHERE p.structure.id = s.id "
@@ -327,6 +333,5 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.deadLine >=?3 "
             + "AND p.validationFinal = true")
     Optional<Double> additionnerCoutActivitesMinistereParPeriode(long ministereId, long exerciceId, Date debut, Date fin);
-
 
 }
