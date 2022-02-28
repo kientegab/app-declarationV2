@@ -334,4 +334,26 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.validationFinal = true")
     Optional<Double> additionnerCoutActivitesMinistereParPeriode(long ministereId, long exerciceId, Date debut, Date fin);
 
+    /**
+     * addition des couts d'exécution des activités programmées pour un
+     * ministère sur la période définie par les deux dates en paramètres
+     *
+     * @param ministereId
+     * @param exerciceId
+     * @param debut
+     * @param fin
+     * @return
+     */
+    @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s,  MinistereStructure m "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id = m.structure.id "
+            + "AND m.ministere.id =?1 "
+            + "AND p.exercice.id =?2 "
+            + "AND m.statut=true "
+            + "AND p.deleted = false "
+            + "AND p.deadLine <=?4 "
+            + "AND p.deadLine >=?3 "
+            + "AND p.validationFinal = true")
+    Optional<Double> additionnerPrevisionnelActivitesMinistereParPeriode(long ministereId, long exerciceId, Date debut, Date fin);
+
 }

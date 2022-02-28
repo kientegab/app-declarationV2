@@ -13,13 +13,17 @@ import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
 import com.mfptps.appdgessddi.repositories.PeriodeRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.service.StatisticParameterService;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.AllEvolutionData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroupByType;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.EvolutionParam;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereGlobalStatsBundleData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerActiviteData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerDepenseData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerSectorielData;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerSectorielDepenseData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerStructureData;
 import com.mfptps.appdgessddi.utils.AppUtil;
+import com.mfptps.appdgessddi.utils.MinistereEvolutionBundle;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -228,5 +232,94 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
         
         return data; 
     }
+
+    @Override
+    public ResumerSectorielDepenseData resumerSectorielDepense(Long ministereId, Long exerciceId) {
+        
+        // Initialisation des données de retour
+        ResumerSectorielDepenseData data = new ResumerSectorielDepenseData();
+        
+        // total des couts réel
+        double reel = 0;
+        
+        // Total des couts prévisionnels
+        double previsionnel = 0;
+        
+        // Liste des périodes (trimestres ou semestres ...)
+        List<String> periodes = new ArrayList<>();
+    
+        // liste de couts de réalisation par période
+        List<Double> reels = new ArrayList<>();
+
+        // liste de couts prévisionnels par prériodes
+        List<Double> previsionnels = new ArrayList<>();
+        
+        // Chargement de l'exercice (pour récuperer l'année)
+        Exercice exercice = exerciceRepository.findById(exerciceId).get();
+        
+        // Chargement des périodes 
+        List<Periode> periods =  periodeRepository.findByPeriodiciteActif();
+        
+        // Calendrier pour extraction de l'année 
+        Calendar calendrier = Calendar.getInstance();
+        calendrier.setTime(java.util.Date.from(exercice.getDebut().atStartOfDay().atZone(ZoneId.systemDefault()) .toInstant()));  
+        
+        for(Periode period : periods){
+            
+            // Correction de la date de début de la période pour la conformité avec l'année réelle de l'exercice
+            Date debut = AppUtil.repairDate(period.getDebut(), calendrier.get(YEAR));
+            
+            // Correction de la date de fin de la période pour la conformité avec l'année réelle de l'exercice
+            Date fin = AppUtil.repairDate(period.getFin(), calendrier.get(YEAR)); 
+            
+            // recherche de la somme des taux d'exécution des activités programmées sur la période
+            double _prev = programmationRepository.additionnerPrevisionnelActivitesMinistereParPeriode(ministereId, exerciceId, debut, fin).orElse(0d);
+            
+            // recherche de la somme des couts réels d'exécution des activités programmées sur la période
+            double _reel = programmationRepository.additionnerCoutActivitesMinistereParPeriode(ministereId, exerciceId, debut, fin).orElse(0d);
+            
+            // Ajout des éléments dans les listes
+            periodes.add(period.getLibelle());  
+            reels.add(_reel);  
+            previsionnels.add(_prev);
+            
+            reel = reel + _reel;
+            previsionnel = previsionnel + _prev;
+        } 
+        
+        // Chargement des données dans l'objet à retourner
+        data.setAvgprevisionnel(previsionnel);
+        data.setAvgreel(reel);
+        data.setLibelle("-");
+        data.setPeriodes(periodes);
+        data.setPrevisionnels(previsionnels);
+        data.setReels(reels);     
+        
+        return data; 
+    }
+
+    @Override
+    public AllEvolutionData resumerEvolution(EvolutionParam params) {
+        
+        // Données initiales
+        AllEvolutionData data = new AllEvolutionData();
+        
+        String libelle = "";
+        
+        List<MinistereEvolutionBundle> liste = new ArrayList<>();
+        
+        
+        
+        
+        
+        
+        data.setLibelle(libelle);
+        data.setData(liste);
+        
+        
+       return data;
+    }
+    
+    
 
 }
