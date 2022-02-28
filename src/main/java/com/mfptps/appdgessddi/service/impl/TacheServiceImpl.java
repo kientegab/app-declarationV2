@@ -13,9 +13,12 @@ import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheEvaluerRepository;
 import com.mfptps.appdgessddi.repositories.TacheRepository;
 import com.mfptps.appdgessddi.service.CustomException;
+import com.mfptps.appdgessddi.service.ProgrammationService;
 import com.mfptps.appdgessddi.service.TacheService;
 import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.ResponseCheckPeriode;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,15 +39,18 @@ public class TacheServiceImpl implements TacheService {
     private final TacheEvaluerRepository tacheEvaluerRepository;
     private final ProgrammationRepository programmationRepository;
     private final ProgrammationPhysiqueRepository programmationPhysiqueRepository;
+    private final ProgrammationService programmationService;//DECONSEILLE
 
     public TacheServiceImpl(TacheRepository tacheRepository,
             TacheEvaluerRepository tacheEvaluerRepository,
             ProgrammationRepository programmationRepository,
-            ProgrammationPhysiqueRepository programmationPhysiqueRepository) {
+            ProgrammationPhysiqueRepository programmationPhysiqueRepository,
+            ProgrammationService programmationService) {
         this.tacheRepository = tacheRepository;
         this.tacheEvaluerRepository = tacheEvaluerRepository;
         this.programmationRepository = programmationRepository;
         this.programmationPhysiqueRepository = programmationPhysiqueRepository;
+        this.programmationService = programmationService;
     }
 
     @Override
@@ -144,12 +150,11 @@ public class TacheServiceImpl implements TacheService {
                 //dans ce cas, On met a jour la ligne Tache puis cree une ligne TacheEvaluer. 
                 else if (t.getId().equals(tdb.getId()) && (tdb.getValeur() == 1D) && !tdb.isExecute() && t.isExecute()) {
                     TacheEvaluer tacheEvaluer = new TacheEvaluer();
-                    tacheEvaluer.setCumuleeActive(true);
+                    tacheEvaluer.setCumuleeActive(false);//car cette tacheEvaluer ne sera pas utilise lors du calcul de taux
                     tacheEvaluer.setValeurCumulee(tdb.getPonderation());
                     tacheEvaluer.setValeurAtteinte(tdb.getPonderation());
                     tacheEvaluer.setIdPeriode(periode.getPeriode());
                     tacheEvaluer.setTache(tdb);
-
                     tdb.setExecute(t.isExecute());
 
                     tacheEvaluerRepository.save(tacheEvaluer);
@@ -157,6 +162,13 @@ public class TacheServiceImpl implements TacheService {
                 }
             }
         }
+
+        //initialise et met a jour la programmation
+        programmation = programmationRepository.findById(programmation.getId()).get();
+        programmation.setLastEvalDate(new Date());
+        programmation.setTaux(programmationService.tauxExecutionByExerciceOrPeriode(Arrays.asList(programmation), null));
+        programmationRepository.save(programmation);
+
         //log.info("_________________________valeurActuelle = {} ", tacheEvaluerRepository.sumOfCumuleesTachesByProgrammation(programmation.getId()));
         return null;
     }
@@ -181,7 +193,6 @@ public class TacheServiceImpl implements TacheService {
             this.firstEvaluationOfSomeTache(aEvaluer, execute, t, tdb, periodeId);
         } else {//si c'est la nieme evaluation de la tache
             //execute=true si la somme de valeurCibles precedente et encours renseignee à l'evaluation excede celle renseignee lors de la programmation
-            //execute = ((precedent.getValeurCumulee() + t.getValeur()) >= tdb.getValeur());//===========
 
             if (t.getValeur() != 0D) {
                 this.newOrUpdateEvaluationOfSomeTache(aEvaluer, precedent, t, tdb, periodeId);

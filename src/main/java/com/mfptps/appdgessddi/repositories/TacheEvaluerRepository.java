@@ -29,8 +29,6 @@ public interface TacheEvaluerRepository extends JpaRepository<TacheEvaluer, Long
             + "AND te.cumuleeActive = true ")
     Optional<TacheEvaluer> getByTacheAndPeriodeActive(Long tacheId, Long periodeId);
 
-    Optional<TacheEvaluer> findByCumuleeActiveIsTrue();
-
     //return the sum of the cumulative values ​​of the tasks of a given program
     @Query("SELECT SUM(te.valeurCumulee) AS val_actuelle FROM TacheEvaluer te, Tache t, Programmation p "
             + "WHERE te.tache.id = t.id AND te.cumuleeActive = true "
@@ -38,7 +36,7 @@ public interface TacheEvaluerRepository extends JpaRepository<TacheEvaluer, Long
     double sumOfCumuleesTachesByProgrammation(@NotNull @NotBlank Long programmationId);
 
     @Query("SELECT SUM(te.valeurCumulee) FROM TacheEvaluer te, Tache t "
-            + "WHERE te.tache.id = t.id AND t.id = :tacheId AND t.valeur != 1 "//tache a valeur
+            + "WHERE te.tache.id = t.id AND t.id = :tacheId "//AND t.valeur != 1 "//tache a valeur
             + "AND te.cumuleeActive = true")
     double cumuleeOfTache(Long tacheId);
 }

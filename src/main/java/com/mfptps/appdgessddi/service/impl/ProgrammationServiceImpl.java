@@ -48,6 +48,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -135,19 +136,27 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         Programmation programmationMapped = programmationMapper.toEntity(programmationDTO);
         log.debug("Sum of Ponderations = {} %", programmationMapped.checkPonderation());
 
-//        if (!programmationDTO.isSingleton() && programmationMapped.checkValeur() != programmationDTO.getCible()) {
-//            throw new CustomException("La somme des valeurs de vos taches n'atteint pas la cible (" + programmationDTO.getCible() + ") de l'activité programmée.");
-//        }
+        //s'assurer qu'au moins une periode a ete selectionnee 
         this.checkIfAllPeriodeNotFalse(programmationDTO.getPeriodes());
+
+        //initialisation de la programmation mappee
         String code = AppUtil.codeGeneratorProgrammation(programmationRepository, objectifRepository, programmationMapped);
         Exercice exerciceEnAttente = exerciceRepository.findByStatut(ExerciceStatus.EN_ATTENTE).orElseThrow(() -> new CustomException("Aucun exercice en attente."));
         programmationMapped.setExercice(exerciceEnAttente);
         programmationMapped.setCode(code);
         programmationMapped.setCible(programmationDTO.getCible() <= 0 ? 1D : programmationDTO.getCible());
 
+        //enregistre la programmation et ses periodes
         Programmation response = programmationRepository.save(programmationMapped);
         programmationPhysiqueService.addProgrammationPhysique(programmationDTO.getPeriodes(), response);
 
+        //recherche, normalisation et update du deadline de la programmation
+        Date deadLine = programmationPhysiqueRepository.findPeriodeMaxDateForProgrammation(response.getId());
+        deadLine = AppUtil.repairDate(deadLine, exerciceEnAttente.getDebut().getYear());
+        response.setDeadLine(deadLine);
+//FAUT-IL .SAVE ENCORE RESPONSE ????????????????????????????
+
+        //initialise et enregistre les taches
         if (programmationDTO.isSingleton()) {//Activite with one Tache
             Tache tache = new Tache();
             tache.setValeur(programmationMapped.getCible());
@@ -235,6 +244,12 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     @Override
     @Transactional(readOnly = true)
     public Page<Programmation> findAll(Long structureId, Pageable pageable) {
+        return programmationRepository.findAll(structureId, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Programmation> findAllENCOURS(Long structureId, Pageable pageable) {
         return programmationRepository.findAll(structureId, ExerciceStatus.EN_COURS, pageable);
     }
 
@@ -570,7 +585,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
      * @param periodeId
      * @return
      */
-    private double tauxExecutionByExerciceOrPeriode(List<Programmation> programmations, Long periodeId) {
+    public double tauxExecutionByExerciceOrPeriode(List<Programmation> programmations, Long periodeId) {
         double taux = 0;//taux global recherche
 
         for (Programmation prog : programmations) {
@@ -578,8 +593,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             //on totalise les taux des taches de chaque programmation
             for (Tache tache : prog.getTaches()) {
                 if (periodeId == null) {//============== CALCULS SANS TENIR COMPTE DE LA PEDIODE
-                    Optional<TacheEvaluer> tacheEvaluee = tacheEvaluerRepository.getByTacheAndActive(tache.getId());
-                    tauxTaches = this.tauxByValueOfPeriode(prog, tache, tacheEvaluee, tauxTaches);
+                    //Optional<TacheEvaluer> tacheEvaluee = tacheEvaluerRepository.getByTacheAndActive(tache.getId());
+                    tauxTaches = this.tauxByValueOfPeriode(prog, tache, null, tauxTaches);
                 } else {//============== CALCULS EN FONCTION DE LA PERIODE
                     Optional<TacheEvaluer> tacheEvaluee = tacheEvaluerRepository.getByTacheAndPeriodeActive(tache.getId(), periodeId);
                     tauxTaches = this.tauxByValueOfPeriode(prog, tache, tacheEvaluee, tauxTaches);
@@ -607,15 +622,14 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     //SOUS FONCTION DE tauxExecutionByExerciceOrPeriode(...)
     private double tauxByValueOfPeriode(Programmation prog, Tache tache, Optional<TacheEvaluer> tacheEvaluee, double tauxTaches) {
-        if (!tacheEvaluee.isPresent()) {
-            if ((tache.getValeur() == 1D) && tache.isExecute()) {//tache sans cible(cible = 1)  deja execute
-                tauxTaches += tache.getPonderation();
-            } else if ((tache.getValeur() != 1D) && tache.isExecute()) {//tache a cible deja execute(meme au dela de la cible prevue)
-                tauxTaches += tache.getPonderation();
-            } else if ((tache.getValeur() != 1D) && !tache.isExecute()) {//tache a cible execute partiellement
-                tauxTaches = this.tauxByValueOfProgrammationCible(prog, tache, tacheEvaluee, tauxTaches);
-            }
+        if ((tache.getValeur() == 1D) && tache.isExecute()) {//tache sans cible(cible = 1)  deja execute
+            tauxTaches += tache.getPonderation();
+        } else if ((tache.getValeur() != 1D) && tache.isExecute()) {//tache a cible deja execute(meme au dela de la cible prevue)
+            tauxTaches += tache.getPonderation();
+        } else if ((tache.getValeur() != 1D) && !tache.isExecute() && tacheEvaluee != null) {//tache a cible execute partiellement
+            tauxTaches = this.tauxByValueOfProgrammationCible(prog, tache, tacheEvaluee, tauxTaches);
         }
+
         return tauxTaches;
     }
 

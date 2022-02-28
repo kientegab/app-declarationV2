@@ -1,53 +1,68 @@
 package com.mfptps.appdgessddi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.*;
-
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "performance",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"EXERCICE_ID","STRUCTURE_ID","PONDERATION_ID"})})
+        uniqueConstraints = {
+            @UniqueConstraint(name = "uniqueKeys_exercice_structure_ponderation", columnNames = {"exercice_id", "structure_id", "ponderation_id"})})
 @SQLDelete(sql = "UPDATE performance SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 @FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
 @Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
-public class Performance  extends CommonEntity {
+public class Performance extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
-    @Column(name = "EFFICACITE")
-    private double efficacite ;
-    
-    @Column(name = "EFFICIENCE")
-    private double efficience ;
-    
-    @Column(name = "GOUVERNANCE")
-    private double gouvernance ;
-    
-    @Column(name = "IMPACT")
-    private double impact ;
-    
-    @Column(name = "PGS")
-    private double pgs ;
-    
-    @Column(name = "EXERCICE_ID", nullable = false)
-    private long exerciceId;
-    
-    @Column(name = "STRUCTURE_ID", nullable = false)
-    private long structureId;
-    
-    @Column(name = "PONDERATION_ID", nullable = false)
-    private long ponderationId;
-    
-    @Column(name = "APPRECIATION", nullable = false)
+
+    @Column(name = "efficacite")
+    private double efficacite;
+
+    @Column(name = "efficience")
+    private double efficience;
+
+    @Column(name = "gouvernance")
+    private double gouvernance;
+
+    @Column(name = "impact")
+    private double impact;
+
+    @Column(name = "pgs")
+    private double pgs;
+
+    @ManyToOne
+    @JoinColumn(name = "exercice_id", nullable = false)
+    private Exercice exercice;
+
+    @JsonIgnoreProperties("parent")
+    @ManyToOne
+    @JoinColumn(name = "structure_id", nullable = false)
+    private Structure structure;
+
+    @ManyToOne
+    @JoinColumn(name = "ponderation_id", nullable = false)
+    private Ponderation ponderation;
+
+    @Column(name = "appreciation", nullable = false)
     private String appreciation;
 
     public Performance() {
@@ -101,28 +116,28 @@ public class Performance  extends CommonEntity {
         this.pgs = pgs;
     }
 
-    public long getExerciceId() {
-        return exerciceId;
+    public Exercice getExercice() {
+        return exercice;
     }
 
-    public void setExerciceId(long exerciceId) {
-        this.exerciceId = exerciceId;
+    public void setExercice(Exercice exercice) {
+        this.exercice = exercice;
     }
 
-    public long getStructureId() {
-        return structureId;
+    public Structure getStructure() {
+        return structure;
     }
 
-    public void setStructureId(long structureId) {
-        this.structureId = structureId;
+    public void setStructure(Structure structure) {
+        this.structure = structure;
     }
 
-    public long getPonderationId() {
-        return ponderationId;
+    public Ponderation getPonderation() {
+        return ponderation;
     }
 
-    public void setPonderationId(long ponderationId) {
-        this.ponderationId = ponderationId;
+    public void setPonderation(Ponderation ponderation) {
+        this.ponderation = ponderation;
     }
 
     public String getAppreciation() {
@@ -132,6 +147,5 @@ public class Performance  extends CommonEntity {
     public void setAppreciation(String appreciation) {
         this.appreciation = appreciation;
     }
-    
-    
+
 }

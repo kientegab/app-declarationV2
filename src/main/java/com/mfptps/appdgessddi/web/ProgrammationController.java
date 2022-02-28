@@ -100,7 +100,7 @@ public class ProgrammationController {
     }
 
     /**
-     * Liste les programmations ENCOURS de cette structure
+     * Liste les programmations de cette structure
      *
      * @param structureId : id of Structure referency by ids in path
      * @param pageable
@@ -109,6 +109,20 @@ public class ProgrammationController {
     @GetMapping(path = "/all/{ids}")
     public ResponseEntity<List<Programmation>> findAllProgrammations(@PathVariable(name = "ids", required = true) Long structureId, Pageable pageable) {
         Page<Programmation> programmations = programmationService.findAll(structureId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), programmations);
+        return ResponseEntity.ok().headers(headers).body(programmations.getContent());
+    }
+
+    /**
+     * Liste les programmations ENCOURS de cette structure
+     *
+     * @param structureId : id of Structure referency by ids in path
+     * @param pageable
+     * @return
+     */
+    @GetMapping(path = "/all/exercice-encours/{ids}")
+    public ResponseEntity<List<Programmation>> findProgrammationsByExerciceENCOURS(@PathVariable(name = "ids", required = true) Long structureId, Pageable pageable) {
+        Page<Programmation> programmations = programmationService.findAllENCOURS(structureId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), programmations);
         return ResponseEntity.ok().headers(headers).body(programmations.getContent());
     }

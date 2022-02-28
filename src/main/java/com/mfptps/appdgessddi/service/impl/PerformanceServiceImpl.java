@@ -8,7 +8,6 @@ import com.mfptps.appdgessddi.repositories.PerformanceRepository;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.PerformanceService;
 import com.mfptps.appdgessddi.service.dto.PerformanceDTO;
-import com.mfptps.appdgessddi.service.dto.PerformanceEntityDTO;
 import com.mfptps.appdgessddi.service.mapper.PerformanceMapper;
 import java.util.Arrays;
 import java.util.Optional;
@@ -54,33 +53,31 @@ public class PerformanceServiceImpl implements PerformanceService {
     }
 
     @Override
-    public Page<PerformanceEntityDTO> getByStructure(long structureId, long exerciceId, Pageable pageable) {
-        Page<PerformanceEntityDTO> pageConstruct = null;
+    public Page<Performance> getByStructure(long structureId, long exerciceId, Pageable pageable) {
+        Page<Performance> pageConstruct = null;
 
-        Optional<PerformanceEntityDTO> perf = performanceRepository.findCurrentStructurePerformance(structureId, exerciceId)
-                .map(performanceMapper::toEntityOrigin);
+        Optional<Performance> perf = performanceRepository.findCurrentStructurePerformance(structureId, exerciceId);
 
         if (perf.isPresent()) {
-            pageConstruct = new PageImpl<PerformanceEntityDTO>(Arrays.asList(perf.get()), pageable, Arrays.asList(perf.get()).size());
+            pageConstruct = new PageImpl<Performance>(Arrays.asList(perf.get()), pageable, Arrays.asList(perf.get()).size());
         } else {
-            throw new CustomException("Aucun element (structure - performance - exercice) trouvé !");
+            throw new CustomException("Aucun élément (structure - performance - exercice) trouvé !");
         }
 
         return pageConstruct;
     }
 
     @Override
-    public Page<PerformanceEntityDTO> getByStructureAndExerciceENCOURS(long structureId) {
-        Page<PerformanceEntityDTO> pageConstruct = null;
+    public Page<Performance> getByStructureAndExerciceENCOURS(long structureId) {
+        Page<Performance> pageConstruct = null;
         Exercice exercice = exerciceRepository.findByStatut(ExerciceStatus.EN_COURS).orElseThrow(() -> new CustomException("Aucun exercice en cours"));
 
-        Optional<PerformanceEntityDTO> perf = performanceRepository.findCurrentStructurePerformance(structureId, exercice.getId())
-                .map(performanceMapper::toEntityOrigin);
+        Optional<Performance> perf = performanceRepository.findCurrentStructurePerformance(structureId, exercice.getId());
 
         if (perf.isPresent()) {
-            pageConstruct = new PageImpl<PerformanceEntityDTO>(Arrays.asList(perf.get()));//SANS PAGEABLE
+            pageConstruct = new PageImpl<Performance>(Arrays.asList(perf.get()));//SANS PAGEABLE
         } else {
-            throw new CustomException("Aucun element (structure - performance) trouvé !");
+            throw new CustomException("Aucun élément (structure - performance) trouvé !");
         }
 
         return pageConstruct;
@@ -93,17 +90,16 @@ public class PerformanceServiceImpl implements PerformanceService {
     }
 
     @Override
-    public Page<PerformanceEntityDTO> findAllByMinistere(long ministereId, long exerciceId, Pageable pageable) {
-        return performanceRepository.findAllByMinistere(ministereId, exerciceId, pageable)
-                .map(performanceMapper::toEntityOrigin);
+    public Page<Performance> findAllByMinistere(long ministereId, long exerciceId, Pageable pageable) {
+        return performanceRepository.findAllByMinistere(ministereId, exerciceId, pageable);
     }
 
     @Override
-    public Page<PerformanceEntityDTO> findAllByMinistereAndExerciceENCOURS(long ministereId, Pageable pageable) {
+    public Page<Performance> findAllByMinistereAndExerciceENCOURS(long ministereId, Pageable pageable) {
         Optional<Exercice> exercice = exerciceRepository.findByStatut(ExerciceStatus.EN_COURS);
+
         if (exercice.isPresent()) {
-            return performanceRepository.findAllByMinistere(ministereId, exercice.get().getId(), pageable)
-                    .map(performanceMapper::toEntityOrigin);
+            return performanceRepository.findAllByMinistere(ministereId, exercice.get().getId(), pageable);
         }
         return null;
     }

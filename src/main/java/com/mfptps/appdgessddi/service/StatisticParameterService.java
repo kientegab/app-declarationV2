@@ -23,18 +23,18 @@ import java.util.List;
 public interface StatisticParameterService {
 
     long nbStructuresByMinistere(long ministereId);
-    
-    ResumerDepenseData resumerDepenseParMinistere(Long ministereId,Long exerciceId);
-    
-    ResumerActiviteData resumerActiviteParMinistere(Long ministereId,Long exerciceId);
-    
-    List<ResumerStructureData> resumerActiviteParStructure(Long ministereId,Long exerciceId);
-    
-    MinistereGlobalStatsBundleData resumerMinistere(Long ministereId,Long exerciceId);
-    
-    ResumerSectorielData resumerSectoriel(Long ministereId, Long exerciceId);  
-    
-    ResumerSectorielDepenseData resumerSectorielDepense(Long ministereId, Long exerciceId);
+
+    ResumerDepenseData resumerDepenseParMinistere(Long ministereId, Long exerciceId);
+
+    ResumerActiviteData resumerActiviteParMinistere(Long ministereId, Long exerciceId);
+
+    List<ResumerStructureData> resumerActiviteParStructure(Long ministereId, Long exerciceId);
+
+    MinistereGlobalStatsBundleData resumerMinistere(Long ministereId, Long exerciceId);
+
+    ResumerSectorielData resumerSectoriel(Long ministereId, Long exerciceId);
+
+    ResumerSectorielDepenseData resumerSectorielDepense(Long ministereId, Long exerciceId); 
     
     AllEvolutionData resumerEvolution(EvolutionParam params);
 

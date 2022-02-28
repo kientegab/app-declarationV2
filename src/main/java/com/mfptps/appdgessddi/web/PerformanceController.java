@@ -3,7 +3,6 @@ package com.mfptps.appdgessddi.web;
 import com.mfptps.appdgessddi.entities.Performance;
 import com.mfptps.appdgessddi.service.PerformanceService;
 import com.mfptps.appdgessddi.service.dto.PerformanceDTO;
-import com.mfptps.appdgessddi.service.dto.PerformanceEntityDTO;
 import com.mfptps.appdgessddi.service.dto.RequeteDTO;
 import com.mfptps.appdgessddi.utils.HeaderUtil;
 import com.mfptps.appdgessddi.utils.PaginationUtil;
@@ -87,9 +86,9 @@ public class PerformanceController {
      * @return
      */
     @PostMapping(path = "/ministere-structure")
-    public ResponseEntity<List<PerformanceEntityDTO>> findPerformanceByMinistere(@RequestBody RequeteDTO requete, Pageable pageable) {
+    public ResponseEntity<List<Performance>> findPerformanceByMinistere(@RequestBody RequeteDTO requete, Pageable pageable) {
         log.debug("Consultation de la Performance du Ministere: {}", requete.getMinisterId());
-        Page<PerformanceEntityDTO> performancesFound = null;
+        Page<Performance> performancesFound = null;
 
         if (requete.getMinisterId() != null && requete.getExerciceId() != null && requete.getStructureId() == null) {//PERFORMANCE DE MINISTERE
             //performance d'un ministere pour un exercice quelconque
@@ -103,7 +102,7 @@ public class PerformanceController {
         } else if (requete.getStructureId() != null && requete.getExerciceId() == null && requete.getMinisterId() == null) {
             //performance d'une structure pour l'exercice en cours
             performancesFound = performanceService.getByStructureAndExerciceENCOURS(requete.getStructureId());
-        } else  if (requete.getMinisterId() != null && requete.getExerciceId() != null && requete.getStructureId() != null) {//PERFORMANCE DE MINISTERE
+        } else if (requete.getMinisterId() != null && requete.getExerciceId() != null && requete.getStructureId() != null) {//PERFORMANCE DE STRUCTURE
             //performance d'une structure pour un exercice quelconque
             performancesFound = performanceService.getByStructure(requete.getStructureId(), requete.getExerciceId(), pageable);
         } else {
