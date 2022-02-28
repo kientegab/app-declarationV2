@@ -103,8 +103,8 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://localhost:5432/dgessdb
-    username: postgres
-    password: rootPostgresql #admin #rootPostgresql
+    username: testOne
+    password: testOne #admin #rootPostgresql
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -134,8 +134,8 @@ spring:
     initialization-mode: always
     platform: postgres
     url: jdbc:postgresql:localhost:5432/dgessdb
-    username: postgres
-    password: rootPostgresql #rootPostgresql admin
+    username: testOne
+    password: testOne #rootPostgresql admin
     hikari:
       auto-commit: false
     

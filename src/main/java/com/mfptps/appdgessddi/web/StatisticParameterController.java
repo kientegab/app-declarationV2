@@ -6,18 +6,24 @@
 package com.mfptps.appdgessddi.web;
 
 import com.mfptps.appdgessddi.service.StatisticParameterService;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.AllEvolutionData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroupByType;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.EvolutionParam;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereGlobalStatsBundleData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerActiviteData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerDepenseData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerSectorielData;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerSectorielDepenseData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerStructureData;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,7 +41,6 @@ public class StatisticParameterController {
     public StatisticParameterController(StatisticParameterService statisticParameterService) {
         this.service = statisticParameterService;
     }
-    
     
     @GetMapping(path = "/depense/{ministereId}/{exerciceId}")
     public ResponseEntity<ResumerDepenseData> resumerDepenseParMinistere(@PathVariable(name = "ministereId") Long ministereId, @PathVariable(name = "exerciceId") Long exerciceId) { 
@@ -66,7 +71,30 @@ public class StatisticParameterController {
         ResumerSectorielData data = service.resumerSectoriel(ministereId,exerciceId);// 
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
+    
+    /**
+     * resumerSectorielDepense: resume pour une structure donnée les dépenses
+     * @param ministereId
+     * @param exerciceId
+     * @return 
+     */
+    @GetMapping(path = "/sectoriel-depense/{ministereId}/{exerciceId}")
+    public ResponseEntity<ResumerSectorielDepenseData> resumerSectorielDepense(@PathVariable(name = "ministereId") Long ministereId, @PathVariable(name = "exerciceId") Long exerciceId) { 
+        ResumerSectorielDepenseData data = service.resumerSectorielDepense(ministereId,exerciceId);// 
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
 
+     /**
+     * resumerEvolution: resume l'ensemble des pour une structure donnée les dépenses
+     * @param params
+     * @return 
+     */
+    @PostMapping(path = "/evolution/{ministereId}/{exerciceId}")
+    public ResponseEntity<AllEvolutionData> resumerEvolution(@Valid @RequestBody EvolutionParam params) { 
+        AllEvolutionData data = service.resumerEvolution(params);// 
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+    
     /**
      *
      * @param id: id of Ministere
