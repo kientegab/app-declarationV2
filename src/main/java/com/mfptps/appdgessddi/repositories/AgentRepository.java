@@ -59,7 +59,7 @@ public interface AgentRepository extends JpaRepository<Agent, Long> {
             + "AND a.matricule = :matricule "
             + "AND a.createdBy = 'system' ")
     Agent findAgentSystemByMatricule(@Param("matricule") String matricule);
-    
+
     @Query(value = "SELECT a.* FROM agent a, agent_profile g, profile p "
             + "WHERE a.actif = true "
             + "AND a.id = g.agent_id "
@@ -67,4 +67,9 @@ public interface AgentRepository extends JpaRepository<Agent, Long> {
             + "AND (p.name = 'FOCAL_STRUCT' "
             + "OR p.name = 'RESP_STRUCT') ", nativeQuery = true)
     List<Agent> findAllAgentByProfiles();
+
+    @Query("SELECT a FROM Agent a, AgentStructure ast "
+            + "WHERE a.actif = true AND a.deleted = false "
+            + "AND ast.structure.id = :structureId AND a.id = ast.agent.id AND ast.actif = true")
+    Page<Agent> findAllByStructure(@Param("structureId") long structureId, Pageable pageable);
 }
