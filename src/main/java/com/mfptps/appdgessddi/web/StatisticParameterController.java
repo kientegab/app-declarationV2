@@ -89,7 +89,7 @@ public class StatisticParameterController {
      * @param params
      * @return 
      */
-    @PostMapping(path = "/evolution/{ministereId}/{exerciceId}")
+    @PostMapping(path = "/evolution/")
     public ResponseEntity<AllEvolutionData> resumerEvolution(@Valid @RequestBody EvolutionParam params) { 
         AllEvolutionData data = service.resumerEvolution(params);// 
         return new ResponseEntity<>(data, HttpStatus.OK);

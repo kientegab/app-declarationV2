@@ -18,4 +18,9 @@ public interface MinistereRepository extends JpaRepository<Ministere, Long>{
             + "AND ms.statut IS TRUE")
     Optional<Ministere> findMinistereStructureCode(Long structureId);
     
+    @Query("SELECT m FROM Ministere m "
+            + "WHERE m.id=:ministereID "
+            + "AND m.deleted=false")
+    Ministere findMinistereByID(Long ministereID);
+    
 }
