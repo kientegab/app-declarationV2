@@ -221,7 +221,7 @@ public class AgentService {
 
     public void deleteAgent(String matricule) {
         agentRepository.findOneByMatricule(matricule).ifPresent(agent -> {
-            agentRepository.delete(agent);
+            agentRepository.deleteById(agent.getId());
             this.clearAgentCaches(agent);
             log.debug("Deleted Agent: {}", agent);
         });

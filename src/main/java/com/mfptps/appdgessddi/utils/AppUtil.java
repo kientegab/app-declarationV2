@@ -25,13 +25,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.Year;
 import java.util.Calendar;
 import static java.util.Calendar.YEAR;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -102,6 +99,7 @@ public class AppUtil {
     public static final String ADMIN = "ROLE_ADMIN";
     public static final String DAF = "ROLE_DAF";
     public static final String DRH = "ROLE_DRH";
+    public static final String USER = "ROLE_USER";
 
     /**
      *
@@ -237,7 +235,7 @@ public class AppUtil {
      *
      * @param programmationId
      * @param repository
-     * @return 
+     * @return
      */
     public static ResponseCheckPeriode checkProgrammationPhysique(long programmationId, ProgrammationPhysiqueRepository repository) throws CustomException {
         Date toDay = new Date();
@@ -260,53 +258,53 @@ public class AppUtil {
         }
         return response;
     }
-    
-    public static Periode checkExactPeriode(List<Periode> periodes, Date currentDate){
+
+    public static Periode checkExactPeriode(List<Periode> periodes, Date currentDate) {
         Periode foundOne = null;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(currentDate);
-        
+
         int year = calendar.get(YEAR);
-        
-        for(Periode per : periodes){ 
-            Date start  = repairDate(per.getDebut(), year);
-            Date end  = repairDate(per.getFin(), year); 
-            if(currentDate.after(start) && currentDate.before(end)){
+
+        for (Periode per : periodes) {
+            Date start = repairDate(per.getDebut(), year);
+            Date end = repairDate(per.getFin(), year);
+            if (currentDate.after(start) && currentDate.before(end)) {
                 foundOne = per;
                 break;
             }
-        }  
-        
+        }
+
         return foundOne;
     }
-    
-    public static Date repairDate(Date givenDate, int year){
+
+    public static Date repairDate(Date givenDate, int year) {
         try {
             DateFormat dateFormant = new SimpleDateFormat("dd-MM-yyyy");
-            Date repaired ;
-            
+            Date repaired;
+
             String dateString = dateFormant.format(givenDate);
             //cutting dateString
-            dateString = dateString.substring(0, dateString.length()-4);
+            dateString = dateString.substring(0, dateString.length() - 4);
             //concat the new year
             dateString = dateString + String.valueOf(year);
-            
+
             repaired = dateFormant.parse(dateString);
-            
+
             return repaired;
         } catch (ParseException ex) {
-          return null;
+            return null;
         }
-    } 
-    
-    public static String convertToShortDate(Date date){
+    }
+
+    public static String convertToShortDate(Date date) {
         DateFormat dateFormant = new SimpleDateFormat("dd-MM-yyyy");
         String value = dateFormant.format(date);
         return value;
     }
-    
-    public static String convertAndConcatDates(LocalDate startDate, LocalDate endDate){
-        String dateStrValue = startDate.getYear() + "-" + endDate.getYear();  
+
+    public static String convertAndConcatDates(LocalDate startDate, LocalDate endDate) {
+        String dateStrValue = startDate.getYear() + "-" + endDate.getYear();
         return dateStrValue;
     }
 }
