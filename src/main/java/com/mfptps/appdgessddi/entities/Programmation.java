@@ -7,6 +7,7 @@ package com.mfptps.appdgessddi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -198,7 +199,10 @@ public class Programmation extends CommonEntity {
     }
 
     public double getTaux() {
-        return taux;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        return Double.valueOf(df.format(taux).replace(",", "."));
     }
 
     public void setTaux(double taux) {

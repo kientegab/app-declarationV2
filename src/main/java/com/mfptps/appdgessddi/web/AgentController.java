@@ -7,7 +7,7 @@ import com.mfptps.appdgessddi.service.AgentService;
 import com.mfptps.appdgessddi.service.dto.AgentDTO;
 import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.*;
-import com.mfptps.appdgessddi.web.vm.AffcetationVM;
+import com.mfptps.appdgessddi.web.vm.AffectationVM;
 import com.mfptps.appdgessddi.web.vm.ManagedAgentVM;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -112,10 +112,10 @@ public class AgentController {
     }
 
     @PostMapping("/agents/affectation")
-    public ResponseEntity<Agent> affecterAgent(@Valid @RequestBody AffcetationVM affcetationVM) throws URISyntaxException {
-        log.debug("REST request to affect Agent : {}", affcetationVM.getUsername());
+    public ResponseEntity<Agent> affecterAgent(@Valid @RequestBody AffectationVM affectationVM) throws URISyntaxException {
+        log.debug("REST request to affect Agent : {}", affectationVM.getUsername());
 
-        Agent newAgent = agentService.affectationAgent(affcetationVM.getUsername(), affcetationVM.getStructureId());
+        Agent newAgent = agentService.affectationAgent(affectationVM.getUsername(), affectationVM.getStructureId());
         return ResponseEntity.created(new URI("/api/agents/" + newAgent.getMatricule()))
                 .headers(HeaderUtil.createAlert(applicationName, "Affectation.created", newAgent.getMatricule()))
                 .body(newAgent);
