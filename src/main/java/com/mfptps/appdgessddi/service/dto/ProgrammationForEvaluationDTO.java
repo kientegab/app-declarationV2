@@ -14,6 +14,7 @@ import com.mfptps.appdgessddi.entities.Projet;
 import com.mfptps.appdgessddi.entities.SourceFinancement;
 import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.entities.Tache;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,7 +176,10 @@ public class ProgrammationForEvaluationDTO {
     }
 
     public double getTauxActuel() {
-        return tauxActuel;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        return Double.valueOf(df.format(tauxActuel).replace(",", "."));
     }
 
     public void setTauxActuel(double tauxActuel) {
