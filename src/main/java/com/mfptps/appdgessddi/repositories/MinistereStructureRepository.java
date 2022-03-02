@@ -45,4 +45,10 @@ public interface MinistereStructureRepository extends JpaRepository<MinistereStr
             + "AND ms.structure.id=s.id "
             + "AND ms.statut IS TRUE AND s.type<>:type")
     List<Structure> allNonInternalStructureByMinistere(long ministereId, TypeStructure type);
+
+    @Query("SELECT ms.structure FROM MinistereStructure ms, Agent a, AgentStructure ags "
+            + "WHERE a.deleted = false AND a.matricule = :matricule "
+            + "AND a.id = ags.agent.id AND ags.actif = true "
+            + "AND ags.structure.id = ms.structure.id AND ms.statut = true")
+    Optional<Structure> findByAgentMatricule(String matricule);
 }

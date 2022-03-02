@@ -56,6 +56,10 @@ public class Programmation extends CommonEntity {
 
     @Column(nullable = false)
     @Type(type = "yes_no")
+    private boolean estPrioritaire = false;
+
+    @Column(nullable = false)
+    @Type(type = "yes_no")
     private boolean estProgramme = true;//If activite is programmed
 
     @Column(name = "singleton", updatable = false)
@@ -159,6 +163,14 @@ public class Programmation extends CommonEntity {
 
     public void setCoutReel(double coutReel) {
         this.coutReel = coutReel;
+    }
+
+    public boolean isEstPrioritaire() {
+        return estPrioritaire;
+    }
+
+    public void setEstPrioritaire(boolean estPrioritaire) {
+        this.estPrioritaire = estPrioritaire;
     }
 
     public boolean isEstProgramme() {

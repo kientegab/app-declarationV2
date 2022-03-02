@@ -34,6 +34,8 @@ public class ProgrammationForEvaluationDTO {
 
     private double coutReel;
 
+    private boolean estPrioritaire;
+
     private boolean estProgramme;
 
     private boolean singleton;
@@ -41,7 +43,7 @@ public class ProgrammationForEvaluationDTO {
     private double cible;
 
     private double taux;
-    
+
     private String periodeActuelle = "";
 
     private String periodes = "";
@@ -114,6 +116,14 @@ public class ProgrammationForEvaluationDTO {
 
     public void setCoutReel(double coutReel) {
         this.coutReel = coutReel;
+    }
+
+    public boolean isEstPrioritaire() {
+        return estPrioritaire;
+    }
+
+    public void setEstPrioritaire(boolean estPrioritaire) {
+        this.estPrioritaire = estPrioritaire;
     }
 
     public boolean isEstProgramme() {
@@ -292,6 +302,4 @@ public class ProgrammationForEvaluationDTO {
         this.objectif = objectif;
     }
 
-
-    
 }
