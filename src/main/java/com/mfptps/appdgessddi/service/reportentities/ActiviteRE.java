@@ -68,4 +68,12 @@ public class ActiviteRE implements Serializable {
     private double coutReel;
 
     private String observationsActivite;
+    
+     /**
+     * enlève les points du code et convertit en int
+     * @return 
+     */
+    public Integer convertCodeToInteger(){
+        return Integer.parseInt(codeActivite.replace(".", ""));
+    }
 }

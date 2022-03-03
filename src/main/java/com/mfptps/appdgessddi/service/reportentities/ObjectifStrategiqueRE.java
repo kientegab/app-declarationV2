@@ -47,4 +47,12 @@ public class ObjectifStrategiqueRE implements Serializable {
         this.structureObjectifStra = "";
         this.actionREs = new ArrayList<>();
     }
+    
+    /**
+     * enlève les points du code et convertit en int
+     * @return 
+     */
+    public Integer convertCodeToInteger(){
+        return Integer.parseInt(codeObjectifStra.replace(".", ""));
+    }
 }

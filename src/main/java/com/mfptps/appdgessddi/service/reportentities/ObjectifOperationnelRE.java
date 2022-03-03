@@ -44,4 +44,12 @@ public class ObjectifOperationnelRE implements Serializable {
         this.structureObjectifOp = "";
         this.activiteREs = new ArrayList<>();
     }
+    
+     /**
+     * enlève les points du code et convertit en int
+     * @return 
+     */
+    public Integer convertCodeToInteger(){
+        return Integer.parseInt(codeObjectifOp.replace(".", ""));
+    }
 }

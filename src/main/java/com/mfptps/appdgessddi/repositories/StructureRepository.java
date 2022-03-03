@@ -22,10 +22,10 @@ public interface StructureRepository extends JpaRepository<Structure, Long> {
     
     @Query("SELECT s FROM Structure s, MinistereStructure ms, Ministere m "
             + "WHERE ms.ministere.id = m.id "
-            + "AND m.id = ?1 "
+            + "AND m.id =:ministerId "
             + "AND ms.structure.id = s.id "
-            + "AND s.active = true " 
-            + "AND s.type <> ?2 "
+            + "AND ms.statut = true "    
+            + "AND s.type <>:excludeType "
             + "AND s.deleted = false")
     List<Structure> findMinistereStructure(Long ministerId, TypeStructure excludeType);
 }

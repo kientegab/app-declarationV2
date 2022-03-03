@@ -25,4 +25,7 @@ public class PrintGlobalVM {
     private long currentStructureId;
 
     private String format;
+    
+    private Long periodeId;
+      
 }

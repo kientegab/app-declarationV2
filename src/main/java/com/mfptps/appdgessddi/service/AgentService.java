@@ -4,6 +4,7 @@ import com.mfptps.appdgessddi.entities.*;
 import com.mfptps.appdgessddi.repositories.*;
 import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.dto.AgentDTO;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.RandomUtil;
 import com.mfptps.appdgessddi.web.exceptions.CustomException;
 import java.time.Instant;
@@ -281,7 +282,7 @@ public class AgentService {
     public Page<AgentDTO> getAllManagedAgentsByStructure(long structureId, Pageable pageable) {
         Page<AgentDTO> result;
 
-        if (SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {//S'il sagit d'un admin, on renvoie tous les agents sans exception
+        if (SecurityUtils.isCurrentUserInRole(AppUtil.ADMIN)) {//S'il sagit d'un admin, on renvoie tous les agents sans exception
             result = agentRepository.findAll(pageable).map(AgentDTO::new);
         } else {
             result = agentRepository.findAllByStructure(structureId, pageable).map(AgentDTO::new);

@@ -44,4 +44,12 @@ public class ActionRE implements Serializable {
         this.structureAction = "";
         this.objectifOperationnelREs = new ArrayList<>();
     }
+    
+    /**
+    * enlève les points du code et convertit en int
+    * @return 
+    */
+    public Integer convertCodeToInteger(){
+        return Integer.parseInt(codeAction.replace(".", ""));
+    }
 }

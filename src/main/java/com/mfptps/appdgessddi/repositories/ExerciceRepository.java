@@ -17,8 +17,11 @@ public interface ExerciceRepository extends JpaRepository<Exercice, Long> {
 
     Page<Exercice> findByStatut(ExerciceStatus exerciceStatus, Pageable pageable);
 
-    Page<Exercice> findAllByOrderByDebutDesc(Pageable pageable);
+    Page<Exercice> findAllByOrderByDebutDesc(Pageable pageable); 
     
-    @Query("SELECT e FROM Exercice e ORDER BY e.fin DESC ")
-    List<Exercice>checkXfirtsElement(Pageable pageable);
+    @Query("SELECT e FROM Exercice e WHERE e.id=:idExercice")
+    Exercice findExerciceById(long idExercice);
+     
+    @Query("SELECT e FROM Exercice e WHERE e.statut<>:status ORDER BY e.fin DESC ")
+    List<Exercice> checkXfirtsElement(ExerciceStatus status, Pageable pageable);
 }

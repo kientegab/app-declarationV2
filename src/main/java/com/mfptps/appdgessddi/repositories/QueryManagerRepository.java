@@ -10,6 +10,7 @@ import com.mfptps.appdgessddi.service.reportentities.ProgrammationListVE;
 import com.mfptps.appdgessddi.service.reportentities.ProgrammationPhysiqueRE;
 import com.mfptps.appdgessddi.service.reportentities.StructuresByMinistereVE;
 import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -47,6 +48,21 @@ public class QueryManagerRepository {
     public List<ViewGlobale> globalDataMinistere(long exerciceId) {
         Query q = em.createNativeQuery("select * from dgessreportview where idexercice = :exercice", ViewGlobale.class);
         q.setParameter("exercice", exerciceId);
+        List<ViewGlobale> result = q.getResultList();
+        return result;
+    }
+    
+    public List<ViewGlobale> globalDataMinistere(long exerciceId, Date deadline) {
+        Query q = em.createNativeQuery("select * from dgessreportview where idexercice = :exercice and lastevaldate<=: deadline", ViewGlobale.class);
+        q.setParameter("exercice", exerciceId);
+        List<ViewGlobale> result = q.getResultList();
+        return result;
+    }
+    
+    public List<ViewGlobale> globalDataStructure(long exerciceId, long structureId, Date deadline) {
+        Query q = em.createNativeQuery("select * from dgessreportview where idexercice = :exercice and idstructure = :structure and lastevaldate<=: deadline", ViewGlobale.class);
+        q.setParameter("exercice", exerciceId);
+        q.setParameter("structure", structureId);
         List<ViewGlobale> result = q.getResultList();
         return result;
     }

@@ -9,6 +9,7 @@ import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.entities.Ministere;
 import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.entities.Structure;
+import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.enums.TypeStructure;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.GrillePerformanceRepository;
@@ -36,6 +37,7 @@ import java.util.Calendar;
 import static java.util.Calendar.YEAR;
 import java.util.Date;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +45,7 @@ import org.springframework.stereotype.Service;
  *
  * @author Canisius <canisiushien@gmail.com>
  */
+@Slf4j
 @Service
 public class StatisticParameterServiceImpl implements StatisticParameterService {
 
@@ -326,26 +329,33 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
         String libelle = "";
         
         List<MinistereEvolutionBundle> liste = new ArrayList<>();
-        
+         List<Exercice> exercices = new ArrayList<>(); 
+           
         // Déclaration de la liste des structures concernées
         List<Structure> mesStructures = new ArrayList<>();
+        
+        boolean reduced = (params.getExerciceId() != null && params.getExerciceId() != 0);
 
         // vérification, savoir si c'est tout le ministère ou si c'est juste une structure 
-        boolean many = ((params.getStructureId() != null) && (params.getStructureId() == null)); 
+        boolean many = ((params.getMinistereId() != null) && (params.getStructureId() == null));  
         
         // Chargement du ministère
-        Ministere ministere = ministereRepository.getById(params.getMinistereId());
-;
-        if (many) {
-            mesStructures = structureRepository.findMinistereStructure(params.getMinistereId(), TypeStructure.INTERNE);
-        } else {
+        Ministere ministere = ministereRepository.findMinistereByID(params.getMinistereId()); 
+        
+        if (many) { 
+            mesStructures = structureRepository.findMinistereStructure(ministere.getId(), TypeStructure.INTERNE);
+        } else { 
             Structure singleStructure = structureRepository.getById(params.getStructureId()); 
             mesStructures.add(singleStructure);
-        }
+        } 
         
         // Chargement de la liste des exercices en tenant en compte la couverture
-        List<Exercice> exercices = exerciceRepository.checkXfirtsElement(PageRequest.of(0,params.getCouverture()));
-        
+        if(reduced){
+            Exercice exo = exerciceRepository.findExerciceById(params.getExerciceId());
+            exercices.add(exo);
+        }else{
+            exercices = exerciceRepository.checkXfirtsElement(ExerciceStatus.EN_ATTENTE, PageRequest.of(0,params.getCouverture()));
+        }
         // Parcours des structure
         for(Structure structure : mesStructures) { 
             
@@ -368,7 +378,7 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
             if(!exercices.isEmpty()){
                 moyenne = moyenne / exercices.size();
                 int size = exercices.size();
-                exoStr = exoStr + exercices.get(0).getDebut().getYear() + " = " + exercices.get(size-1).getDebut().getYear();
+                exoStr = exoStr + exercices.get(0).getDebut().getYear() + " - " + exercices.get(size-1).getDebut().getYear() + "]";
             } 
             
             String appreciation = grilleRepository.findGrilleAppreciation(moyenne).orElse("-");
@@ -390,7 +400,7 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
         }
         
         
-        libelle = libelle + " Résumé des données sur : " + ministere.getCode() + " avec sa/ses " + mesStructures.size() + " structure-s centrale-s, rattachée-s et/ou déconcentrée-s";
+        libelle = libelle + " Résumé des données sur : " + ministere.getSigle() + " avec sa/ses " + mesStructures.size() + " structure-s centrale-s, rattachée-s et/ou déconcentrée-s";
         
         data.setLibelle(libelle);
         data.setData(liste);

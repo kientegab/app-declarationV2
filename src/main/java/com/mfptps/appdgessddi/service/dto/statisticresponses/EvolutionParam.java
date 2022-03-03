@@ -14,6 +14,8 @@ public class EvolutionParam {
     
     private Long structureId;
     
+    private Long exerciceId;
+    
     private int couverture; // nombre d'exercice à couvrir par les recherches
 
     public Long getMinistereId() {
@@ -39,6 +41,13 @@ public class EvolutionParam {
     public void setCouverture(int couverture) {
         this.couverture = couverture;
     }
-    
-    
+
+    public Long getExerciceId() {
+        return exerciceId;
+    }
+
+    public void setExerciceId(Long exerciceId) {
+        this.exerciceId = exerciceId;
+    }
+       
 }

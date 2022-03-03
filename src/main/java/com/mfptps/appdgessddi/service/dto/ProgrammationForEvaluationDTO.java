@@ -14,6 +14,7 @@ import com.mfptps.appdgessddi.entities.Projet;
 import com.mfptps.appdgessddi.entities.SourceFinancement;
 import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.entities.Tache;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,8 @@ public class ProgrammationForEvaluationDTO {
 
     private double coutReel;
 
+    private boolean estPrioritaire;
+
     private boolean estProgramme;
 
     private boolean singleton;
@@ -41,7 +44,7 @@ public class ProgrammationForEvaluationDTO {
     private double cible;
 
     private double taux;
-    
+
     private String periodeActuelle = "";
 
     private String periodes = "";
@@ -116,6 +119,14 @@ public class ProgrammationForEvaluationDTO {
         this.coutReel = coutReel;
     }
 
+    public boolean isEstPrioritaire() {
+        return estPrioritaire;
+    }
+
+    public void setEstPrioritaire(boolean estPrioritaire) {
+        this.estPrioritaire = estPrioritaire;
+    }
+
     public boolean isEstProgramme() {
         return estProgramme;
     }
@@ -165,7 +176,10 @@ public class ProgrammationForEvaluationDTO {
     }
 
     public double getTauxActuel() {
-        return tauxActuel;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        return Double.valueOf(df.format(tauxActuel).replace(",", "."));
     }
 
     public void setTauxActuel(double tauxActuel) {
@@ -292,6 +306,4 @@ public class ProgrammationForEvaluationDTO {
         this.objectif = objectif;
     }
 
-
-    
 }
