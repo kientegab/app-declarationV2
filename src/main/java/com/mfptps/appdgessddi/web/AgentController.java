@@ -195,7 +195,7 @@ public class AgentController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
      * body the "login" agent, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/agents/{login:" + Constants.LOGIN_REGEX + "}")
+    @GetMapping("/agents/login/{login:" + Constants.LOGIN_REGEX + "}")
     // @PreAuthorize("#login == principal.username || hasAnyAuthority(\"ROLE_ADMIN\")")
     public ResponseEntity<AgentDTO> getAgent(@PathVariable String login) {
         log.debug("REST request to get Agent : {}", login);

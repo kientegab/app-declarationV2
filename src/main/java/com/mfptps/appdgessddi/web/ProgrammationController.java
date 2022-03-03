@@ -236,9 +236,7 @@ public class ProgrammationController {
             throw new BadRequestAlertException("Paramètres mal renseignés !", ENTITY_NAME, "idincorrects");
         }
 
-        return ResponseEntity.ok()// enlever ou laisser headers ?????????????????????????????????
-                //.headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, message))
-                .body(message);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     /**
