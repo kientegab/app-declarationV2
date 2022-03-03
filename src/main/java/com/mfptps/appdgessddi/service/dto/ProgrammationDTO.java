@@ -38,6 +38,8 @@ public class ProgrammationDTO {
 
     private String observations;
 
+    private boolean estPrioritaire;
+
     private boolean singleton;
 
     private Structure structure;
@@ -124,6 +126,14 @@ public class ProgrammationDTO {
 
     public void setObservations(String observations) {
         this.observations = observations;
+    }
+
+    public boolean isEstPrioritaire() {
+        return estPrioritaire;
+    }
+
+    public void setEstPrioritaire(boolean estPrioritaire) {
+        this.estPrioritaire = estPrioritaire;
     }
 
     public boolean isSingleton() {

@@ -325,10 +325,12 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     public Optional<Programmation> validationInitialeOrInterne(Long structureId, Long programmationId) {
         Optional<Programmation> response = programmationRepository.findById(programmationId)
                 .map(programmation -> {
-                    if ((SecurityUtils.isCurrentUserInRole("ROLE_RESP_STRUCT") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) && (programmation.getStructure().getId() == structureId)) {
+                    if ((SecurityUtils.isCurrentUserInRole(AppUtil.RS) || SecurityUtils.isCurrentUserInRole(AppUtil.ADMIN))
+                            && (programmation.getStructure().getId() == structureId) && (!programmation.isValidationInitial())) {
                         programmation.setValidationInitial(true);
                     }
-                    if ((SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) && programmation.isValidationInitial()) {
+                    if ((SecurityUtils.isCurrentUserInRole(AppUtil.RD) || SecurityUtils.isCurrentUserInRole(AppUtil.ADMIN))
+                            && programmation.isValidationInitial()) {
                         programmation.setValidationInterne(true);//validation DGESS
                     }
                     return programmation;
@@ -344,7 +346,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         List<Programmation> list = programmationRepository.findAll(structureId);
         List<Programmation> updater = new ArrayList<>();
 
-        if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_STRUCT") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
+        if (SecurityUtils.isCurrentUserInRole(AppUtil.RS) || SecurityUtils.isCurrentUserInRole(AppUtil.ADMIN)) {
             for (Programmation programmation : list) {
                 programmation.setValidationInitial(true);
                 updater.add(programmation);
@@ -360,7 +362,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         List<Programmation> updater = new ArrayList<>();
         boolean echec = false;
 
-        if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
+        if (SecurityUtils.isCurrentUserInRole(AppUtil.RD) || SecurityUtils.isCurrentUserInRole(AppUtil.ADMIN)) {
             for (Programmation programmation : list) {
                 if (programmation.isValidationInitial()) {
                     programmation.setValidationInterne(true);
@@ -380,7 +382,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         List<Programmation> updater = new ArrayList<>();
         boolean echec = false;
 
-        if (SecurityUtils.isCurrentUserInRole("ROLE_RESP_DGESS") || SecurityUtils.isCurrentUserInRole("ROLE_ADMIN")) {
+        if (SecurityUtils.isCurrentUserInRole(AppUtil.RD) || SecurityUtils.isCurrentUserInRole(AppUtil.ADMIN)) {
 
             for (Programmation programmation : list) {
                 if (programmation.isValidationInitial() && programmation.isValidationInterne()) {

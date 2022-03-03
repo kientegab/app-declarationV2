@@ -1,7 +1,11 @@
 package com.mfptps.appdgessddi.service.impl;
 
 import com.mfptps.appdgessddi.entities.EvaluationGouvernance;
+import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.repositories.EvaluationGouvernanceRepository;
+import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
+import com.mfptps.appdgessddi.security.SecurityUtils;
+import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.service.EvaluationGouvernanaceService;
 import com.mfptps.appdgessddi.service.dto.CritereDTO;
 import com.mfptps.appdgessddi.service.dto.EvaluationGouvernanceDTO;
@@ -20,14 +24,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class EvaluationGouvernanaceServiceImpl implements EvaluationGouvernanaceService {
 
     private final EvaluationGouvernanceRepository evaluationGouvernanceRepository;
+    private final MinistereStructureRepository ministereStructureRepository;
 
-    public EvaluationGouvernanaceServiceImpl(EvaluationGouvernanceRepository evaluationGouvernanceRepository) {
+    public EvaluationGouvernanaceServiceImpl(EvaluationGouvernanceRepository evaluationGouvernanceRepository,
+            MinistereStructureRepository ministereStructureRepository) {
         this.evaluationGouvernanceRepository = evaluationGouvernanceRepository;
+        this.ministereStructureRepository = ministereStructureRepository;
     }
 
     @Override
     public EvaluationGouvernance create(EvaluationGouvernanceDTO evaluationGouvernanceDTO) {
-        List<EvaluationGouvernance> evaluationGouvernances = new ArrayList<>();
+        String matricule = SecurityUtils.getCurrentUserMatricule().get();
+        Structure structure = ministereStructureRepository.findByAgentMatricule(matricule).orElseThrow(() -> new CustomException("Opération non autorisée car vous ne relevez d'aucune structure."));
+        if (evaluationGouvernanceDTO.getStructure().getId() != structure.getId()) {
+            throw new CustomException("Opération non autorisée car vous ne relevez pas de " + evaluationGouvernanceDTO.getStructure().getSigle());
+        }
+
+        List< EvaluationGouvernance> evaluationGouvernances = new ArrayList<>();
 
         for (CritereDTO critere : evaluationGouvernanceDTO.getCritereGouvernances()) {
             EvaluationGouvernance eg = new EvaluationGouvernance();

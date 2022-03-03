@@ -1,11 +1,11 @@
 package com.mfptps.appdgessddi.web.vm;
 
-public class AffcetationVM {
+public class AffectationVM {
     
     private String username;
     private Long structureId;
 
-    public AffcetationVM() {
+    public AffectationVM() {
     }
 
     public Long getStructureId() {

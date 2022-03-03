@@ -232,8 +232,11 @@ public class ProgrammationController {
             message = programmationService.allValidationInterne(params.getStructureId());
         } else if (params.isValidatedByCASEM() && !params.isValidatedByDGESS() && !params.isValidatedBySTRUCT()) {//do all CASEM validation of CASEM
             message = programmationService.allValidationCASEM(params.getStructureId());
+        } else {
+            throw new BadRequestAlertException("Paramètres mal renseignés !", ENTITY_NAME, "idincorrects");
         }
-        return ResponseEntity.ok().body(message);
+
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     /**

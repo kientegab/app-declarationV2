@@ -7,6 +7,7 @@ package com.mfptps.appdgessddi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -53,6 +54,10 @@ public class Programmation extends CommonEntity {
 
     @Column(name = "cout_reel")
     private double coutReel;
+
+    @Column(nullable = false)
+    @Type(type = "yes_no")
+    private boolean estPrioritaire = false;
 
     @Column(nullable = false)
     @Type(type = "yes_no")
@@ -161,6 +166,14 @@ public class Programmation extends CommonEntity {
         this.coutReel = coutReel;
     }
 
+    public boolean isEstPrioritaire() {
+        return estPrioritaire;
+    }
+
+    public void setEstPrioritaire(boolean estPrioritaire) {
+        this.estPrioritaire = estPrioritaire;
+    }
+
     public boolean isEstProgramme() {
         return estProgramme;
     }
@@ -186,7 +199,10 @@ public class Programmation extends CommonEntity {
     }
 
     public double getTaux() {
-        return taux;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        return Double.valueOf(df.format(taux).replace(",", "."));
     }
 
     public void setTaux(double taux) {
