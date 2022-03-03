@@ -95,7 +95,6 @@ public class Agent extends CommonEntity {
 
     /*@ManyToOne(optional = true)
     private Structure structure;*/
-
     public Agent() {
     }
 
@@ -202,7 +201,6 @@ public class Agent extends CommonEntity {
 //    public void setStructure(Structure structure) {
 //        this.structure = structure;
 //    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
