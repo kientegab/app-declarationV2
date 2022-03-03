@@ -34,4 +34,12 @@ public class ProgrammeRE implements Serializable {
     private String structureProgramme;
 
     private List<ObjectifStrategiqueRE> objectifStrategiqueREs;
+    
+     /**
+     * enlève les points du code et convertit en int
+     * @return 
+     */
+    public Integer convertCodeToInteger(){
+        return Integer.parseInt(codeProgramme.replace(".", ""));
+    }
 }

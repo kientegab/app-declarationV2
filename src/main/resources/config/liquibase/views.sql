@@ -40,7 +40,7 @@ CREATE OR REPLACE VIEW dgessreportview AS
             op.code AS codeobjectifope, op.libelle AS libelleobjectifope, ac.id AS idaction, ac.code AS codeaction,
             ac.libelle AS libelleaction, ac.objectif_id AS idobjectifstra, os.code AS codeobjectifstra, os.libelle AS libelleobjectifstra,
             os.programme_id AS idprogramme, prog.code AS codeprogramme, prog.libelle AS libelleprogramme, 
-            p.structure_id AS idstructure, s.sigle AS siglestructure, ms.ministere_id AS idministere, p.exercice_id AS idexercice
+            p.structure_id AS idstructure, s.sigle AS siglestructure, ms.ministere_id AS idministere, p.exercice_id AS idexercice, p.last_eval_date AS lastevaldate, p.dead_line AS deadline  
     FROM programmation p, activites a, source_financement f, objectif op, objectif os, action ac, programme prog, ministere_structure ms, structure s
     WHERE p.activite_id = a.id -- jointure entre Programmation & Activites
     AND p.source_financement_id = f.id -- jointure entre Programmation & SourceFinancement

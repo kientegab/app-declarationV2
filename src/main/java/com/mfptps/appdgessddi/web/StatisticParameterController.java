@@ -93,7 +93,7 @@ public class StatisticParameterController {
     public ResponseEntity<AllEvolutionData> resumerEvolution(@Valid @RequestBody EvolutionParam params) { 
         AllEvolutionData data = service.resumerEvolution(params);// 
         return new ResponseEntity<>(data, HttpStatus.OK);
-    }
+    } 
     
     /**
      *

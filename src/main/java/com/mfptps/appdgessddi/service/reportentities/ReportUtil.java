@@ -8,6 +8,8 @@ import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.repositories.QueryManagerRepository;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -75,6 +77,9 @@ public class ReportUtil {
                 .filter(prog -> (!containsCodeProgramme(data, prog.getCodeProgramme()))).forEachOrdered(prog -> {
             data.add(prog);
         });
+        
+        sortProgrammeData(data);
+        
         return data;
     }
 
@@ -95,6 +100,8 @@ public class ReportUtil {
                 }
             }
         }
+        
+        sortObStrageData(data);
 
         return data;
     }
@@ -116,6 +123,9 @@ public class ReportUtil {
                 }
             }
         }
+        
+        sortActionData(data);
+        
         return data;
     }
 
@@ -136,6 +146,9 @@ public class ReportUtil {
                 }
             }
         }
+        
+        sortObOperationnelData(data);
+        
         return data;
     }
 
@@ -184,7 +197,7 @@ public class ReportUtil {
                                 activite.setS2("X");
                                 break;
                             default:
-                                System.out.println("_______________________ default case...");
+                                //System.out.println("_______________________ default case...");
                         }
                     }
                 }
@@ -193,6 +206,8 @@ public class ReportUtil {
                 }
             }
         }
+        
+       sortActiviteData(data);
 
         return data;
     }
@@ -223,6 +238,8 @@ public class ReportUtil {
                 }
             }
         }
+        
+        sortActiviteData(data);
 
         return data;
     }
@@ -345,4 +362,61 @@ public class ReportUtil {
         return mainProgramData;
     }
 
+    public static void sortViewGloablData(List<ViewGlobale> data) {
+        Collections.sort(data, new Comparator<ViewGlobale>() {
+            @Override
+            public int compare(ViewGlobale vg1, ViewGlobale vg2) { 
+                    return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
+            }
+        });
+    }
+    
+    protected static void sortObStrageData(List<ObjectifStrategiqueRE> data) {
+        Collections.sort(data, new Comparator<ObjectifStrategiqueRE>() {
+            @Override
+            public int compare(ObjectifStrategiqueRE vg1, ObjectifStrategiqueRE vg2) { 
+                    return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
+            }
+        });
+    }
+    
+    //
+    protected static void sortProgrammeData(List<ProgrammeRE> data) {
+        Collections.sort(data, new Comparator<ProgrammeRE>() {
+            @Override
+            public int compare(ProgrammeRE vg1, ProgrammeRE vg2) { 
+                    return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
+            }
+        });
+    }
+    
+    
+    protected static void sortActionData(List<ActionRE> data) {
+        Collections.sort(data, new Comparator<ActionRE>() {
+            @Override
+            public int compare(ActionRE vg1, ActionRE vg2) { 
+                    return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
+            }
+        });
+    }
+    
+    //
+    protected static void sortObOperationnelData(List<ObjectifOperationnelRE> data) {
+        Collections.sort(data, new Comparator<ObjectifOperationnelRE>() {
+            @Override
+            public int compare(ObjectifOperationnelRE vg1, ObjectifOperationnelRE vg2) { 
+                    return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
+            }
+        });
+    }
+    
+    //
+    protected static void sortActiviteData(List<ActiviteRE> data) {
+        Collections.sort(data, new Comparator<ActiviteRE>() {
+            @Override
+            public int compare(ActiviteRE vg1, ActiviteRE vg2) { 
+                    return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
+            }
+        });
+    }   
 }

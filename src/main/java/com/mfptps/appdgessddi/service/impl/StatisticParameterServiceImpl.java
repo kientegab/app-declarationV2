@@ -329,9 +329,12 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
         String libelle = "";
         
         List<MinistereEvolutionBundle> liste = new ArrayList<>();
+         List<Exercice> exercices = new ArrayList<>(); 
            
         // Déclaration de la liste des structures concernées
         List<Structure> mesStructures = new ArrayList<>();
+        
+        boolean reduced = (params.getExerciceId() != null && params.getExerciceId() != 0);
 
         // vérification, savoir si c'est tout le ministère ou si c'est juste une structure 
         boolean many = ((params.getMinistereId() != null) && (params.getStructureId() == null));  
@@ -347,8 +350,12 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
         } 
         
         // Chargement de la liste des exercices en tenant en compte la couverture
-        List<Exercice> exercices = exerciceRepository.checkXfirtsElement(ExerciceStatus.EN_ATTENTE, PageRequest.of(0,params.getCouverture()));
-         
+        if(reduced){
+            Exercice exo = exerciceRepository.findExerciceById(params.getExerciceId());
+            exercices.add(exo);
+        }else{
+            exercices = exerciceRepository.checkXfirtsElement(ExerciceStatus.EN_ATTENTE, PageRequest.of(0,params.getCouverture()));
+        }
         // Parcours des structure
         for(Structure structure : mesStructures) { 
             

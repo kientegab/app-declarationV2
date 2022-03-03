@@ -18,6 +18,7 @@ import com.mfptps.appdgessddi.enums.TypeStructure;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
 import com.mfptps.appdgessddi.repositories.ObjectifRepository;
+import com.mfptps.appdgessddi.repositories.PeriodeRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.QueryManagerRepository;
@@ -46,27 +47,36 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import static java.util.Calendar.YEAR;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.security.auth.login.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.Exporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+import net.sf.jasperreports.export.XlsExporterConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -93,6 +103,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private final CommentaireService commentaireService;
     private final ProgrammationMapper programmationMapper;
     private final ExerciceService exerciceService;
+    private final PeriodeRepository periodeRepository;
     private final QueryManagerRepository query;
 
     public ProgrammationServiceImpl(ProgrammationRepository programmationRepository,
@@ -107,7 +118,9 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             CommentaireService commentaireService,
             ProgrammationMapper programmationMapper,
             ExerciceService exerciceService,
-            QueryManagerRepository query) {
+            QueryManagerRepository query,
+            PeriodeRepository periodeRepository) {
+        
         this.programmationRepository = programmationRepository;
         this.tacheRepository = tacheRepository;
         this.tacheEvaluerRepository = tacheEvaluerRepository;
@@ -121,6 +134,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         this.programmationMapper = programmationMapper;
         this.exerciceService = exerciceService;
         this.query = query;
+        this.periodeRepository = periodeRepository;
 
     }
 
@@ -154,7 +168,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         Date deadLine = programmationPhysiqueRepository.findPeriodeMaxDateForProgrammation(response.getId());
         deadLine = AppUtil.repairDate(deadLine, exerciceEnAttente.getDebut().getYear());
         response.setDeadLine(deadLine);
-//FAUT-IL .SAVE ENCORE RESPONSE ????????????????????????????
+        //FAUT-IL .SAVE ENCORE RESPONSE ????????????????????????????
 
         //initialise et enregistre les taches
         if (programmationDTO.isSingleton()) {//Activite with one Tache
@@ -447,6 +461,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 allStructures.add(structure);
                 globalData = this.query.globalDataStructure(exercice.get().getId(), structure.getId());
             }
+            
+            ReportUtil.sortViewGloablData(globalData);
 
             mainProgramData = ReportUtil.consctruct(ministere.getLibelle(), structureParent.getLibelle(), currentStructure.get().getLibelle(), currentStructure.get().getTelephone(), titre, logoStream, globalData);
 
@@ -460,26 +476,53 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(japerReport, parameters, datasource);
 
-            if (fileFormat.trim().equals("pdf")) {//export to pdf file
+            if (fileFormat.trim().toLowerCase().equals("pdf")) {//export to pdf file
                 JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
-            } else if (fileFormat.trim().equals("excel")) {//export to Excel sheet
-                SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
-                configuration.setOnePagePerSheet(true);
-                configuration.setIgnoreGraphics(false);
-
-                File outputFile = new File("C:\\Users\\Canisius\\Pictures\\Programme_activites.xlsx");
-                try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        OutputStream fileOutputStream = new FileOutputStream(outputFile)) {
-                    Exporter exporter = new JRXlsxExporter();
+            } else {
+                if (fileFormat.trim().toLowerCase().equals("excel")) {
+                     JRXlsExporter exporter = new JRXlsExporter();
+                     
                     exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-                    exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
+                    exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+                    SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+                    configuration.setOnePagePerSheet(true);
+                    configuration.setDetectCellType(true);
+                    configuration.setCollapseRowSpan(false);
                     exporter.setConfiguration(configuration);
-                    exporter.exportReport();
-                    byteArrayOutputStream.writeTo(fileOutputStream);
-                } catch (IOException ex) {
-                    log.error("Error when exporting data from", ex);
+                      
+                    exporter.exportReport();    
+                     
+                }else{
+                    if (fileFormat.trim().toLowerCase().equals("word")) {
+                        JRDocxExporter exporter = new JRDocxExporter();
+                        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));    
+                        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+                        exporter.exportReport();
+                    }else{
+                        JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+                    }
                 }
             }
+                
+                
+//            if (fileFormat.trim().equals("excel")) {//export to Excel sheet
+//                SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
+//                configuration.setOnePagePerSheet(true);
+//                configuration.setIgnoreGraphics(false);
+//
+//                File outputFile = new File("C:\\Users\\Canisius\\Pictures\\Programme_activites.xlsx");
+//                try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//                        OutputStream fileOutputStream = new FileOutputStream(outputFile)) {
+//                    Exporter exporter = new JRXlsxExporter();
+//                    exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+//                    exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
+//                    exporter.setConfiguration(configuration);
+//                    exporter.exportReport();
+//                    byteArrayOutputStream.writeTo(fileOutputStream);
+//                } catch (IOException ex) {
+//                    log.error("Error when exporting data from", ex);
+//                }
+//            }
 
 //            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\test2.pdf");//exportReportToPdfStream(jasperPrint, outStream);
         } catch (JRException e) {
@@ -489,7 +532,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     @Override
     @Transactional
-    public void printRapportActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, String fileFormat, OutputStream outputStream) {
+    public void printRapportActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, long periodeId,String fileFormat, OutputStream outputStream) {
 
         try {
             // chargement du ministère concerné
@@ -499,8 +542,22 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             Optional<Structure> currentStructure = Optional.ofNullable(structureRepository.getById(currentStructureId));
 
             Optional<Exercice> exercice = exerciceService.get(exerciceId);
-
+            
+            // 
+            boolean periodique = (periodeId > 0);
+            
+             // Calendrier pour extraction de l'année 
+            Calendar calendrier = Calendar.getInstance();
+            calendrier.setTime(java.util.Date.from(exercice.get().getDebut().atStartOfDay().atZone(ZoneId.systemDefault()) .toInstant()));  
+            Date finPeriode = null;  
+            if(periodique){
+                Periode period = periodeRepository.getById(periodeId);
+                finPeriode = AppUtil.repairDate(period.getDebut(), calendrier.get(YEAR));
+            }
+            
+            // 
             Structure structureParent = new Structure();
+            
             if (currentStructure.get().getParent() != null) {
                 structureParent = this.structureRepository.findById(currentStructure.get().getParent().getId()).get();
             }
@@ -522,13 +579,24 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
             // cas de l'ensemble des structures
             if (structureId == null) {
-                allStructures = this.ministereStructureRepository.allNonInternalStructureByMinistere(ministereId, TypeStructure.INTERNE);
-                globalData = this.query.globalDataMinistere(exercice.get().getId());
+                 allStructures = this.ministereStructureRepository.allNonInternalStructureByMinistere(ministereId, TypeStructure.INTERNE);
+                if(periodique){
+                    globalData = this.query.globalDataMinistere(exercice.get().getId(),finPeriode);
+                }else{
+                    globalData = this.query.globalDataMinistere(exercice.get().getId());
+                } 
             } else {// cas d'une structure particulière
                 Structure structure = this.structureRepository.findById(structureId).get();
                 allStructures.add(structure);
-                globalData = this.query.globalDataStructure(exercice.get().getId(), structure.getId());
+                if(periodique){ 
+                    globalData = this.query.globalDataStructure(exercice.get().getId(), structure.getId(), finPeriode);
+                }else{
+                    globalData = this.query.globalDataStructure(exercice.get().getId(), structure.getId());
+                }
             }
+            
+            // Reclasse les éléments
+            ReportUtil.sortViewGloablData(globalData);
 
             mainProgramData = ReportUtil.consctructRapport(ministere.getLibelle(), structureParent.getLibelle(), currentStructure.get().getLibelle(), currentStructure.get().getTelephone(), titre, logoStream, globalData);
 
@@ -542,9 +610,33 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(japerReport, parameters, datasource);
 
-            if (fileFormat.trim().equals("pdf")) {//export to pdf file
+            if (fileFormat.trim().toLowerCase().equals("pdf")) {//export to pdf file
                 //JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\Rapport_activites.pdf");
                 JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+            } else {
+                if (fileFormat.trim().toLowerCase().equals("excel")) {
+                     JRXlsExporter exporter = new JRXlsExporter();
+                     
+                    exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+                    exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+                    SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+                    configuration.setOnePagePerSheet(true);
+                    configuration.setDetectCellType(true);
+                    configuration.setCollapseRowSpan(false);
+                    exporter.setConfiguration(configuration);
+                      
+                    exporter.exportReport();    
+                     
+                }else{
+                    if (fileFormat.trim().toLowerCase().equals("word")) {
+                        JRDocxExporter exporter = new JRDocxExporter();
+                        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));    
+                        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+                        exporter.exportReport();
+                    }else{
+                        JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+                    }
+                }
             }
 
         } catch (JRException e) {

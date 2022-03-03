@@ -162,10 +162,11 @@ public interface ProgrammationService {
      * @param structureId
      * @param exerciceId : NOT NULLABLE
      * @param currentStructureId : NOT NULLABLE
+     * @param periodeId: NOT NULLABLE
      * @param fileFormat
      * @param outputStream
      */
-    void printRapportActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, String fileFormat, OutputStream outputStream);
+    void printRapportActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, long periodeId, String fileFormat, OutputStream outputStream);
 
     /**
      * Taux d'execution annuel ou pour periode d'une structure donnee
