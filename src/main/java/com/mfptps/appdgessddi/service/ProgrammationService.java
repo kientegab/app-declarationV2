@@ -168,6 +168,23 @@ public interface ProgrammationService {
      */
     void printRapportActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, long periodeId, String fileFormat, OutputStream outputStream);
 
+    
+    
+    /**
+     * Impression de rapport de performance d'une structure ou d'un ministere en
+     * fonction de l'exercice
+     *
+     * @param ministereId
+     * @param structureId
+     * @param exerciceId : NOT NULLABLE
+     * @param currentStructureId : NOT NULLABLE
+     * @param periodeId: NOT NULLABLE
+     * @param fileFormat
+     * @param outputStream
+     */
+    void imprimerRapportPerformance(long ministereId, Long structureId, long exerciceId, long currentStructureId, long periodeId, String fileFormat, OutputStream outputStream);
+        
+            
     /**
      * Taux d'execution annuel ou pour periode d'une structure donnee
      *

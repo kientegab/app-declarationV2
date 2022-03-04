@@ -95,6 +95,17 @@ public class StatisticParameterController {
         return new ResponseEntity<>(data, HttpStatus.OK);
     } 
     
+     /**
+     * resumerEvolution: resume l'ensemble des pour une structure donnée les dépenses
+     * @param params
+     * @return 
+     */
+    @PostMapping(path = "/evolution-performance/")
+    public ResponseEntity<AllEvolutionData> resumerEvolutionPerformance(@Valid @RequestBody EvolutionParam params) { 
+        AllEvolutionData data = service.resumerEvolution(params);// 
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    } 
+    
     /**
      *
      * @param id: id of Ministere

@@ -20,7 +20,6 @@ import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammeRepository;
 import com.mfptps.appdgessddi.service.CustomException;
-import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -28,11 +27,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
 import static java.util.Calendar.YEAR;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
 
 /**
  *
@@ -337,4 +335,11 @@ public class AppUtil {
         return result;
     } 
     
+    
+//    public static void main(String [] args) {
+//        log.error(" ===================== BEFORE ==============> ");
+//        JRXlsExporter exporter = new JRXlsExporter();
+//        log.error(" ===================== AFTER ==============> ");
+//        
+//    }
 }
