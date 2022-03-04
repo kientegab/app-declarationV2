@@ -313,6 +313,26 @@ public class ProgrammationController {
                 printGlobalVM.getStructureId(), printGlobalVM.getExerciceId(),
                 printGlobalVM.getCurrentStructureId(), printGlobalVM.getPeriodeId(), printGlobalVM.getFormat(), outStream);
     }
+    
+     /**
+     *
+     * @param response
+     * @param printGlobalVM
+     * @throws IOException
+     */
+    @PostMapping(value = "/print/rapport-performance")
+    public void imprimerRapportPerformance(HttpServletResponse response, @RequestBody PrintGlobalVM printGlobalVM) throws IOException {
+        if (printGlobalVM.getExerciceId() == null) {
+            throw new BadRequestAlertException("Exercice non renseigné. ", ENTITY_NAME, "idnull");
+        } 
+        String [] tab = AppUtil.constructFormatAndExtension(printGlobalVM.getFormat()); 
+        response.setContentType(tab[0]);
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"Rapport_activite_" + printGlobalVM.getMinistereId() + tab[1] + "\""));
+        OutputStream outStream = response.getOutputStream();
+        programmationService.printRapportActivites(printGlobalVM.getMinistereId(),
+                printGlobalVM.getStructureId(), printGlobalVM.getExerciceId(),
+                printGlobalVM.getCurrentStructureId(), printGlobalVM.getPeriodeId(), printGlobalVM.getFormat(), outStream);
+    }
 
     /**
      *

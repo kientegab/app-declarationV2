@@ -37,6 +37,8 @@ public interface StatisticParameterService {
     ResumerSectorielDepenseData resumerSectorielDepense(Long ministereId, Long exerciceId); 
     
     AllEvolutionData resumerEvolution(EvolutionParam params);
+    
+    AllEvolutionData resumerEvolutionPerformance(EvolutionParam params);
 
     List<CountStructureGroupByType> nbStructuresByGroupType(long ministereId);
 }

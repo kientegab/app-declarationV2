@@ -521,7 +521,6 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     }
 
     @Override
-    @Transactional
     public void printRapportActivites(long ministereId, Long structureId, long exerciceId, long currentStructureId, long periodeId, String fileFormat, OutputStream outputStream) {
 
         try {
@@ -605,6 +604,119 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
             } else {
                 if (fileFormat.trim().toLowerCase().equals("excel")) {
+                    JRXlsExporter exporter = new JRXlsExporter();
+
+                    exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+                    exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+                    SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+                    configuration.setOnePagePerSheet(true);
+                    configuration.setDetectCellType(true);
+                    configuration.setCollapseRowSpan(false);
+                    exporter.setConfiguration(configuration);
+
+                    exporter.exportReport();
+
+                } else {
+                    if (fileFormat.trim().toLowerCase().equals("word")) {
+                        JRDocxExporter exporter = new JRDocxExporter();
+                        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+                        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+                        exporter.exportReport();
+                    } else {
+                        JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+                    }
+                }
+            }
+
+        } catch (JRException e) {
+            log.error("Error when exporting data from", e);
+        }
+    }
+
+    public void imprimerRapportPerformance(long ministereId, Long structureId, long exerciceId, long currentStructureId, long periodeId, String fileFormat, OutputStream outputStream) {
+
+        try {
+            // chargement du ministère concerné
+            Ministere ministere = this.ministereStructureRepository.findByStructureIdAndStatutIsTrue(currentStructureId).get().getMinistere();
+
+            // structure génératrice du document
+            Optional<Structure> currentStructure = Optional.ofNullable(structureRepository.getById(currentStructureId));
+
+            Optional<Exercice> exercice = exerciceService.get(exerciceId);
+
+            // 
+            boolean periodique = (periodeId > 0);
+
+            // Calendrier pour extraction de l'année 
+            Calendar calendrier = Calendar.getInstance();
+            calendrier.setTime(java.util.Date.from(exercice.get().getDebut().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+            Date finPeriode = null;
+            if (periodique) {
+                Periode period = periodeRepository.getById(periodeId);
+                finPeriode = AppUtil.repairDate(period.getDebut(), calendrier.get(YEAR));
+            }
+
+            // 
+            Structure structureParent = new Structure();
+
+            if (currentStructure.get().getParent() != null) {
+                structureParent = this.structureRepository.findById(currentStructure.get().getParent().getId()).get();
+            }
+
+            // chargement du logo
+            InputStream logoStream = AppUtil.getAppDefaultLogo();
+
+            // le titre du rapport
+            String titre = "RAPPORT D'ACTIVITES " + exercice.get().getDebut().getYear();
+
+            // conteneurs de données à imprimer
+            List<ProgrammeDataRE> mainProgramData = new ArrayList<>();
+
+            // Construction des objet pour impression
+            List<ViewGlobale> globalData = new ArrayList<>();
+
+            // conteneur des structures
+            List<Structure> allStructures = new ArrayList<>();
+
+            // cas de l'ensemble des structures
+            if (structureId == null) {
+                allStructures = this.ministereStructureRepository.allNonInternalStructureByMinistere(ministereId, TypeStructure.INTERNE);
+                if (periodique) {
+                    globalData = this.query.globalDataMinistere(exercice.get().getId(), finPeriode);
+                } else {
+                    globalData = this.query.globalDataMinistere(exercice.get().getId());
+                }
+            } else {// cas d'une structure particulière
+                Structure structure = this.structureRepository.findById(structureId).get();
+                allStructures.add(structure);
+                if (periodique) {
+                    globalData = this.query.globalDataStructure(exercice.get().getId(), structure.getId(), finPeriode);
+                } else {
+                    globalData = this.query.globalDataStructure(exercice.get().getId(), structure.getId());
+                }
+            }
+
+            // Reclasse les éléments
+            ReportUtil.sortViewGloablData(globalData);
+
+            mainProgramData = ReportUtil.consctructRapport(ministere.getLibelle(), structureParent.getLibelle(), currentStructure.get().getLibelle(), currentStructure.get().getTelephone(), titre, logoStream, globalData);
+
+            InputStream reportStream = this.getClass().getResourceAsStream("/conteneur_principal_rapport.jasper");// revoir le fichier
+
+            Map<String, Object> parameters = new HashMap<>();
+
+            JRDataSource datasource = new JRBeanCollectionDataSource(mainProgramData);
+
+            JasperReport japerReport = (JasperReport) JRLoader.loadObject(reportStream);
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(japerReport, parameters, datasource);
+
+            if (fileFormat.trim().toLowerCase().equals("pdf")) {//export to pdf file
+                //JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\Rapport_activites.pdf");
+                JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+            } else {
+                if (fileFormat.trim().toLowerCase().equals("excel")) {
+
                     JRXlsExporter exporter = new JRXlsExporter();
 
                     exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
