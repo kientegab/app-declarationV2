@@ -30,7 +30,6 @@ import static java.util.Calendar.YEAR;
 import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
 
 /**
  *
@@ -308,34 +307,39 @@ public class AppUtil {
         String dateStrValue = startDate.getYear() + "-" + endDate.getYear();
         return dateStrValue;
     }
-    
+
     /**
-     * Fonction qui renvoie l'extension du futur ficher à créeer et le format du contenu du fichier à renvoyer
+     * Fonction qui renvoie l'extension du futur ficher à créeer et le format du
+     * contenu du fichier à renvoyer
+     *
      * @param extension
-     * @return 
+     * @return
      */
-    public static String[] constructFormatAndExtension(String extension){
-        String [] result = new String [2];
-        
-        switch(extension){
+    public static String[] constructFormatAndExtension(String extension) {
+        String[] result = new String[2];
+
+        switch (extension) {
             case "PDF":
                 result[0] = "application/pdf";
                 result[1] = ".pdf";
+                break;
             case "Excel":
                 result[0] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 result[1] = ".xlsx";
+                break;
             case "Word":
-                result[0] = "application/ms-word”";
+                result[0] = "application/ms-word";
                 result[1] = ".docx";
-            default :
+                break;
+            default:
                 result[0] = "application/pdf";
                 result[1] = ".pdf";
-        }        
-        
+                break;
+        }
+
         return result;
-    } 
-    
-    
+    }
+
 //    public static void main(String [] args) {
 //        log.error(" ===================== BEFORE ==============> ");
 //        JRXlsExporter exporter = new JRXlsExporter();
