@@ -22,7 +22,6 @@ import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.ResponseCheckPeriode;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.*;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.ZoneId;
@@ -54,7 +53,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 /**
  *
@@ -480,25 +478,6 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 }
             }
 
-//            if (fileFormat.trim().equals("excel")) {//export to Excel sheet
-//                SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
-//                configuration.setOnePagePerSheet(true);
-//                configuration.setIgnoreGraphics(false);
-//
-//                File outputFile = new File("C:\\Users\\Canisius\\Pictures\\Programme_activites.xlsx");
-//                try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//                        OutputStream fileOutputStream = new FileOutputStream(outputFile)) {
-//                    Exporter exporter = new JRXlsxExporter();
-//                    exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-//                    exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
-//                    exporter.setConfiguration(configuration);
-//                    exporter.exportReport();
-//                    byteArrayOutputStream.writeTo(fileOutputStream);
-//                } catch (IOException ex) {
-//                    log.error("Error when exporting data from", ex);
-//                }
-//            }
-//            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\test2.pdf");//exportReportToPdfStream(jasperPrint, outStream);
         } catch (JRException e) {
             log.error("Error when exporting data from", e);
         }
