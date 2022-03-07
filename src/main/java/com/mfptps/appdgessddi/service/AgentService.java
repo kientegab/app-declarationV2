@@ -4,6 +4,7 @@ import com.mfptps.appdgessddi.entities.*;
 import com.mfptps.appdgessddi.repositories.*;
 import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.dto.AgentDTO;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.RandomUtil;
 import com.mfptps.appdgessddi.web.exceptions.CustomException;
 import java.time.Instant;
@@ -202,6 +203,8 @@ public class AgentService {
                     agent.setMatricule(agentDTO.getMatricule().toLowerCase());
                     agent.setNom(agentDTO.getNom());
                     agent.setPrenom(agentDTO.getPrenom());
+                    agent.setTelephone(agentDTO.getTelephone());
+                    agent.setEmail(agentDTO.getEmail());
                     agent.setActif(agentDTO.isActif());
                     Set<Profile> managedProfiles = agent.getProfiles();
                     managedProfiles.clear();
@@ -219,7 +222,7 @@ public class AgentService {
 
     public void deleteAgent(String matricule) {
         agentRepository.findOneByMatricule(matricule).ifPresent(agent -> {
-            agentRepository.delete(agent);
+            agentRepository.deleteById(agent.getId());
             this.clearAgentCaches(agent);
             log.debug("Deleted Agent: {}", agent);
         });
@@ -265,6 +268,25 @@ public class AgentService {
     @Transactional(readOnly = true)
     public Page<AgentDTO> getAllManagedAgents(Pageable pageable) {
         return agentRepository.findAll(pageable).map(AgentDTO::new);
+    }
+
+    /**
+     * Liste les agents par structure
+     *
+     * @param structureId
+     * @param pageable
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Page<AgentDTO> getAllManagedAgentsByStructure(long structureId, Pageable pageable) {
+        Page<AgentDTO> result;
+
+        if (SecurityUtils.isCurrentUserInRole(AppUtil.ADMIN)) {//S'il sagit d'un admin, on renvoie tous les agents sans exception
+            result = agentRepository.findAll(pageable).map(AgentDTO::new);
+        } else {
+            result = agentRepository.findAllByStructure(structureId, pageable).map(AgentDTO::new);
+        }
+        return result;
     }
 
     @Transactional(readOnly = true)

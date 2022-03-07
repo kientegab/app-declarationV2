@@ -1,26 +1,27 @@
 package com.mfptps.appdgessddi.service.dto;
 
-import com.mfptps.appdgessddi.entities.Performer;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 public class PerformanceDTO {
 
-    private double efficacité ;
-    private double efficience ;
-    private double gouvernance ;
-    private double impact ;
-    private double pgs ;
+    private double efficacite;
+    private double efficience;
+    private double gouvernance;
+    private double impact;
+    private double pgs;
+    private double pgm;
+    private String appreciation;
+    private boolean global;
 
-
-
-    public PerformanceDTO() {
+    public double getEfficacite() {
+        return efficacite;
     }
 
-    public double getEfficacité() {
-        return efficacité;
-    }
-
-    public void setEfficacité(double efficacité) {
-        this.efficacité = efficacité;
+    public void setEfficacite(double efficacite) {
+        this.efficacite = efficacite;
     }
 
     public double getEfficience() {
@@ -54,4 +55,29 @@ public class PerformanceDTO {
     public void setPgs(double pgs) {
         this.pgs = pgs;
     }
+
+    public double getPgm() {
+        return pgm;
+    }
+
+    public void setPgm(double pgm) {
+        this.pgm = pgm;
+    }
+
+    public String getAppreciation() {
+        return appreciation;
+    }
+
+    public void setAppreciation(String appreciation) {
+        this.appreciation = appreciation;
+    }
+
+    public boolean isGlobal() {
+        return global;
+    }
+
+    public void setGlobal(boolean global) {
+        this.global = global;
+    }
+
 }

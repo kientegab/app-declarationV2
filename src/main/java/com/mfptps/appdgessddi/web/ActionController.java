@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -35,7 +36,15 @@ public class ActionController {
         this.actionService = actionService;
     }
 
+    /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
+     *
+     * @param actionDTO
+     * @return
+     * @throws URISyntaxException
+     */
     @PostMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Action> createAction(@Valid @RequestBody ActionDTO actionDTO) throws URISyntaxException {
         Action action = actionService.create(actionDTO);
         log.debug("Création d une action : {}", actionDTO);
@@ -44,7 +53,15 @@ public class ActionController {
                 .body(action);
     }
 
+    /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
+     *
+     * @param action
+     * @return
+     * @throws URISyntaxException
+     */
     @PutMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Action> updateAction(@Valid @RequestBody Action action) throws URISyntaxException {
         log.debug("Mis à jour d une action : {}", action);
         if (action.getId() == null) {
@@ -77,7 +94,14 @@ public class ActionController {
         return ResponseEntity.ok().headers(headers).body(actions.getContent());
     }
 
+    /**
+     * Access granted to ADMIN
+     *
+     * @param id
+     * @return
+     */
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Suppression d une action : {}", id);
         actionService.delete(id);

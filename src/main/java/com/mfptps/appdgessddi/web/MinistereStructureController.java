@@ -1,15 +1,9 @@
 package com.mfptps.appdgessddi.web;
 
-
-import com.mfptps.appdgessddi.entities.Ministere;
-import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.entities.MinistereStructure;
 import com.mfptps.appdgessddi.service.MinistereStructureService;
-import com.mfptps.appdgessddi.service.dto.MinistereStructureDTO;
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.mfptps.appdgessddi.utils.*;
 import java.util.List;
-import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,11 +31,10 @@ public class MinistereStructureController {
         this.ministereStructureService = ministereStructureService;
     }
 
-
     @GetMapping(path = "/ministere-structures")
     public ResponseEntity<List<MinistereStructure>> findAllMinisteresStrucre(Pageable pageable) {
         Page<MinistereStructure> minsiteresStructure = ministereStructureService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(),minsiteresStructure );
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), minsiteresStructure);
         return ResponseEntity.ok().headers(headers).body(minsiteresStructure.getContent());
     }
 }

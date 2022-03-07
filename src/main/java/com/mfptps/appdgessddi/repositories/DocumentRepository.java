@@ -6,8 +6,9 @@
 package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.Document;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
@@ -15,5 +16,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface DocumentRepository extends JpaRepository<Document, Long> {
 
-    Optional<Document> findByDeletedFalseAndChemin(String chemin);
+    @Query("SELECT d FROM Document d "
+            + "WHERE d.chemin = :chemin "
+            + "AND d.deleted = false")
+    Document findByChemin(@Param("chemin") String chemin);
 }

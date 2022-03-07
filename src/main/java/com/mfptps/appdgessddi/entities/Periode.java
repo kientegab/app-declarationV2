@@ -6,12 +6,16 @@
 package com.mfptps.appdgessddi.entities;
 
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
@@ -35,16 +39,22 @@ public class Periode extends CommonEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false)
     private String libelle;
 
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date debut;
 
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date fin;
 
-    @Type(type="yes_no")
-    private boolean valeur ;
+    @Type(type = "yes_no")
+    private boolean valeur;
     //===============================RELATIONSHIPS
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Periodicite periodicite;
 
     //=============================== CONSTRUCTORS && GETTERS/SETTERS ...
@@ -99,5 +109,4 @@ public class Periode extends CommonEntity {
         this.valeur = valeur;
     }
 
-    
 }

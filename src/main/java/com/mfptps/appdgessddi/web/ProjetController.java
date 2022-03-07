@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,12 +53,14 @@ public class ProjetController {
     }
 
     /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
      *
      * @param projetDto
      * @return
      * @throws URISyntaxException
      */
     @PostMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Projet> createProjet(@Valid @RequestBody ProjetDTO projetDto) throws URISyntaxException {
         AppUtil.checkDebutBeforeFin(projetDto.getDebut(), projetDto.getFin());
         Projet projetSaved = projetService.create(projetDto);
@@ -68,12 +71,14 @@ public class ProjetController {
     }
 
     /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
      *
      * @param projet
      * @return
      * @throws URISyntaxException
      */
     @PutMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Projet> updateProjet(@Valid @RequestBody Projet projet) throws URISyntaxException {
         log.debug("Mis à jour du Projet : {}", projet);
         if (projet.getId() == null) {
@@ -123,11 +128,13 @@ public class ProjetController {
     }
 
     /**
+     * Access granted to ADMIN
      *
      * @param id : Projet id to be deleted
      * @return
      */
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Suppression du Projet : {}", id);
         projetService.delete(id);

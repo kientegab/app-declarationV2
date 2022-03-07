@@ -5,15 +5,20 @@
  */
 package com.mfptps.appdgessddi.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
@@ -25,8 +30,14 @@ import org.hibernate.annotations.Where;
  *
  * @author Canisius <canisiushien@gmail.com>
  */
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "evaluation")
+@Table(name = "evaluation", uniqueConstraints = {
+    @UniqueConstraint(name = "unique_structure_exercice", columnNames = {"structure_id", "exercice_id"})})
 @SQLDelete(sql = "UPDATE evaluation SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 @FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
@@ -37,82 +48,17 @@ public class Evaluation extends CommonEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Date date;
-
     private double valeur;//Programmation with single tache
-
-    private String observations;
 
     @Column(nullable = false)
     @Type(type = "yes_no")
-    private boolean evaluer = false;//property String statut change to boolean evaluer. 23112021
+    private boolean evaluer = false;
 
-    //=============================== RELATIONSHIPS
     @ManyToOne
-    private Periode periode;
+    @JoinColumn(name = "structure_id")
+    private Structure structure;
 
-    @JsonIgnoreProperties(value = {"sourceFinancement", "taches", "activite", "projet", "structure", "exercice", "objectif", "action", "programme"})
     @ManyToOne
-    private Programmation programmation;//added 22112021
-
-    //=============================== CONSTRUCTORS && GETTER/SETTERS
-    public Evaluation() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public double getValeur() {
-        return valeur;
-    }
-
-    public void setValeur(double valeur) {
-        this.valeur = valeur;
-    }
-
-    public String getObservations() {
-        return observations;
-    }
-
-    public void setObservations(String observations) {
-        this.observations = observations;
-    }
-
-    public boolean isEvaluer() {
-        return evaluer;
-    }
-
-    public void setEvaluer(boolean evaluer) {
-        this.evaluer = evaluer;
-    }
-
-    public Programmation getProgrammation() {
-        return programmation;
-    }
-
-    public void setProgrammation(Programmation programmation) {
-        this.programmation = programmation;
-    }
-
-    public Periode getPeriode() {
-        return periode;
-    }
-
-    public void setPeriode(Periode periode) {
-        this.periode = periode;
-    }
-
+    @JoinColumn(name = "exercice_id")
+    private Exercice exercice;
 }

@@ -24,14 +24,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 
 /**
  *
  * @author Canisius <canisiushien@gmail.com>
  */
-@Slf4j
 @Configuration
 public class AppDataInitializer {
 
@@ -59,7 +57,6 @@ public class AppDataInitializer {
 
     @PostConstruct
     public void initialization() {
-        log.info("Application data initialization");
         //save Exercices
         if (0 == exerciceRepository.count()
                 || !exerciceRepository.findByStatut(ExerciceStatus.EN_COURS).isPresent()
@@ -82,11 +79,10 @@ public class AppDataInitializer {
 
         //save Basic Ministere and Structure
         Optional<Ministere> basicExisting = ministereRepository.findByCode(AppUtil.BASIC_MINISTERE_CODE);
-        if (basicExisting.isEmpty()) {
+        if (!basicExisting.isPresent()) {
             this.recordBasicMinistereAndStrucuture();
         }
 
-        log.info("End of data initialization");
     }
 
     /**
@@ -108,7 +104,8 @@ public class AppDataInitializer {
             structure.setNiveau(1);
             structure.setType(TypeStructure.CENTRALE);
             structure.setTelephone(AppUtil.BASIC_STRUCTURE_TELEPHONE);
-            structure.setStatut("ACTIF");
+            structure.setEmailResp(AppUtil.BASIC_STRUCTURE_EMAIL);
+            structure.setEmailStruct(AppUtil.BASIC_STRUCTURE_EMAIL);
             structureRepository.save(structure);
 
             ministereStructure.setMinistere(ministere);

@@ -7,7 +7,11 @@ import com.mfptps.appdgessddi.utils.HeaderUtil;
 import com.mfptps.appdgessddi.utils.PaginationUtil;
 import com.mfptps.appdgessddi.utils.ResponseUtil;
 import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
-import liquibase.pro.packaged.O;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -16,12 +20,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -33,7 +31,7 @@ public class ObservationsController {
     @Value("${application.name}")
     private String applicationName;
 
-    private final ObservationsService observationsService ;
+    private final ObservationsService observationsService;
 
     public ObservationsController(ObservationsService observationsService) {
         this.observationsService = observationsService;
@@ -42,7 +40,7 @@ public class ObservationsController {
     @PostMapping
     public ResponseEntity<Observations> createObservation(@Valid @RequestBody ObservationsDTO observationsDTO) throws URISyntaxException {
         Observations observationsSaved = observationsService.create(observationsDTO);
-        log.debug("Création d une observation : {}",observationsDTO);
+        log.debug("Création d une observation : {}", observationsDTO);
         return ResponseEntity.created(new URI("/api/observations/" + observationsSaved.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, observationsSaved.getId().toString()))
                 .body(observationsSaved);
@@ -54,7 +52,7 @@ public class ObservationsController {
         if (observations.getId() == null) {
             throw new BadRequestAlertException("Id invalide", ENTITY_NAME, "idnull");
         }
-        Observations  result = observationsService.update(observations);
+        Observations result = observationsService.update(observations);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, observations.getId().toString()))
                 .body(result);
@@ -66,6 +64,7 @@ public class ObservationsController {
         Optional<Observations> observationsFound = observationsService.get(id);
         return ResponseUtil.wrapOrNotFound(observationsFound);
     }
+
     @GetMapping
     public ResponseEntity<List<Observations>> findAllObservations(Pageable pageable) {
         Page<Observations> observations = observationsService.findAll(pageable);

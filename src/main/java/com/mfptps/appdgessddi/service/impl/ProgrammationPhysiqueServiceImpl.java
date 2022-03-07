@@ -5,16 +5,15 @@
  */
 package com.mfptps.appdgessddi.service.impl;
 
-import com.mfptps.appdgessddi.entities.Evaluation;
 import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.entities.Programmation;
-import com.mfptps.appdgessddi.repositories.EvaluationRepository;
+import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import com.mfptps.appdgessddi.repositories.PeriodeRepository;
+import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.service.CustomException;
-import com.mfptps.appdgessddi.service.EvaluationService;
+import com.mfptps.appdgessddi.service.ProgrammationPhysiqueService;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,20 +26,20 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class EvaluationServiceImpl implements EvaluationService {
+public class ProgrammationPhysiqueServiceImpl implements ProgrammationPhysiqueService {
 
-    private EvaluationRepository evaluationRepository;
+    private final ProgrammationPhysiqueRepository programmationPhysiqueRepository;
 
-    private PeriodeRepository periodeRepository;
+    private final PeriodeRepository periodeRepository;
 
-    public EvaluationServiceImpl(EvaluationRepository evaluationRepository,
+    public ProgrammationPhysiqueServiceImpl(ProgrammationPhysiqueRepository programmationPhysiqueRepository,
             PeriodeRepository periodeRepository) {
-        this.evaluationRepository = evaluationRepository;
+        this.programmationPhysiqueRepository = programmationPhysiqueRepository;
         this.periodeRepository = periodeRepository;
     }
 
     @Override
-    public Evaluation create(Evaluation evaluation) {
+    public ProgrammationPhysique create(ProgrammationPhysique programmationPhysique) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -52,9 +51,9 @@ public class EvaluationServiceImpl implements EvaluationService {
      * checked
      * @param programmation : Object Programmation saving
      */
-    public void addEvaluation(List<PeriodesDTO> periodes, Programmation programmation) {
+    public void addProgrammationPhysique(List<PeriodesDTO> periodes, Programmation programmation) {
         List<Periode> periodesParametrees = periodeRepository.findByPeriodiciteActif();
-        List<Evaluation> evaluations = new ArrayList<>();
+        List<ProgrammationPhysique> programmationPhysiques = new ArrayList<>();
 
         if (periodes.size() != periodesParametrees.size()) {
             throw new CustomException("Périodes non conformes à celles parametrées.");
@@ -66,14 +65,14 @@ public class EvaluationServiceImpl implements EvaluationService {
                     == pp.getLibelle().charAt(pp.getLibelle().length() - 1))
                     && p.isValeur())).map(pp -> {
                 //if elem of periodesDTO is true and fisrtIndex/lastIndex of libelles are equals
-                Evaluation evaluation = new Evaluation();
-                evaluation.setPeriode(pp);
-                return evaluation;
-            }).map(evaluation -> {
-                evaluation.setProgrammation(programmation);
-                return evaluation;
-            }).forEachOrdered(evaluation -> {
-                evaluations.add(evaluation);
+                ProgrammationPhysique progPhysique = new ProgrammationPhysique();
+                progPhysique.setPeriode(pp);
+                return progPhysique;
+            }).map(progPhysique -> {
+                progPhysique.setProgrammation(programmation);
+                return progPhysique;
+            }).forEachOrdered(progPhysique -> {
+                programmationPhysiques.add(progPhysique);
             });
         });
 // above similars loops
@@ -84,31 +83,18 @@ public class EvaluationServiceImpl implements EvaluationService {
 //                        && (p.getLibelle().trim().charAt(p.getLibelle().length() - 1)
 //                        == pp.getLibelle().charAt(pp.getLibelle().length() - 1))
 //                        && p.isValeur()) {//if elem of periodesDTO is true and fisrtIndex/lastIndex of libelles are equals
-//                    Evaluation evaluation = new Evaluation();
-//                    evaluation.setPeriode(pp);
-//                    evaluation.setProgrammation(programmation);
-//                    evaluations.add(evaluation);
+//                    ProgrammationPhysique progPhysique = new ProgrammationPhysique();
+//                    progPhysique.setPeriode(pp);
+//                    progPhysique.setProgrammation(programmation);
+//                    programmationPhysiques.add(progPhysique);
 //                }
 //            }
 //        }
-        evaluationRepository.saveAll(evaluations);
-    }
-
-    /**
-     * Check if the current date is in the interval of the Activity realization
-     * periods
-     *
-     * @param programmationId
-     */
-    @Override
-    public void checkPeriodeEvaluation(Long programmationId) {
-        Date toDay = new Date();
-        evaluationRepository.findByProgrammationAndPeriode(programmationId, toDay)
-                .orElseThrow(() -> new CustomException("Opération interdite ! Rassurez-vous d'être dans la bonne période d'évaluation de l'activité."));
+        programmationPhysiqueRepository.saveAll(programmationPhysiques);
     }
 
     @Override
-    public Page<Evaluation> findAllByProgrammation(Long progammationId, Pageable pageable) {
-        return evaluationRepository.findByProgrammationId(progammationId, pageable);
+    public Page<ProgrammationPhysique> findAllByProgrammation(Long progammationId, Pageable pageable) {
+        return programmationPhysiqueRepository.findByProgrammationId(progammationId, pageable);
     }
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mfptps.appdgessddi.service.dto;
+package com.mfptps.appdgessddi.web.vm;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

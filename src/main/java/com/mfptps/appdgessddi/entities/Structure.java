@@ -5,16 +5,17 @@ import com.mfptps.appdgessddi.enums.convertes.TypeStructureConverter;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -34,20 +35,39 @@ public class Structure extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(nullable = false, unique = true)
     private String libelle;
-    private String sigle;//added 22112021
-    private Integer niveau;//added 20122021
-    private String description;
+
+    @Column(nullable = false)
+    private String sigle;
+
+    @Column(nullable = false)
+    private Integer niveau;
+
     @Column(nullable = false, length = 1)
     @Convert(converter = TypeStructureConverter.class)
     private TypeStructure type;
-    private String statut;//if Structure always exists or no (20112021)
+
+    /**
+     * STRUCTURE CAN BE 'ACTIVATED/ACTIVEE' OR 'DEACTIVATED/DESACTIVEE'
+     */
+    @Column(nullable = false)
+    @Type(type = "yes_no")
+    private boolean active = true;//if Structure always exists or no (20112021); because Structure having type MISSION can disappear
+
     private String telephone;
+
+    @Column(nullable = false)
     private String emailResp;
+
+    @Column(nullable = false)
     private String emailStruct;
-    @ManyToOne
-    @JoinColumn(nullable = true)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     private Structure parent;
+
+    private String description;
 
     public Structure() {
 
@@ -101,12 +121,12 @@ public class Structure extends CommonEntity {
         this.type = type;
     }
 
-    public String getStatut() {
-        return statut;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setStatut(String statut) {
-        this.statut = statut;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String getTelephone() {
@@ -150,7 +170,7 @@ public class Structure extends CommonEntity {
                 + ", niveau='" + niveau + '\''
                 + ", description='" + description + '\''
                 + ", type='" + type + '\''
-                + ", statut='" + statut + '\''
+                + ", active='" + active + '\''
                 + ", telephone=" + telephone
                 + ", emailResp='" + emailResp + '\''
                 + ", emailStruct='" + emailStruct + '\''

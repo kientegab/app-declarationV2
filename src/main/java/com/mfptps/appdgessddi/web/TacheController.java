@@ -7,7 +7,8 @@ package com.mfptps.appdgessddi.web;
 
 import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.service.TacheService;
-import com.mfptps.appdgessddi.service.dto.TacheVM;
+import com.mfptps.appdgessddi.web.vm.TacheVM;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.PaginationUtil;
 import java.util.List;
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,11 +75,13 @@ public class TacheController {
     }
 
     /**
+     * Access granted to FOCAL_STRUCT, RESP_DGESS, (ADMIN)
      *
      * @param taches : list of tache
      * @return
      */
     @PostMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.FS + "\", \"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<List<Tache>> evaluerTaches(@RequestBody List<Tache> taches) {
         List<Tache> response = tacheService.evaluer(taches);
         return ResponseEntity.ok().body(response);

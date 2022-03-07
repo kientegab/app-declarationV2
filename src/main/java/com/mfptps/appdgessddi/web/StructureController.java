@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -45,7 +46,15 @@ public class StructureController {
         this.ministereStructureService = ministereStructureService;
     }
 
+    /**
+     * Access granted to RESP_DDII, DIR_DGESS, ADMIN
+     *
+     * @param structure
+     * @return
+     * @throws URISyntaxException
+     */
     @PostMapping(path = "/structures")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RDDII + "\",\"" + AppUtil.DD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Structure> create(@Valid @RequestBody StructureDTO structure) throws URISyntaxException {
 
         Structure structu = structureService.create(structure);
@@ -56,6 +65,7 @@ public class StructureController {
     }
 
     @DeleteMapping(path = "/structures/{id}")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RDDII + "\",\"" + AppUtil.DD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Suppression d'une structure : {}", id);
         structureService.delete(id);
@@ -65,7 +75,15 @@ public class StructureController {
                 .build();
     }
 
+    /**
+     * Access granted to RESP_DDII, DIR_DGESS, ADMIN
+     *
+     * @param structure
+     * @return
+     * @throws URISyntaxException
+     */
     @PutMapping(path = "/structures")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RDDII + "\",\"" + AppUtil.DD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Structure> updateStructure(@Valid @RequestBody Structure structure) throws URISyntaxException {
         log.debug("Mis à jour d'une structure : {}", structure);
         if (structure.getId() == null) {
@@ -104,12 +122,14 @@ public class StructureController {
     }
 
     /**
+     * Access granted to RESP_DDII, DIR_DGESS, ADMIN
      *
      * @param changeMinistereDTO
      * @return
      * @throws URISyntaxException
      */
     @PostMapping(path = "/structures/change-ministere")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RDDII + "\",\"" + AppUtil.DD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Structure> changeMinistere(@Valid @RequestBody ChangeMinistereDTO changeMinistereDTO) throws URISyntaxException {
         log.debug("Changement de ministere : {}", changeMinistereDTO);
         Structure result = structureService.changementMinistere(changeMinistereDTO);

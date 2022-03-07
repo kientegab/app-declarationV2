@@ -26,11 +26,19 @@ public class ProgrammationDTO {
 
     private double coutPrevisionnel;
 
-    private double coutReel;
+    private double coutReel;//Ne pas renseigner lors de la programmation
 
     private double cible;
 
+    private String resultatsAttendus;
+
+    private String resultatsAtteints;//Ne pas renseigner lors de la programmation
+
+    private String indicateur;
+
     private String observations;
+
+    private boolean estPrioritaire;
 
     private boolean singleton;
 
@@ -88,12 +96,44 @@ public class ProgrammationDTO {
         this.cible = cible;
     }
 
+    public String getResultatsAttendus() {
+        return resultatsAttendus;
+    }
+
+    public void setResultatsAttendus(String resultatsAttendus) {
+        this.resultatsAttendus = resultatsAttendus;
+    }
+
+    public String getResultatsAtteints() {
+        return resultatsAtteints;
+    }
+
+    public void setResultatsAtteints(String resultatsAtteints) {
+        this.resultatsAtteints = resultatsAtteints;
+    }
+
+    public String getIndicateur() {
+        return indicateur;
+    }
+
+    public void setIndicateur(String indicateur) {
+        this.indicateur = indicateur;
+    }
+
     public String getObservations() {
         return observations;
     }
 
     public void setObservations(String observations) {
         this.observations = observations;
+    }
+
+    public boolean isEstPrioritaire() {
+        return estPrioritaire;
+    }
+
+    public void setEstPrioritaire(boolean estPrioritaire) {
+        this.estPrioritaire = estPrioritaire;
     }
 
     public boolean isSingleton() {

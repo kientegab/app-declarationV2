@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -34,7 +35,15 @@ public class ObjectifController {
         this.objectifService = objectifService;
     }
 
+    /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
+     *
+     * @param objectifDTO
+     * @return
+     * @throws URISyntaxException
+     */
     @PostMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Objectif> createObjectif(@Valid @RequestBody ObjectifDTO objectifDTO) throws URISyntaxException {
         Objectif objectif = objectifService.create(objectifDTO);
         log.debug("Création d un objectif : {}", objectifDTO);
@@ -43,7 +52,15 @@ public class ObjectifController {
                 .body(objectif);
     }
 
+    /**
+     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
+     *
+     * @param objectif
+     * @return
+     * @throws URISyntaxException
+     */
     @PutMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Objectif> updateObjectif(@Valid @RequestBody Objectif objectif) throws URISyntaxException {
         log.debug("Mis à jour d un objectif : {}", objectif);
         if (objectif.getId() == null) {
@@ -89,7 +106,14 @@ public class ObjectifController {
         return ResponseEntity.ok().headers(headers).body(objectifs.getContent());
     }
 
+    /**
+     * Access granted to ADMIN
+     *
+     * @param id
+     * @return
+     */
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Suppression d un objectif : {}", id);
         objectifService.delete(id);

@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Filter;
@@ -25,12 +26,18 @@ public class Action extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(updatable = false, nullable = false)
     private String code;
+
+    @Column(nullable = false)
     private String libelle;
+
     private String description;
+
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Objectif objectif;//ObjectifSTRATEGIQUE
 
     public Action() {

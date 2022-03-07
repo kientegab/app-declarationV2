@@ -10,9 +10,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "agent")
+@SQLDelete(sql = "UPDATE agent SET deleted = true WHERE id=?")
+@Where(clause = "deleted = false")
+@FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
+@Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Agent extends CommonEntity {
 
@@ -63,7 +72,7 @@ public class Agent extends CommonEntity {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
-    @Column(name = "telephone", length = 15)
+    @Column(name = "telephone", length = 20)
     private String telephone;
 
     @JsonIgnore
@@ -80,7 +89,6 @@ public class Agent extends CommonEntity {
 
     /*@ManyToOne(optional = true)
     private Structure structure;*/
-
     public Agent() {
     }
 
@@ -187,7 +195,6 @@ public class Agent extends CommonEntity {
 //    public void setStructure(Structure structure) {
 //        this.structure = structure;
 //    }
-
     @Override
     public int hashCode() {
         final int prime = 31;

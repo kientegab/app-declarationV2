@@ -11,7 +11,7 @@ public class StructureDTO {
     private Integer niveau;
     private String description;
     private String type;
-    private String statut;
+    private boolean active;
     private String telephone;
     private String emailResp;
     private String emailStruct;
@@ -68,12 +68,12 @@ public class StructureDTO {
         this.type = type;
     }
 
-    public String getStatut() {
-        return statut;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setStatut(String statut) {
-        this.statut = statut;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String getTelephone() {

@@ -1,18 +1,14 @@
 package com.mfptps.appdgessddi.config;
 
-import static java.net.URLDecoder.decode;
-
+import com.mfptps.appdgessddi.utils.AppProfile;
+import com.mfptps.appdgessddi.utils.H2Config;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import static java.net.URLDecoder.decode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Arrays;
-
 import javax.servlet.*;
-
-import com.mfptps.appdgessddi.utils.AppProfile;
-import com.mfptps.appdgessddi.utils.H2Config;
-
 import org.slf4j.*;
 import org.springframework.boot.web.server.*;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
@@ -66,7 +62,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
             ConfigurableServletWebServerFactory servletWebServer = (ConfigurableServletWebServerFactory) server;
             File root;
             String prefixPath = resolvePathPrefix();
-            root = new File(prefixPath + "target/classes/static/");
+            root = new File(prefixPath + "target/classes/static/*");
             if (root.exists() && root.isDirectory()) {
                 servletWebServer.setDocumentRoot(root);
             }
@@ -109,7 +105,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
             source.registerCorsConfiguration("/v3/api-docs", config);
             source.registerCorsConfiguration("/swagger-resources", config);
             source.registerCorsConfiguration("/swagger-ui/**", config);
-            
+
         }
         return new CorsFilter(source);
     }

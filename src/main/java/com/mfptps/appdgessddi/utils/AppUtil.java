@@ -7,23 +7,39 @@ package com.mfptps.appdgessddi.utils;
 
 import com.mfptps.appdgessddi.entities.Action;
 import com.mfptps.appdgessddi.entities.Objectif;
+import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.entities.Programmation;
+import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import com.mfptps.appdgessddi.entities.Programme;
 import com.mfptps.appdgessddi.enums.BaseStatus;
 import com.mfptps.appdgessddi.enums.TypeObjectif;
 import com.mfptps.appdgessddi.repositories.ActionRepository;
 import com.mfptps.appdgessddi.repositories.ActivitesRepository;
 import com.mfptps.appdgessddi.repositories.ObjectifRepository;
+import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammeRepository;
 import com.mfptps.appdgessddi.service.CustomException;
+import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
+import static java.util.Calendar.YEAR;
 import java.util.Date;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
 
 /**
  *
  * @author Canisius <canisiushien@gmail.com>
  */
+@Slf4j
 public class AppUtil {
+
+    private static InputStream logoStream;
 
     /**
      * TYPE OF STRUCTURE
@@ -44,6 +60,7 @@ public class AppUtil {
     public static final String BASIC_STRUCTURE_LABEL = "Structure de Test";
     public static final String BASIC_STRUCTURE_SIGLE = "STRUC - TEST";
     public static final String BASIC_STRUCTURE_TELEPHONE = "00.00.00.00";
+    public static final String BASIC_STRUCTURE_EMAIL = "contact.test@fp.gov.bf";
 
     /**
      * TYPE OF OBJECTIF
@@ -66,6 +83,24 @@ public class AppUtil {
     public static final String ANNULE = "ANNULE";
     public static final String TERMINEE = "TERMINEE";
     public static final String PAS_COMMENCEE = "PAS_COMMENCEE";
+
+    /**
+     * ALL ROLE/PRIVILEGES OF USERS
+     */
+    public static final String FS = "ROLE_FOCAL_STRUCT";
+    public static final String AGT_D = "ROLE_AGT_DGESS";
+    public static final String DD = "ROLE_DIR_DGESS";
+    public static final String RD = "ROLE_RESP_DGESS";
+    public static final String RS = "ROLE_RESP_STRUCT";
+    public static final String DM = "ROLE_DIRCAB_MIN";
+    public static final String RM = "ROLE_RESP_MIN";
+    public static final String SM = "ROLE_SG_MIN";
+    public static final String AD = "ROLE_AGT_DDII";
+    public static final String RDDII = "ROLE_RESP_DDII";
+    public static final String ADMIN = "ROLE_ADMIN";
+    public static final String DAF = "ROLE_DAF";
+    public static final String DRH = "ROLE_DRH";
+    public static final String USER = "ROLE_USER";
 
     /**
      *
@@ -163,4 +198,148 @@ public class AppUtil {
         codeGenerated = "" + objectif.getCode() + "." + (count + 1L);
         return codeGenerated;
     }
+
+    /**
+     *
+     * @return
+     */
+    public static InputStream getAppDefaultLogo() {
+        try {
+            logoStream = AppUtil.class.getResourceAsStream("/logo.png");
+            return logoStream;
+        } catch (Exception e) {
+            throw new CustomException("Erreur lors du chargement du logo..." + e);
+        }
+    }
+
+    /**
+     *
+     * @param date
+     * @return
+     * @throws ParseException
+     */
+    public static Date normaliserDate(Date date) throws ParseException {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String dateValue = df.format(date);
+        Date toDay = new Date();
+        String toDayValue = df.format(toDay);
+        String value = dateValue
+                .substring(0, dateValue.length() - 4).concat(toDayValue.substring(toDayValue.length() - 4, toDayValue.length()));
+        return df.parse(value);
+    }
+
+    /**
+     * Check if the current date is in the interval of the Activity realization
+     * periods
+     *
+     * Return the Id of Periode come from ProgrammationPhysique ligne
+     *
+     * @param programmationId
+     * @param repository
+     * @return
+     */
+    public static ResponseCheckPeriode checkProgrammationPhysique(long programmationId, ProgrammationPhysiqueRepository repository) throws CustomException {
+        Date toDay = new Date();
+        ResponseCheckPeriode response = new ResponseCheckPeriode();
+        List<ProgrammationPhysique> progsPhysiques = repository.findByProgrammationAndPeriode(programmationId);
+        response.setPeriodes(progsPhysiques);
+
+        for (ProgrammationPhysique pp : progsPhysiques) {
+            try {
+                Date dateDebut = AppUtil.normaliserDate(pp.getPeriode().getDebut());
+                Date dateFin = AppUtil.normaliserDate(pp.getPeriode().getFin());
+                response.setExists(response.isExists() || (toDay.after(dateDebut) && toDay.before(dateFin)));
+                if (response.isExists()) {
+                    response.setPeriode(pp.getPeriode().getId());
+                    break;
+                }
+            } catch (ParseException ex) {
+                log.error("Error when parsing data.");
+            }
+        }
+        return response;
+    }
+
+    public static Periode checkExactPeriode(List<Periode> periodes, Date currentDate) {
+        Periode foundOne = null;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+
+        int year = calendar.get(YEAR);
+
+        for (Periode per : periodes) {
+            Date start = repairDate(per.getDebut(), year);
+            Date end = repairDate(per.getFin(), year);
+            if (currentDate.after(start) && currentDate.before(end)) {
+                foundOne = per;
+                break;
+            }
+        }
+
+        return foundOne;
+    }
+
+    public static Date repairDate(Date givenDate, int year) {
+        try {
+            DateFormat dateFormant = new SimpleDateFormat("dd-MM-yyyy");
+            Date repaired;
+
+            String dateString = dateFormant.format(givenDate);
+            //cutting dateString
+            dateString = dateString.substring(0, dateString.length() - 4);
+            //concat the new year
+            dateString = dateString + String.valueOf(year);
+
+            repaired = dateFormant.parse(dateString);
+
+            return repaired;
+        } catch (ParseException ex) {
+            return null;
+        }
+    }
+
+    public static String convertToShortDate(Date date) {
+        DateFormat dateFormant = new SimpleDateFormat("dd-MM-yyyy");
+        String value = dateFormant.format(date);
+        return value;
+    }
+
+    public static String convertAndConcatDates(LocalDate startDate, LocalDate endDate) {
+        String dateStrValue = startDate.getYear() + "-" + endDate.getYear();
+        return dateStrValue;
+    }
+    
+    /**
+     * Fonction qui renvoie l'extension du futur ficher à créeer et le format du contenu du fichier à renvoyer
+     * @param extension
+     * @return 
+     */
+    public static String[] constructFormatAndExtension(String extension){
+        String [] result = new String [2];
+        
+        switch(extension){
+            case "PDF":
+                result[0] = "application/pdf";
+                result[1] = ".pdf";
+            case "Excel":
+                result[0] = "application/x-msexcel";
+                result[1] = ".xlsx";
+            case "Word":
+                result[0] = "application/ms-word”";
+                result[1] = ".docx";
+            default :
+                result[0] = "application/pdf";
+                result[1] = ".pdf";
+        }        
+        
+        return result;
+    } 
+    
+    
+//    public static void main(String [] args) {
+//        log.error(" ===================== BEFORE ==============> ");
+//        JRXlsExporter exporter = new JRXlsExporter();
+//        log.error(" ===================== AFTER ==============> ");
+//        
+//    }
 }

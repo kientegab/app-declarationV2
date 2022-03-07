@@ -7,6 +7,7 @@ package com.mfptps.appdgessddi.web;
 
 import com.mfptps.appdgessddi.entities.Periodicite;
 import com.mfptps.appdgessddi.service.PeriodiciteService;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.HeaderUtil;
 import com.mfptps.appdgessddi.utils.PaginationUtil;
 import com.mfptps.appdgessddi.utils.ResponseUtil;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,12 +51,14 @@ public class PeriodiciteController {
     }
 
     /**
+     * Access granted to RESP_DGESS, ADMIN
      *
      * @param periodicite :
      * @return
      * @throws URISyntaxException
      */
     @PostMapping
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Periodicite> createPeriodicite(@Valid @RequestBody Periodicite periodicite) throws URISyntaxException {
         Periodicite dataSaved = periodiciteService.create(periodicite);
         log.debug("Création d'une Periodicite : {}", periodicite);
