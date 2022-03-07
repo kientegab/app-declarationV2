@@ -318,20 +318,23 @@ public class AppUtil {
      */
     public static String[] constructFormatAndExtension(String extension){
         String [] result = new String [2];
-        
         switch(extension){
             case "PDF":
                 result[0] = "application/pdf";
                 result[1] = ".pdf";
+                break;
             case "Excel":
                 result[0] = "application/x-msexcel";
                 result[1] = ".xlsx";
+                break;
             case "Word":
-                result[0] = "application/ms-word”";
+                result[0] = "application/ms-word";
                 result[1] = ".docx";
+                break;
             default :
                 result[0] = "application/pdf";
                 result[1] = ".pdf";
+                break;
         }        
         
         return result;
