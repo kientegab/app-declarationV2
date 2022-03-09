@@ -324,7 +324,7 @@ public class AppUtil {
                 result[1] = ".pdf";
                 break;
             case "Excel":
-                result[0] = "application/x-msexcel";
+                result[0] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 result[1] = ".xlsx";
                 break;
             case "Word":

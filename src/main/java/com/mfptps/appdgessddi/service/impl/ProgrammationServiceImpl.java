@@ -5,32 +5,12 @@
  */
 package com.mfptps.appdgessddi.service.impl;
 
-import com.mfptps.appdgessddi.entities.Exercice;
-import com.mfptps.appdgessddi.entities.Ministere;
-import com.mfptps.appdgessddi.entities.Periode;
-import com.mfptps.appdgessddi.entities.Programmation;
-import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
-import com.mfptps.appdgessddi.entities.Structure;
-import com.mfptps.appdgessddi.entities.Tache;
-import com.mfptps.appdgessddi.entities.TacheEvaluer;
+import com.mfptps.appdgessddi.entities.*;
 import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.enums.TypeStructure;
-import com.mfptps.appdgessddi.repositories.ExerciceRepository;
-import com.mfptps.appdgessddi.repositories.MinistereStructureRepository;
-import com.mfptps.appdgessddi.repositories.ObjectifRepository;
-import com.mfptps.appdgessddi.repositories.PeriodeRepository;
-import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
-import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
-import com.mfptps.appdgessddi.repositories.QueryManagerRepository;
-import com.mfptps.appdgessddi.repositories.StructureRepository;
-import com.mfptps.appdgessddi.repositories.TacheEvaluerRepository;
-import com.mfptps.appdgessddi.repositories.TacheRepository;
+import com.mfptps.appdgessddi.repositories.*;
 import com.mfptps.appdgessddi.security.SecurityUtils;
-import com.mfptps.appdgessddi.service.CommentaireService;
-import com.mfptps.appdgessddi.service.CustomException;
-import com.mfptps.appdgessddi.service.ExerciceService;
-import com.mfptps.appdgessddi.service.ProgrammationPhysiqueService;
-import com.mfptps.appdgessddi.service.ProgrammationService;
+import com.mfptps.appdgessddi.service.*;
 import com.mfptps.appdgessddi.service.dto.CommentaireDTO;
 import com.mfptps.appdgessddi.service.dto.PeriodesDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
@@ -41,6 +21,7 @@ import com.mfptps.appdgessddi.service.reportentities.ReportUtil;
 import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.ResponseCheckPeriode;
+import lombok.extern.slf4j.Slf4j;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.ZoneId;
@@ -53,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -63,10 +43,12 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -472,11 +454,11 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
             } else {
                 if (fileFormat.trim().toLowerCase().equals("excel")) {
-                    JRXlsExporter exporter = new JRXlsExporter();
+                    JRXlsxExporter exporter = new JRXlsxExporter();
 
                     exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
                     exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
-                    SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+                    SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
                     configuration.setOnePagePerSheet(true);
                     configuration.setDetectCellType(true);
                     configuration.setCollapseRowSpan(false);
@@ -496,25 +478,6 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 }
             }
 
-//            if (fileFormat.trim().equals("excel")) {//export to Excel sheet
-//                SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
-//                configuration.setOnePagePerSheet(true);
-//                configuration.setIgnoreGraphics(false);
-//
-//                File outputFile = new File("C:\\Users\\Canisius\\Pictures\\Programme_activites.xlsx");
-//                try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//                        OutputStream fileOutputStream = new FileOutputStream(outputFile)) {
-//                    Exporter exporter = new JRXlsxExporter();
-//                    exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-//                    exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
-//                    exporter.setConfiguration(configuration);
-//                    exporter.exportReport();
-//                    byteArrayOutputStream.writeTo(fileOutputStream);
-//                } catch (IOException ex) {
-//                    log.error("Error when exporting data from", ex);
-//                }
-//            }
-//            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\test2.pdf");//exportReportToPdfStream(jasperPrint, outStream);
         } catch (JRException e) {
             log.error("Error when exporting data from", e);
         }
@@ -773,8 +736,6 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     /**
      * SOUS FONCTION (TAUX PAR STRUCTURE): Taux d'execution par exercice/pph
      *
-     * @param structureId
-     * @param exerciceId
      * @param periodeId
      * @return
      */

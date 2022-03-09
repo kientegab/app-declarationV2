@@ -207,30 +207,22 @@
         </dependency>
         
         <!-- apache poi dependencies -->
-        
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>5.2.1</version>
+            <version>5.2.0</version>
         </dependency>
-      
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>5.2.1</version>
+            <version>5.2.0</version>
         </dependency>
-      
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml-schemas</artifactId>
-            <version>4.1.2</version>
+            <version>5.2.0</version>
         </dependency>
-      
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-scratchpad</artifactId>
-            <version>5.2.1</version>
-        </dependency> 
+
       
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -242,7 +234,7 @@
         <dependency>
             <groupId>com.lowagie</groupId>
             <artifactId>itext</artifactId>
-            <version>2.1.7</version> 
+            <version>2.1.7</version>
         </dependency>
         
         <dependency>
