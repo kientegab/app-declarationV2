@@ -283,7 +283,7 @@ public class ProgrammationController {
     @PostMapping(value = "/print/programme-activites")
     public void imprimerPAGlobal(HttpServletResponse response, @RequestBody PrintGlobalVM printGlobalVM) throws IOException {
         if (printGlobalVM.getExerciceId() == null) {
-            throw new BadRequestAlertException("Exercice non renseigné. ", ENTITY_NAME, "idnull");
+            throw new BadRequestAlertException("Exercice non renseigné.", ENTITY_NAME, "idnull");
         }
         String[] tab = AppUtil.constructFormatAndExtension(printGlobalVM.getFormat());
         response.setContentType(tab[0]);

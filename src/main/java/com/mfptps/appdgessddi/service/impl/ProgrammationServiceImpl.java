@@ -143,7 +143,6 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         Date deadLine = programmationPhysiqueRepository.findPeriodeMaxDateForProgrammation(response.getId());
         deadLine = AppUtil.repairDate(deadLine, exerciceEnAttente.getDebut().getYear());
         response.setDeadLine(deadLine);
-        //FAUT-IL .SAVE ENCORE RESPONSE ????????????????????????????
 
         //initialise et enregistre les taches
         if (programmationDTO.isSingleton()) {//Activite with one Tache
