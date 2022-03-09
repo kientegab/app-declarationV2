@@ -20,7 +20,6 @@ import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammeRepository;
 import com.mfptps.appdgessddi.service.CustomException;
-import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -28,8 +27,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
 import static java.util.Calendar.YEAR;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -310,15 +307,18 @@ public class AppUtil {
         String dateStrValue = startDate.getYear() + "-" + endDate.getYear();
         return dateStrValue;
     }
-    
+
     /**
-     * Fonction qui renvoie l'extension du futur ficher à créeer et le format du contenu du fichier à renvoyer
+     * Fonction qui renvoie l'extension du futur ficher à créeer et le format du
+     * contenu du fichier à renvoyer
+     *
      * @param extension
-     * @return 
+     * @return
      */
-    public static String[] constructFormatAndExtension(String extension){
-        String [] result = new String [2];
-        switch(extension){
+    public static String[] constructFormatAndExtension(String extension) {
+        String[] result = new String[2];
+
+        switch (extension) {
             case "PDF":
                 result[0] = "application/pdf";
                 result[1] = ".pdf";
@@ -331,13 +331,19 @@ public class AppUtil {
                 result[0] = "application/ms-word";
                 result[1] = ".docx";
                 break;
-            default :
+            default:
                 result[0] = "application/pdf";
                 result[1] = ".pdf";
                 break;
-        }        
-        
+        }
+
         return result;
-    } 
-    
+    }
+
+//    public static void main(String [] args) {
+//        log.error(" ===================== BEFORE ==============> ");
+//        JRXlsExporter exporter = new JRXlsExporter();
+//        log.error(" ===================== AFTER ==============> ");
+//        
+//    }
 }

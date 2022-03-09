@@ -11,6 +11,7 @@ import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.enums.ExerciceStatus;
 import com.mfptps.appdgessddi.enums.TypeStructure;
+import com.mfptps.appdgessddi.repositories.EvaluationRepository;
 import com.mfptps.appdgessddi.repositories.ExerciceRepository;
 import com.mfptps.appdgessddi.repositories.GrillePerformanceRepository;
 import com.mfptps.appdgessddi.repositories.MinistereRepository;
@@ -57,6 +58,7 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
     private final MinistereRepository ministereRepository; 
     private final GrillePerformanceRepository grilleRepository;
     private final PerformanceRepository performanceRepository;
+    private final EvaluationRepository evaluationRepository;
 
     public StatisticParameterServiceImpl(MinistereStructureRepository repository, 
             ProgrammationRepository programmationRepository,
@@ -65,7 +67,8 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
             StructureRepository structureRepository,
             MinistereRepository ministereRepository,
             GrillePerformanceRepository grilleRepository,
-            PerformanceRepository performanceRepository) {
+            PerformanceRepository performanceRepository,
+            EvaluationRepository evaluationRepository) {
         
         this.repository = repository;
         this.programmationRepository = programmationRepository;
@@ -75,6 +78,7 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
         this.ministereRepository = ministereRepository;
         this.grilleRepository = grilleRepository;
         this.performanceRepository = performanceRepository;
+        this.evaluationRepository = evaluationRepository;
     }
 
     @Override
@@ -369,7 +373,7 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
             
             // Parcours de la liste des exercices
             for(Exercice exo : exercices){
-                double valeur = performanceRepository.findCurrentStructurePerformanceValue(structure.getId(), exo.getId()).orElse(0d);
+                double valeur = evaluationRepository.findStructureEvaluationValue(structure.getId(), exo.getId()).orElse(0d);
                 taux.add(valeur);
                 exos.add(AppUtil.convertAndConcatDates(exo.getDebut(), exo.getFin()));
                 moyenne = moyenne + valeur;
@@ -409,6 +413,95 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
        return data;
     }
     
+    
+    @Override
+    public AllEvolutionData resumerEvolutionPerformance(EvolutionParam params){
+         
+        // Données initiales
+        AllEvolutionData data = new AllEvolutionData();
+        
+        String libelle = "";
+        
+        List<MinistereEvolutionBundle> liste = new ArrayList<>();
+         List<Exercice> exercices = new ArrayList<>(); 
+           
+        // Déclaration de la liste des structures concernées
+        List<Structure> mesStructures = new ArrayList<>();
+        
+        boolean reduced = (params.getExerciceId() != null && params.getExerciceId() != 0);
+
+        // vérification, savoir si c'est tout le ministère ou si c'est juste une structure 
+        boolean many = ((params.getMinistereId() != null) && (params.getStructureId() == null));  
+        
+        // Chargement du ministère
+        Ministere ministere = ministereRepository.findMinistereByID(params.getMinistereId()); 
+        
+        if (many) { 
+            mesStructures = structureRepository.findMinistereStructure(ministere.getId(), TypeStructure.INTERNE);
+        } else { 
+            Structure singleStructure = structureRepository.getById(params.getStructureId()); 
+            mesStructures.add(singleStructure);
+        } 
+        
+        // Chargement de la liste des exercices en tenant en compte la couverture
+        if(reduced){
+            Exercice exo = exerciceRepository.findExerciceById(params.getExerciceId());
+            exercices.add(exo);
+        }else{
+            exercices = exerciceRepository.checkXfirtsElement(ExerciceStatus.EN_ATTENTE, PageRequest.of(0,params.getCouverture()));
+        }
+        // Parcours des structure
+        for(Structure structure : mesStructures) { 
+            
+            List<Double> taux = new ArrayList<>(); 
+            List<String> exos = new ArrayList<>(); 
+            String idStr = ministere.getId()+""+structure.getId();
+            
+            double moyenne = 0d;
+            
+            String exoStr = "[";
+            
+            // Parcours de la liste des exercices
+            for(Exercice exo : exercices){
+                double valeur = performanceRepository.findCurrentStructurePerformanceValue(structure.getId(), exo.getId()).orElse(0d);
+                taux.add(valeur);
+                exos.add(AppUtil.convertAndConcatDates(exo.getDebut(), exo.getFin()));
+                moyenne = moyenne + valeur;
+            }
+            
+            if(!exercices.isEmpty()){
+                moyenne = moyenne / exercices.size();
+                int size = exercices.size();
+                exoStr = exoStr + exercices.get(0).getDebut().getYear() + " - " + exercices.get(size-1).getDebut().getYear() + "]";
+            } 
+            
+            String appreciation = grilleRepository.findGrilleAppreciation(moyenne).orElse("-");
+             
+            // Construction
+            MinistereEvolutionBundle evolution = new MinistereEvolutionBundle();
+            evolution.setMinistere(ministere.getCode());
+            evolution.setStructure(structure.getSigle());
+            
+            evolution.setAppreciation(appreciation);
+            evolution.setExercices(exos);
+            evolution.setTaux(taux);
+            
+            evolution.setId(idStr);
+            evolution.setExercice(exoStr);
+            evolution.setMoyenne(moyenne);
+            
+            liste.add(evolution);
+        }
+        
+        
+        libelle = libelle + " Résumé des données sur : " + ministere.getSigle() + " avec sa/ses " + mesStructures.size() + " structure-s centrale-s, rattachée-s et/ou déconcentrée-s";
+        
+        data.setLibelle(libelle);
+        data.setData(liste);
+        
+        
+       return data;
+    }
     
 
 }
