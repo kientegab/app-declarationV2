@@ -165,11 +165,12 @@ public class TacheServiceImpl implements TacheService {
 
         //initialise et met a jour la programmation
         programmation = programmationRepository.findById(programmation.getId()).get();
+        ResponseCheckPeriode checkPeriodes = AppUtil.checkProgrammationPhysique(programmation.getId(), programmationPhysiqueRepository);
+        double tx = programmationService.tauxExecutionByExerciceOrPeriode(Arrays.asList(programmation), checkPeriodes.getPeriode());
         programmation.setLastEvalDate(new Date());
-        programmation.setTaux(programmationService.tauxExecutionByExerciceOrPeriode(Arrays.asList(programmation), null));
+        programmation.setTaux(tx);
         programmationRepository.save(programmation);
 
-        //log.info("_________________________valeurActuelle = {} ", tacheEvaluerRepository.sumOfCumuleesTachesByProgrammation(programmation.getId()));
         return null;
     }
 

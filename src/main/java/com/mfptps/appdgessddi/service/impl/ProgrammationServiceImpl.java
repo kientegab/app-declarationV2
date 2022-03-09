@@ -21,7 +21,6 @@ import com.mfptps.appdgessddi.service.reportentities.ReportUtil;
 import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.ResponseCheckPeriode;
-import lombok.extern.slf4j.Slf4j;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.ZoneId;
@@ -34,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -68,6 +68,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
     private final TacheEvaluerRepository tacheEvaluerRepository;
     private final ExerciceRepository exerciceRepository;
     private final ObjectifRepository objectifRepository;
+    private final MinistereRepository ministereRepository;
     private final MinistereStructureRepository ministereStructureRepository;
     private final StructureRepository structureRepository;
     private final ProgrammationPhysiqueService programmationPhysiqueService;
@@ -83,6 +84,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             TacheRepository tacheRepository,
             TacheEvaluerRepository tacheEvaluerRepository,
             ObjectifRepository objectifRepository,
+            MinistereRepository ministereRepository,
             MinistereStructureRepository ministereStructureRepository,
             StructureRepository structureRepository,
             ProgrammationPhysiqueService programmationPhysiqueService,
@@ -98,6 +100,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         this.tacheEvaluerRepository = tacheEvaluerRepository;
         this.exerciceRepository = exerciceRepository;
         this.objectifRepository = objectifRepository;
+        this.ministereRepository = ministereRepository;
         this.ministereStructureRepository = ministereStructureRepository;
         this.structureRepository = structureRepository;
         this.programmationPhysiqueService = programmationPhysiqueService;
@@ -399,7 +402,12 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
         try {
             // chargement du ministère concerné
-            Ministere ministere = this.ministereStructureRepository.findByStructureIdAndStatutIsTrue(currentStructureId).get().getMinistere();
+            Ministere ministere;
+            if (SecurityUtils.isCurrentUserInRole(AppUtil.ADMIN)) {
+                ministere = this.ministereRepository.findMinistereByID(ministereId);
+            } else {
+                ministere = this.ministereStructureRepository.findByStructureIdAndStatutIsTrue(currentStructureId).get().getMinistere();
+            }
 
             // structure génératrice du document
             Optional<Structure> currentStructure = Optional.ofNullable(structureRepository.getById(currentStructureId));
@@ -429,7 +437,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             // cas de l'ensemble des structures
             if (structureId == null) {
                 allStructures = this.ministereStructureRepository.allNonInternalStructureByMinistere(ministereId, TypeStructure.INTERNE);
-                globalData = this.query.globalDataMinistere(exercice.get().getId());
+                globalData = this.query.globalDataMinistere(exercice.get().getId(), ministere.getId());
             } else {// cas d'une structure particulière
                 Structure structure = this.structureRepository.findById(structureId).get();
                 allStructures.add(structure);
@@ -488,7 +496,12 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
         try {
             // chargement du ministère concerné
-            Ministere ministere = this.ministereStructureRepository.findByStructureIdAndStatutIsTrue(currentStructureId).get().getMinistere();
+            Ministere ministere;
+            if (SecurityUtils.isCurrentUserInRole(AppUtil.ADMIN)) {
+                ministere = this.ministereRepository.findMinistereByID(ministereId);
+            } else {
+                ministere = this.ministereStructureRepository.findByStructureIdAndStatutIsTrue(currentStructureId).get().getMinistere();
+            }
 
             // structure génératrice du document
             Optional<Structure> currentStructure = Optional.ofNullable(structureRepository.getById(currentStructureId));
@@ -503,7 +516,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             calendrier.setTime(java.util.Date.from(exercice.get().getDebut().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
             Date finPeriode = null;
             if (periodique) {
-                Periode period = periodeRepository.getById(periodeId);
+                Periode period = periodeRepository.findById(periodeId).orElseThrow(() -> new CustomException("Periode id " + periodeId + " inexistente."));
                 finPeriode = AppUtil.repairDate(period.getDebut(), calendrier.get(YEAR));
             }
 
@@ -533,9 +546,9 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             if (structureId == null) {
                 allStructures = this.ministereStructureRepository.allNonInternalStructureByMinistere(ministereId, TypeStructure.INTERNE);
                 if (periodique) {
-                    globalData = this.query.globalDataMinistere(exercice.get().getId(), finPeriode);
+                    globalData = this.query.globalDataMinistere(exercice.get().getId(), finPeriode, ministere.getId());
                 } else {
-                    globalData = this.query.globalDataMinistere(exercice.get().getId());
+                    globalData = this.query.globalDataMinistere(exercice.get().getId(), ministere.getId());
                 }
             } else {// cas d'une structure particulière
                 Structure structure = this.structureRepository.findById(structureId).get();
@@ -600,7 +613,12 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
         try {
             // chargement du ministère concerné
-            Ministere ministere = this.ministereStructureRepository.findByStructureIdAndStatutIsTrue(currentStructureId).get().getMinistere();
+            Ministere ministere;
+            if (SecurityUtils.isCurrentUserInRole(AppUtil.ADMIN)) {
+                ministere = this.ministereRepository.findMinistereByID(ministereId);
+            } else {
+                ministere = this.ministereStructureRepository.findByStructureIdAndStatutIsTrue(currentStructureId).get().getMinistere();
+            }
 
             // structure génératrice du document
             Optional<Structure> currentStructure = Optional.ofNullable(structureRepository.getById(currentStructureId));
@@ -645,9 +663,9 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             if (structureId == null) {
                 allStructures = this.ministereStructureRepository.allNonInternalStructureByMinistere(ministereId, TypeStructure.INTERNE);
                 if (periodique) {
-                    globalData = this.query.globalDataMinistere(exercice.get().getId(), finPeriode);
+                    globalData = this.query.globalDataMinistere(exercice.get().getId(), finPeriode, ministere.getId());
                 } else {
-                    globalData = this.query.globalDataMinistere(exercice.get().getId());
+                    globalData = this.query.globalDataMinistere(exercice.get().getId(), ministere.getId());
                 }
             } else {// cas d'une structure particulière
                 Structure structure = this.structureRepository.findById(structureId).get();
