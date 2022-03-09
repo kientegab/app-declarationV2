@@ -9,6 +9,7 @@ import com.mfptps.appdgessddi.service.StatisticParameterService;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.AllEvolutionData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroupByType;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.EvolutionParam;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereGlobalPerfData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereGlobalStatsBundleData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerActiviteData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerDepenseData;
@@ -66,6 +67,26 @@ public class StatisticParameterController {
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
     
+    /**
+     * Resume les performances des structures de chaque ministère sur un exercice donné
+     * @param ministereId
+     * @param exerciceId
+     * @return 
+     */
+    @GetMapping(path = "/perf/{ministereId}/{exerciceId}")
+    public ResponseEntity<MinistereGlobalPerfData> resumerPerformance(@PathVariable(name = "ministereId") Long ministereId, @PathVariable(name = "exerciceId") Long exerciceId) { 
+        MinistereGlobalPerfData data = service.resumerPerformance(ministereId,exerciceId); 
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+    
+    @GetMapping(path = "/perf-global/{exerciceId}")
+    public ResponseEntity<MinistereGlobalPerfData> resumerGlobalPerformance(@PathVariable(name = "exerciceId") Long exerciceId) { 
+        MinistereGlobalPerfData data = service.resumerGlobalPerformance(exerciceId); 
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+    
+    
+    
     @GetMapping(path = "/sectoriel/{ministereId}/{exerciceId}")
     public ResponseEntity<ResumerSectorielData> resumerSectoriel(@PathVariable(name = "ministereId") Long ministereId, @PathVariable(name = "exerciceId") Long exerciceId) { 
         ResumerSectorielData data = service.resumerSectoriel(ministereId,exerciceId);// 
@@ -102,7 +123,7 @@ public class StatisticParameterController {
      */
     @PostMapping(path = "/evolution-performance/")
     public ResponseEntity<AllEvolutionData> resumerEvolutionPerformance(@Valid @RequestBody EvolutionParam params) { 
-        AllEvolutionData data = service.resumerEvolution(params);// 
+        AllEvolutionData data = service.resumerEvolutionPerformance(params);// 
         return new ResponseEntity<>(data, HttpStatus.OK);
     } 
     
