@@ -24,9 +24,11 @@ import com.mfptps.appdgessddi.service.StatisticParameterService;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.AllEvolutionData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.CountStructureGroupByType;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.EvolutionParam;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereGlobalPerfData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereGlobalStatsBundleData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerActiviteData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerDepenseData;
+import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerPerfData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerSectorielData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerSectorielDepenseData;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.ResumerStructureData;
@@ -198,8 +200,81 @@ public class StatisticParameterServiceImpl implements StatisticParameterService 
         ResumerActiviteData activite = resumerActiviteParMinistere(ministereId, exerciceId);
         data.setActivite(activite);
         
-        return data;
-         
+        return data;       
+    }
+    
+    //
+    @Override
+    public MinistereGlobalPerfData resumerPerformance(Long ministereId, Long exerciceId) {
+        
+        MinistereGlobalPerfData value = new MinistereGlobalPerfData();
+        
+        List<ResumerPerfData> data = new ArrayList<>();
+        
+        //Chargement du ministère
+        Ministere ministere = ministereRepository.findMinistereByID(ministereId);
+        
+        //Chargement des structures du ministère
+        List<Structure> structures = repository.allNonInternalStructureByMinistere(ministereId, TypeStructure.INTERNE);
+        
+        for(Structure struct : structures){
+            ResumerPerfData resume = new ResumerPerfData();
+            resume.setLibelle(struct.getLibelle());
+            resume.setCode(struct.getSigle());
+             
+            double taux = performanceRepository.findCurrentStructurePerformanceValue(struct.getId(), exerciceId).orElse(-1d);
+            resume.setTaux(taux); 
+            
+            data.add(resume);
+            
+        }
+        
+        value.setData(data);
+        value.setCode(ministere.getSigle());
+        value.setLibelle(ministere.getLibelle());
+        
+        return value; 
+    }
+    
+    @Override
+    public MinistereGlobalPerfData resumerGlobalPerformance(Long exerciceId) {
+        
+        MinistereGlobalPerfData value = new MinistereGlobalPerfData();
+        
+        List<ResumerPerfData> data = new ArrayList<>(); 
+        
+        //Chargement des ministères
+        List<Ministere> ministeres = ministereRepository.findAll();
+        
+        
+        // parcours des ministères
+        for(Ministere ministere : ministeres){
+        
+            //Chargement des structures du ministère
+            List<Structure> structures = repository.allNonInternalStructureByMinistere(ministere.getId(), TypeStructure.INTERNE);
+            
+            ResumerPerfData resume = new ResumerPerfData();
+            resume.setLibelle(ministere.getLibelle());
+            resume.setCode(ministere.getSigle());
+            
+            double taux = 0;
+            int taille = structures.size();
+
+            for(Structure struct : structures){  
+                taux = taux + performanceRepository.findCurrentStructurePerformanceValue(struct.getId(), exerciceId).orElse(0d);  
+            } 
+            
+            taux = taux / taille;
+            
+            resume.setTaux(taux); 
+            data.add(resume);
+        }
+        
+        value.setCode("-");
+        value.setLibelle("-");
+        value.setData(data);
+        
+        return value; 
     }
 
     @Override
