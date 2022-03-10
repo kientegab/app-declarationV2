@@ -340,10 +340,4 @@ public class AppUtil {
         return result;
     }
 
-//    public static void main(String [] args) {
-//        log.error(" ===================== BEFORE ==============> ");
-//        JRXlsExporter exporter = new JRXlsExporter();
-//        log.error(" ===================== AFTER ==============> ");
-//        
-//    }
 }

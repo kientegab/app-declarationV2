@@ -283,7 +283,7 @@ public class ProgrammationController {
     @PostMapping(value = "/print/programme-activites")
     public void imprimerPAGlobal(HttpServletResponse response, @RequestBody PrintGlobalVM printGlobalVM) throws IOException {
         if (printGlobalVM.getExerciceId() == null) {
-            throw new BadRequestAlertException("Exercice non renseigné. ", ENTITY_NAME, "idnull");
+            throw new BadRequestAlertException("Exercice non renseigné.", ENTITY_NAME, "idnull");
         }
         String[] tab = AppUtil.constructFormatAndExtension(printGlobalVM.getFormat());
         response.setContentType(tab[0]);
@@ -305,10 +305,16 @@ public class ProgrammationController {
         if (printGlobalVM.getExerciceId() == null) {
             throw new BadRequestAlertException("Exercice non renseigné. ", ENTITY_NAME, "idnull");
         }
+
         String[] tab = AppUtil.constructFormatAndExtension(printGlobalVM.getFormat());
         response.setContentType(tab[0]);
         response.setHeader("Content-Disposition", String.format("attachment; filename=\"Rapport_activite_" + printGlobalVM.getMinistereId() + tab[1] + "\""));
         OutputStream outStream = response.getOutputStream();
+
+        if (printGlobalVM.getPeriodeId() == null) {
+            printGlobalVM.setPeriodeId(0L);
+        }
+
         programmationService.printRapportActivites(printGlobalVM.getMinistereId(),
                 printGlobalVM.getStructureId(), printGlobalVM.getExerciceId(),
                 printGlobalVM.getCurrentStructureId(), printGlobalVM.getPeriodeId(), printGlobalVM.getFormat(), outStream);
@@ -325,10 +331,16 @@ public class ProgrammationController {
         if (printGlobalVM.getExerciceId() == null) {
             throw new BadRequestAlertException("Exercice non renseigné. ", ENTITY_NAME, "idnull");
         }
+
         String[] tab = AppUtil.constructFormatAndExtension(printGlobalVM.getFormat());
         response.setContentType(tab[0]);
         response.setHeader("Content-Disposition", String.format("attachment; filename=\"Rapport_activite_" + printGlobalVM.getMinistereId() + tab[1] + "\""));
         OutputStream outStream = response.getOutputStream();
+
+        if (printGlobalVM.getPeriodeId() == null) {
+            printGlobalVM.setPeriodeId(0L);
+        }
+
         programmationService.printRapportActivites(printGlobalVM.getMinistereId(),
                 printGlobalVM.getStructureId(), printGlobalVM.getExerciceId(),
                 printGlobalVM.getCurrentStructureId(), printGlobalVM.getPeriodeId(), printGlobalVM.getFormat(), outStream);

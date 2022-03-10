@@ -206,7 +206,10 @@ public class Programmation extends CommonEntity {
     }
 
     public void setTaux(double taux) {
-        this.taux = taux;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        this.taux = Double.valueOf(df.format(taux).replace(",", "."));
     }
 
     public String getResultatsAttendus() {
