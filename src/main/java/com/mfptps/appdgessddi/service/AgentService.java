@@ -194,6 +194,7 @@ public class AgentService {
      * @return updated agent.
      */
     public Optional<AgentDTO> updateAgent(AgentDTO agentDTO) {
+        log.info("__________________agentDTO:{}\n",agentDTO);
         return Optional.of(agentRepository
                 .findById(agentDTO.getId()))
                 .filter(Optional::isPresent)

@@ -20,8 +20,14 @@ import org.hibernate.annotations.Where;
 @Table(name = "agent")
 @SQLDelete(sql = "UPDATE agent SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
-@FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
-@Filter(name = "deletedFilter", condition = "deleted = :isDeleted")
+@FilterDef(
+        name = "deletedFilter",
+        parameters = @ParamDef(name = "isDeleted", type = "boolean")
+)
+@Filter(
+        name = "deletedFilter",
+        condition = "deleted = :isDeleted"
+)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Agent extends CommonEntity {
 
