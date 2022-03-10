@@ -45,17 +45,19 @@ public class QueryManagerRepository {
         return result;
     }
 
-    public List<ViewGlobale> globalDataMinistere(long exerciceId) {
-        Query q = em.createNativeQuery("select * from dgessreportview where idexercice = :exercice", ViewGlobale.class);
+    public List<ViewGlobale> globalDataMinistere(long exerciceId, long ministereId) {
+        Query q = em.createNativeQuery("select * from dgessreportview where idexercice = :exercice and idministere = :ministere", ViewGlobale.class);
         q.setParameter("exercice", exerciceId);
+        q.setParameter("ministere", ministereId);
         List<ViewGlobale> result = q.getResultList();
         return result;
     }
 
-    public List<ViewGlobale> globalDataMinistere(long exerciceId, Date deadline) {
-        Query q = em.createNativeQuery("select * from dgessreportview where idexercice = :exercice and lastevaldate <= :deadline", ViewGlobale.class);
+    public List<ViewGlobale> globalDataMinistere(long exerciceId, Date deadline, long ministereId) {
+        Query q = em.createNativeQuery("select * from dgessreportview where idexercice = :exercice and lastevaldate <= :deadline and idministere = :ministere", ViewGlobale.class);
         q.setParameter("exercice", exerciceId);
         q.setParameter("deadline", deadline);
+        q.setParameter("ministere", ministereId);
         List<ViewGlobale> result = q.getResultList();
         return result;
     }
