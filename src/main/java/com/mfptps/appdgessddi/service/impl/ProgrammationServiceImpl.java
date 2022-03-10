@@ -17,6 +17,7 @@ import com.mfptps.appdgessddi.service.dto.ProgrammationDTO;
 import com.mfptps.appdgessddi.service.dto.ProgrammationForEvaluationDTO;
 import com.mfptps.appdgessddi.service.mapper.ProgrammationMapper;
 import com.mfptps.appdgessddi.service.reportentities.ProgrammeDataRE;
+import com.mfptps.appdgessddi.service.reportentities.RapportGardePage;
 import com.mfptps.appdgessddi.service.reportentities.ReportUtil;
 import com.mfptps.appdgessddi.service.reportentities.ViewGlobale;
 import com.mfptps.appdgessddi.utils.AppUtil;
@@ -661,12 +662,25 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
             // Reclasse les éléments
             ReportUtil.sortViewGloablData(globalData);
+            
+            InputStream pGardeReportStream = this.getClass().getResourceAsStream("/conteneur_principal_rapport.jasper"); // mettre le fichier de page de garde ici
+            InputStream pageOneReportStream = this.getClass().getResourceAsStream("/conteneur_principal_rapport.jasper"); // mettre le fichier de la première du rapport partie ici 
+            InputStream pageTwoReportStream = this.getClass().getResourceAsStream("/conteneur_principal_rapport.jasper"); // mettre le fichier de la première du rapport partie ici 
+            
+            // Construction données de la page de garde
+            List<RapportGardePage> lpgarde = ReportUtil.constructGardePage(ministere, structureParent, exercice.get());
+            
+            // Construction de la première partie du rapport
+            // liste ici
+            
+            // Construction de la seconde partie du rapport
 
             mainProgramData = ReportUtil.consctructRapport(ministere.getLibelle(), structureParent.getLibelle(), currentStructure.get().getLibelle(), currentStructure.get().getTelephone(), titre, logoStream, globalData);
 
-            InputStream reportStream = this.getClass().getResourceAsStream("/conteneur_principal_rapport.jasper");// revoir le fichier
-
-            Map<String, Object> parameters = new HashMap<>();
+            
+            Map<String, Object> pGradeparameters = new HashMap<>();
+            Map<String, Object> pageOneParameters = new HashMap<>();
+            Map<String, Object> pageTwoParameters = new HashMap<>();
 
             JRDataSource datasource = new JRBeanCollectionDataSource(mainProgramData);
 

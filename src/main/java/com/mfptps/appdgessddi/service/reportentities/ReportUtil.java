@@ -4,10 +4,16 @@
  */
 package com.mfptps.appdgessddi.service.reportentities;
 
+import com.mfptps.appdgessddi.entities.Exercice;
+import com.mfptps.appdgessddi.entities.GrillePerformance;
+import com.mfptps.appdgessddi.entities.Ministere;
+import com.mfptps.appdgessddi.entities.Performance;
 import com.mfptps.appdgessddi.entities.Structure;
+import com.mfptps.appdgessddi.enums.Nombre;
 import com.mfptps.appdgessddi.repositories.QueryManagerRepository;
 import java.io.InputStream;
 import java.util.ArrayList;
+import static java.util.Calendar.YEAR;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -418,5 +424,69 @@ public class ReportUtil {
                     return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
             }
         });
-    }   
+    } 
+    
+    
+    public static List<RapportGardePage> constructGardePage(Ministere ministere, Structure structure, Exercice exercice){
+       
+        List<RapportGardePage> donnees = new ArrayList<>();
+                
+        RapportGardePage page = new RapportGardePage();
+        
+        String ministereValue = ministere.getLibelle().toUpperCase();
+        page.setMinistere(ministereValue);
+        String parentValue = (structure.getParent() != null) ? structure.getParent().getLibelle().toUpperCase() : null;
+        page.setStructureParent(parentValue);
+        String structureValue =  structure.getLibelle().toUpperCase();
+        page.setStructure(structureValue);
+        String titreValue = "<b>RAPPORT D'EVALUATION DES PERFORMANCES " + exercice.getDebut().getYear() + "</b>";
+        page.setTitre(titreValue);
+        String libelle = "<u>STRUCTURE : " + structure.getLibelle().toUpperCase();
+        page.setLibelleStructure(libelle); 
+        
+        donnees.add(page);
+        
+        return donnees;
+    }
+    
+    public static List<RapportPageOne> constructRapportPageOne(Structure structure, List<GrillePerformance> grilles, Performance performance, int totalActivites, int activiteATemps){
+       
+        List<RapportPageOne> donnees = new ArrayList<>();
+                
+        double coeffTemps = (activiteATemps * 100) / totalActivites;
+        
+        String titre = "<b>EVALUATION DE LA PERFORMANCE DE " + structure.getSigle().toUpperCase() + "</b>";
+        String texte = "La performance de " + structure.getSigle().toUpperCase() + " repose principalement sur la détermination de : (i) "
+                + "l'efficacité, (ii) l'efficience, (iii) l'impact et (iv) la gouvernance, éléments essentiels du calcul de la Performance Globale (PG)";
+        
+        String texteEfficacite = "";
+        
+        for(GrillePerformance grille : grilles) {
+            RapportPageOne page = new RapportPageOne();
+            
+            page.setTitreEvaluation(titre);
+            page.setTextEvaluation(texte);
+            
+              donnees.add(page);
+        }
+        
+//        String ministereValue = ministere.getLibelle().toUpperCase();
+//        page.setMinistere(ministereValue);
+//        String parentValue = (structure.getParent() != null) ? structure.getParent().getLibelle().toUpperCase() : null;
+//        page.setStructureParent(parentValue);
+//        String structureValue =  structure.getLibelle().toUpperCase();
+//        page.setStructure(structureValue);
+//        String titreValue = "<b>RAPPORT D'EVALUATION DES PERFORMANCES " + exercice.getDebut().getYear() + "</b>";
+//        page.setTitre(titreValue);
+//        String libelle = "<u>STRUCTURE : " + structure.getLibelle().toUpperCase();
+//        page.setLibelleStructure(libelle); 
+        
+      
+        
+        return donnees;
+    }
+    
+    public static void main(String [] args){
+        //String lettre = Nombre.CALCULATE.getValue(12569000l);
+    }
 }
