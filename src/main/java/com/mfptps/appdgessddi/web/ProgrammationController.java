@@ -327,7 +327,7 @@ public class ProgrammationController {
      * @throws IOException
      */
     @PostMapping(value = "/print/rapport-performance")
-    public void imprimerRapportPerformance(HttpServletResponse response, @RequestBody PrintGlobalVM printGlobalVM) throws IOException {
+    public void imprimerRapportPerformance(HttpServletResponse response, @RequestBody PrintGlobalVM printGlobalVM) throws IOException, Exception {
         if (printGlobalVM.getExerciceId() == null) {
             throw new BadRequestAlertException("Exercice non renseigné. ", ENTITY_NAME, "idnull");
         }
@@ -341,9 +341,9 @@ public class ProgrammationController {
             printGlobalVM.setPeriodeId(0L);
         }
 
-        programmationService.printRapportActivites(printGlobalVM.getMinistereId(),
+        programmationService.imprimerRapportPerformance(printGlobalVM.getMinistereId(),
                 printGlobalVM.getStructureId(), printGlobalVM.getExerciceId(),
-                printGlobalVM.getCurrentStructureId(), printGlobalVM.getPeriodeId(), printGlobalVM.getFormat(), outStream);
+                 printGlobalVM.getFormat(), outStream);
     }
 
     /**

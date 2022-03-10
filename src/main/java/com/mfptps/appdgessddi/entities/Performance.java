@@ -36,6 +36,12 @@ public class Performance extends CommonEntity {
 
     @Column(name = "efficacite")
     private double efficacite;
+    
+    @Column(name = "coefftemps")
+    private double coefftemps;
+    
+    @Column(name = "tgro")
+    private double tgro;
 
     @Column(name = "efficience")
     private double efficience;
@@ -146,6 +152,22 @@ public class Performance extends CommonEntity {
 
     public void setAppreciation(String appreciation) {
         this.appreciation = appreciation;
+    }
+
+    public double getCoefftemps() {
+        return coefftemps;
+    }
+
+    public void setCoefftemps(double coefftemps) {
+        this.coefftemps = coefftemps;
+    }
+
+    public double getTgro() {
+        return tgro;
+    }
+
+    public void setTgro(double tgro) {
+        this.tgro = tgro;
     }
 
 }

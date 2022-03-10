@@ -50,7 +50,8 @@ public enum Nombre {
     MILLIARD(1000000000, Long.MAX_VALUE,"milliard", MILLION),
     
     //enum de calcul
-    CALCULATE() {  
+    CALCULATE() {
+        
         public String getValue(long value) throws Exception {
             if (value == 0) {
                 return ZERO.label;
@@ -126,13 +127,13 @@ public enum Nombre {
         this.label = label;
     }
 
-//    protected String getValue(long value) throws Exception {
-//        throw new Exception("Vous devez appeller la méthode par l'énumération Chiffre.CALCULATE");
-//    }
-//
-//    protected String getValue(double value, String separator) throws Exception {
-//        throw new Exception("Vous devez appeller la méthode par l'énumération Chiffre.CALCULATE");
-//    }
+    public String getValue(long value) throws Exception {
+        throw new Exception("Vous devez appeller la méthode par l'énumération Chiffre.CALCULATE");
+    }
+
+    public String getValue(double value, String separator) throws Exception {
+        throw new Exception("Vous devez appeller la méthode par l'énumération Chiffre.CALCULATE");
+    }
 
     // fonction de transformation
     private String getStringValue(long value) {

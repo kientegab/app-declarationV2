@@ -20,7 +20,7 @@ public class RapportPageOne implements Serializable {
     
     private String appreciation; // élement du tableau correspondant au libellé de l'appréciation de chaque seuil de performance
     
-    private String texteEfficacité; // texte descriptif de l'efficacité
+    private String texteEfficacite; // texte descriptif de l'efficacité
     
     private String formuleEfficacite;
     
@@ -60,12 +60,12 @@ public class RapportPageOne implements Serializable {
         this.appreciation = appreciation;
     }
 
-    public String getTexteEfficacité() {
-        return texteEfficacité;
+    public String getTexteEfficacite() {
+        return texteEfficacite;
     }
 
-    public void setTexteEfficacité(String texteEfficacité) {
-        this.texteEfficacité = texteEfficacité;
+    public void setTexteEfficacite(String texteEfficacite) {
+        this.texteEfficacite = texteEfficacite;
     }
 
     public String getFormuleEfficacite() {

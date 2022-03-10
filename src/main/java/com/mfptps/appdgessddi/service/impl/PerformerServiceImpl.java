@@ -146,7 +146,7 @@ public class PerformerServiceImpl implements PerformerService {
 //                throw new CustomException("Données de gouvernance non renseignées !");
 //            }
             // nombre total d'activités programmées
-            double nap = programmationRepository.countStructureProgrammation(structure.getId(), exercice.getId());
+            long nap = programmationRepository.countStructureProgrammation(structure.getId(), exercice.getId());
 
             // =+ taux global de réalisation des objectifs TGRO; 
             // ce taux vient de la somme des taux d'exécution par structure, cette valeur est stocquée dans la table évaluation
@@ -163,6 +163,10 @@ public class PerformerServiceImpl implements PerformerService {
             double ea = (tgro * 60 + coeffTemps * 40) / 100;
             ea = (ea >= 0) ? ea : 0;
 
+            // AJout
+            perf.setTgro(tgro);
+            perf.setCoefftemps(coeffTemps);
+            
             perf.setEfficacite(ea);
             efficacite = (ea >= 0) ? (efficacite + ea) : efficacite;
 

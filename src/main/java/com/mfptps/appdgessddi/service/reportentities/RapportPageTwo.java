@@ -24,7 +24,7 @@ public class RapportPageTwo implements Serializable {
     
     private String valeurEfficacite;
     
-    private String libelleEffcience;
+    private String libelleEfficience;
     
     private String valeurEfficience;
     
@@ -88,12 +88,12 @@ public class RapportPageTwo implements Serializable {
         this.valeurEfficacite = valeurEfficacite;
     }
 
-    public String getLibelleEffcience() {
-        return libelleEffcience;
+    public String getLibelleEfficience() {
+        return libelleEfficience;
     }
 
-    public void setLibelleEffcience(String libelleEffcience) {
-        this.libelleEffcience = libelleEffcience;
+    public void setLibelleEfficience(String libelleEfficience) {
+        this.libelleEfficience = libelleEfficience;
     }
 
     public String getValeurEfficience() {

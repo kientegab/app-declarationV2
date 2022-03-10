@@ -180,7 +180,7 @@ public interface ProgrammationService {
      * @param fileFormat
      * @param outputStream
      */
-    void imprimerRapportPerformance(long ministereId, Long structureId, long exerciceId, long currentStructureId, long periodeId, String fileFormat, OutputStream outputStream);
+    void imprimerRapportPerformance(long ministereId, Long structureId, long exerciceId, String fileFormat, OutputStream outputStream) throws Exception;
 
     /**
      * Taux d'execution annuel ou pour periode d'une structure donnee
