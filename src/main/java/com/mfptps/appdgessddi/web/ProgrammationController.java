@@ -287,7 +287,7 @@ public class ProgrammationController {
         }
         String[] tab = AppUtil.constructFormatAndExtension(printGlobalVM.getFormat());
         response.setContentType(tab[0]);
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"Programme_activite_" + printGlobalVM.getMinistereId() + tab[1] + "\""));
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"Programme_activites_" + printGlobalVM.getMinistereId() + tab[1] + "\""));
         OutputStream outStream = response.getOutputStream();
         programmationService.printProgrammeActivites(printGlobalVM.getMinistereId(),
                 printGlobalVM.getStructureId(), printGlobalVM.getExerciceId(),
@@ -308,7 +308,7 @@ public class ProgrammationController {
 
         String[] tab = AppUtil.constructFormatAndExtension(printGlobalVM.getFormat());
         response.setContentType(tab[0]);
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"Rapport_activite_" + printGlobalVM.getMinistereId() + tab[1] + "\""));
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"Rapport_activites_" + printGlobalVM.getMinistereId() + tab[1] + "\""));
         OutputStream outStream = response.getOutputStream();
 
         if (printGlobalVM.getPeriodeId() == null) {
@@ -334,7 +334,7 @@ public class ProgrammationController {
 
         String[] tab = AppUtil.constructFormatAndExtension(printGlobalVM.getFormat());
         response.setContentType(tab[0]);
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"Rapport_activite_" + printGlobalVM.getMinistereId() + tab[1] + "\""));
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"Rapport_evaluation_performance_" + printGlobalVM.getMinistereId() + tab[1] + "\""));
         OutputStream outStream = response.getOutputStream();
 
         if (printGlobalVM.getPeriodeId() == null) {
@@ -343,7 +343,7 @@ public class ProgrammationController {
 
         programmationService.imprimerRapportPerformance(printGlobalVM.getMinistereId(),
                 printGlobalVM.getStructureId(), printGlobalVM.getExerciceId(),
-                 printGlobalVM.getFormat(), outStream);
+                printGlobalVM.getFormat(), outStream);
     }
 
     /**

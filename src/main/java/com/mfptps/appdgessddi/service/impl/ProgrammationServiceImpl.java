@@ -115,8 +115,8 @@ public class ProgrammationServiceImpl implements ProgrammationService {
         this.structureRepository = structureRepository;
         this.programmationPhysiqueService = programmationPhysiqueService;
         this.programmationPhysiqueRepository = programmationPhysiqueRepository;
-        this.performanceRepository = performanceRepository; 
-        this.periodeRepository = periodeRepository; 
+        this.performanceRepository = performanceRepository;
+        this.periodeRepository = periodeRepository;
         this.ponderationRepository = ponderationRepository;
         this.grilleRepository = grilleRepository;
         this.commentaireService = commentaireService;
@@ -635,8 +635,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             // structure génératrice du document
             Optional<Structure> currentStructure = Optional.ofNullable(structureRepository.getById(structureId));
 
-            Optional<Exercice> exercice = exerciceService.get(exerciceId); 
-            
+            Optional<Exercice> exercice = exerciceService.get(exerciceId);
 
             // 
             Structure structureParent = new Structure();
@@ -646,45 +645,41 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             }
 
             // chargement du logo
-            InputStream logoStream = AppUtil.getAppDefaultLogo(); 
- 
-  
+            InputStream logoStream = AppUtil.getAppDefaultLogo();
+
             Performance performance = performanceRepository.findCurrentStructurePerformance(structureId, exerciceId).orElse(new Performance());
-            
-            if(performance==null){
+
+            if (performance == null) {
                 throw new CustomException("La performance de cette structure n'a pas encore été calculée");
             }
-            
+
             // récupération de la podération par défaut
             Ponderation ponderation = ponderationRepository.findActivePonderation().orElse(null);
-            if(ponderation==null){
+            if (ponderation == null) {
                 throw new CustomException("Veuillez définir la podération du système SVP !");
             }
-            
+
             List<GrillePerformance> grilles = grilleRepository.findAllGrille();
-            if(grilles.isEmpty()){
+            if (grilles.isEmpty()) {
                 throw new CustomException("Veuillez définir la grille de performance du système SVP !");
             }
-            
+
             // nombre total d'activités programmées
             long nbActivitesProgrammees = programmationRepository.countStructureProgrammation(structureId, exerciceId);
-            
+
             // nombre activités réalisées à temps
             long nbActivitesAtemps = programmationRepository.countActiviteRealiserATemps(structureId, exerciceId);
 
-            // Reclasse les éléments
-//            ReportUtil.sortViewGloablData(globalData);
-            
             InputStream pGardeReportStream = this.getClass().getResourceAsStream("/conteneur_principal_performance.jasper"); // mettre le fichier de page de garde ici
             InputStream pageOneReportStream = this.getClass().getResourceAsStream("/niveau_appreciation_performance.jasper"); // mettre le fichier de la première du rapport partie ici 
             InputStream pageTwoReportStream = this.getClass().getResourceAsStream("/niveau_performance_performance.jasper"); // mettre le fichier de la première du rapport partie ici 
-            
+
             // Construction données de la page de garde
-            List<RapportGardePage> lpgarde = ReportUtil.constructGardePage(ministere, structureParent, exercice.get());
-            
+            List<RapportGardePage> lpgarde = ReportUtil.constructGardePage(ministere, currentStructure.get(), exercice.get(), logoStream);
+
             // Construction de la première partie du rapport
             List<RapportPageOne> pageOneData = ReportUtil.constructRapportPageOne(currentStructure.get(), exercice.get().getDebut().getYear(), grilles, performance, ponderation, nbActivitesProgrammees, nbActivitesAtemps);
-            
+
             // Construction de la seconde partie du rapport
             List<RapportPageTwo> pageTwoData = ReportUtil.constructRapportPageTwo(currentStructure.get(), performance, ponderation);
             // Maps for parameters
@@ -698,7 +693,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             JRDataSource pageTwoDataSource = new JRBeanCollectionDataSource(pageTwoData);
 
             // Reports
-            JasperReport pGardeJaperReport = (JasperReport) JRLoader.loadObject(pGardeReportStream); 
+            JasperReport pGardeJaperReport = (JasperReport) JRLoader.loadObject(pGardeReportStream);
             JasperReport pageOneJaperReport = (JasperReport) JRLoader.loadObject(pageOneReportStream);
             JasperReport pageTwoJaperReport = (JasperReport) JRLoader.loadObject(pageTwoReportStream);
 
@@ -706,21 +701,19 @@ public class ProgrammationServiceImpl implements ProgrammationService {
             JasperPrint pGardeJasperPrint = JasperFillManager.fillReport(pGardeJaperReport, pGradeparameters, pGardeDataSource);
             JasperPrint pageOneJasperPrint = JasperFillManager.fillReport(pageOneJaperReport, pageOneParameters, pageOneDataSource);
             JasperPrint pageTwoJasperPrint = JasperFillManager.fillReport(pageTwoJaperReport, pageTwoParameters, pageTwoDataSource);
-            
+
             // Conbinaisons  
-            
-            List pges = pageOneJasperPrint .getPages();
+            List pges = pageOneJasperPrint.getPages();
             for (int k = 0; k < pges.size(); k++) {
-                JRPrintPage jp = (JRPrintPage)pges.get(k);
+                JRPrintPage jp = (JRPrintPage) pges.get(k);
                 pGardeJasperPrint.addPage(jp);
             }
-            
-            List pages = pageTwoJasperPrint .getPages();
+
+            List pages = pageTwoJasperPrint.getPages();
             for (int j = 0; j < pages.size(); j++) {
-                JRPrintPage jp = (JRPrintPage)pages.get(j);
+                JRPrintPage jp = (JRPrintPage) pages.get(j);
                 pGardeJasperPrint.addPage(jp);
-            } 
-            
+            }
 
             if (fileFormat.trim().toLowerCase().equals("pdf")) {//export to pdf file
                 //JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\Canisius\\Pictures\\Rapport_activites.pdf");

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="niveau_performance_performance" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="641f5d1b-489b-4860-bdc8-196621ba766a">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="niveau_performance_performance" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="40" bottomMargin="40" uuid="641f5d1b-489b-4860-bdc8-196621ba766a">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -29,7 +29,7 @@
 	<field name="resultatPerformance" class="java.lang.String"/>
 	<field name="libelleEfficacite" class="java.lang.String"/>
 	<field name="valeurEfficacite" class="java.lang.String"/>
-	<field name="libelleEffcience" class="java.lang.String"/>
+	<field name="libelleEfficience" class="java.lang.String"/>
 	<field name="valeurEfficience" class="java.lang.String"/>
 	<field name="libelleGouvernance" class="java.lang.String"/>
 	<field name="valeurGouvernance" class="java.lang.String"/>
@@ -140,7 +140,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle" markup="styled">
 					<font fontName="Arial" size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{libelleEffcience}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{libelleEfficience}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement style="Detail" positionType="Float" stretchType="RelativeToTallestObject" x="300" y="210" width="255" height="30" uuid="ff5aecff-e09f-42e2-ad62-b95a54d86c1f">

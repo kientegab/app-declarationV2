@@ -14,7 +14,6 @@ import com.mfptps.appdgessddi.enums.Nombre;
 import com.mfptps.appdgessddi.repositories.QueryManagerRepository;
 import java.io.InputStream;
 import java.util.ArrayList;
-import static java.util.Calendar.YEAR;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -84,9 +83,9 @@ public class ReportUtil {
                 .filter(prog -> (!containsCodeProgramme(data, prog.getCodeProgramme()))).forEachOrdered(prog -> {
             data.add(prog);
         });
-        
+
         sortProgrammeData(data);
-        
+
         return data;
     }
 
@@ -107,7 +106,7 @@ public class ReportUtil {
                 }
             }
         }
-        
+
         sortObStrageData(data);
 
         return data;
@@ -130,9 +129,9 @@ public class ReportUtil {
                 }
             }
         }
-        
+
         sortActionData(data);
-        
+
         return data;
     }
 
@@ -153,9 +152,9 @@ public class ReportUtil {
                 }
             }
         }
-        
+
         sortObOperationnelData(data);
-        
+
         return data;
     }
 
@@ -204,7 +203,7 @@ public class ReportUtil {
                                 activite.setS2("X");
                                 break;
                             default:
-                                //System.out.println("_______________________ default case...");
+                            //System.out.println("_______________________ default case...");
                         }
                     }
                 }
@@ -213,8 +212,8 @@ public class ReportUtil {
                 }
             }
         }
-        
-       sortActiviteData(data);
+
+        sortActiviteData(data);
 
         return data;
     }
@@ -245,7 +244,7 @@ public class ReportUtil {
                 }
             }
         }
-        
+
         sortActiviteData(data);
 
         return data;
@@ -372,222 +371,217 @@ public class ReportUtil {
     public static void sortViewGloablData(List<ViewGlobale> data) {
         Collections.sort(data, new Comparator<ViewGlobale>() {
             @Override
-            public int compare(ViewGlobale vg1, ViewGlobale vg2) { 
-                    return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
+            public int compare(ViewGlobale vg1, ViewGlobale vg2) {
+                return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());
             }
         });
     }
-    
+
     protected static void sortObStrageData(List<ObjectifStrategiqueRE> data) {
         Collections.sort(data, new Comparator<ObjectifStrategiqueRE>() {
             @Override
-            public int compare(ObjectifStrategiqueRE vg1, ObjectifStrategiqueRE vg2) { 
-                    return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
+            public int compare(ObjectifStrategiqueRE vg1, ObjectifStrategiqueRE vg2) {
+                return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());
             }
         });
     }
-    
+
     //
     protected static void sortProgrammeData(List<ProgrammeRE> data) {
         Collections.sort(data, new Comparator<ProgrammeRE>() {
             @Override
-            public int compare(ProgrammeRE vg1, ProgrammeRE vg2) { 
-                    return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
+            public int compare(ProgrammeRE vg1, ProgrammeRE vg2) {
+                return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());
             }
         });
     }
-    
-    
+
     protected static void sortActionData(List<ActionRE> data) {
         Collections.sort(data, new Comparator<ActionRE>() {
             @Override
-            public int compare(ActionRE vg1, ActionRE vg2) { 
-                    return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
+            public int compare(ActionRE vg1, ActionRE vg2) {
+                return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());
             }
         });
     }
-    
+
     //
     protected static void sortObOperationnelData(List<ObjectifOperationnelRE> data) {
         Collections.sort(data, new Comparator<ObjectifOperationnelRE>() {
             @Override
-            public int compare(ObjectifOperationnelRE vg1, ObjectifOperationnelRE vg2) { 
-                    return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
+            public int compare(ObjectifOperationnelRE vg1, ObjectifOperationnelRE vg2) {
+                return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());
             }
         });
     }
-    
+
     //
     protected static void sortActiviteData(List<ActiviteRE> data) {
         Collections.sort(data, new Comparator<ActiviteRE>() {
             @Override
-            public int compare(ActiviteRE vg1, ActiviteRE vg2) { 
-                    return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());              
+            public int compare(ActiviteRE vg1, ActiviteRE vg2) {
+                return vg1.convertCodeToInteger().compareTo(vg2.convertCodeToInteger());
             }
         });
-    } 
-    
-    
-    public static List<RapportGardePage> constructGardePage(Ministere ministere, Structure structure, Exercice exercice){
-       
+    }
+
+    public static List<RapportGardePage> constructGardePage(Ministere ministere, Structure structure, Exercice exercice, InputStream logo) {
+
         List<RapportGardePage> donnees = new ArrayList<>();
-                
+
         RapportGardePage page = new RapportGardePage();
-        
+
         String ministereValue = ministere.getLibelle().toUpperCase();
         page.setMinistere(ministereValue);
         String parentValue = (structure.getParent() != null) ? structure.getParent().getLibelle().toUpperCase() : null;
         page.setStructureParent(parentValue);
-        String structureValue =  structure.getLibelle().toUpperCase();
+        String structureValue = structure.getLibelle().toUpperCase();
         page.setStructure(structureValue);
         String titreValue = "<b>RAPPORT D'EVALUATION DES PERFORMANCES " + exercice.getDebut().getYear() + "</b>";
         page.setTitre(titreValue);
-        String libelle = "<u>STRUCTURE : " + structure.getLibelle().toUpperCase();
-        page.setLibelleStructure(libelle); 
-        
+        String libelle = "<u>STRUCTURE :</u> " + structure.getLibelle().toUpperCase();
+        page.setLibelleStructure(libelle);
+        page.setLogo(logo);
+
         donnees.add(page);
-        
+
         return donnees;
     }
-    
-    public static List<RapportPageOne> constructRapportPageOne(Structure structure, int annee, List<GrillePerformance> grilles, Performance performance, Ponderation ponderation, long totalActivites, long activiteATemps) throws Exception{
-       
-        List<RapportPageOne> donnees = new ArrayList<>(); 
-        
-        double ct = (Math.round(performance.getCoefftemps() * 100)/100);
-        double tgro = (Math.round(performance.getTgro() * 100)/100);
-        double ei = (Math.round(performance.getEfficience() * 100)/100);
-        double effic = (Math.round(performance.getEfficacite() * 100)/100);
-        double gouv = (Math.round(performance.getGouvernance() * 100)/100);
-        double impact = (Math.round(performance.getImpact() * 100)/100);
-        
+
+    public static List<RapportPageOne> constructRapportPageOne(Structure structure, int annee, List<GrillePerformance> grilles, Performance performance, Ponderation ponderation, long totalActivites, long activiteATemps) throws Exception {
+
+        List<RapportPageOne> donnees = new ArrayList<>();
+
+        double ct = (Math.round(performance.getCoefftemps() * 100) / 100);
+        double tgro = (Math.round(performance.getTgro() * 100) / 100);
+        double ei = (Math.round(performance.getEfficience() * 100) / 100);
+        double effic = (Math.round(performance.getEfficacite() * 100) / 100);
+        double gouv = (Math.round(performance.getGouvernance() * 100) / 100);
+        double impact = (Math.round(performance.getImpact() * 100) / 100);
+
         String structLibelle = structure.getSigle().toUpperCase();
-        
+
         String titre = "<b>EVALUATION DE LA PERFORMANCE DE " + structLibelle + "</b>";
         String texte = "La performance de " + structLibelle + " repose principalement sur la détermination de : (i) "
                 + "l'efficacité, (ii) l'efficience, (iii) l'impact et (iv) la gouvernance, éléments essentiels du calcul de la Performance Globale (PG)";
-        
-        String texteEfficacite = structLibelle + " a un niveau d'efficacité de <b>" + effic + "% </b>." + 
-                " En effet, sur " + Nombre.CALCULATE.getValue(totalActivites) + " (" + totalActivites + ") activités programmées, " + Nombre.CALCULATE.getValue(activiteATemps) + " (" + activiteATemps + ") ont "
+
+        String texteEfficacite = structLibelle + " a un niveau d'efficacité de <b>" + effic + "% </b>."
+                + " En effet, sur " + Nombre.CALCULATE.getValue(totalActivites) + " (" + totalActivites + ") activités programmées, " + Nombre.CALCULATE.getValue(activiteATemps) + " (" + activiteATemps + ") ont "
                 + "été réalisées dans les délais; soit un coefficient temps de " + ct + "%. Pour ce qui est du taux global de réalisation des objectifs (TGRO), qui est la"
-                + " moyenne des taux de réalisation des " + Nombre.CALCULATE.getValue(totalActivites) + " (" + totalActivites + ") activités programmées, il s'établit à " + tgro +"%";
-        
-        String formuleEfficacite = "<b>Ea = (60% x " + tgro + ") + (40% x "  + ct + ")</b>";
-        
+                + " moyenne des taux de réalisation des " + Nombre.CALCULATE.getValue(totalActivites) + " (" + totalActivites + ") activités programmées, il s'établit à " + tgro + "%";
+
+        String formuleEfficacite = "<b>Ea = (60% x " + tgro + ") + (40% x " + ct + ")</b>";
+
         String resultatEfficacite = "<b>Ea = " + effic + "%</b>";
-        
-        String texteEfficience; 
-        
-        
-        if(ei > 0){
+
+        String texteEfficience;
+
+        if (ei > 0) {
             texteEfficience = structLibelle + " a un niveau de performance de " + ei + "% sur le plan de l'efficience. Ce qui représente le rapport du coût prévisionnel des activités réalisées à 100% moins le oût effectif des activités réalisées à 100% par le montant total dépensé.";
-        }else {
+        } else {
             texteEfficience = "Dans l'impossibilité d'avoir des données pour le calcul de l'efficience pour toutes structures, le comité a décidé d'affecter 0% comme valeur.";
         }
-        
+
         String texteGouvernance = structLibelle + " a un niveau de performance de " + gouv + "% sur le plan de la gouvernance.";
-        
+
         String texteImpact;
-        
-        if(ponderation.getImpact() > 0){
+
+        if (ponderation.getImpact() > 0) {
             texteImpact = structLibelle + " a un niveau de performance de " + impact + "% sur le plan de l'impact.";
-        }else{
+        } else {
             texteImpact = "L'indicateur d'impact n'a pas été pris en compte pour toutes les structures pour l'évaluation " + annee + ". Les données de l'impact sont en effet extraites du "
                     + " document du rapport annuel de performance (RAP) du budget Programme du ministère. Le rapport de l'année " + annee + " du ministère n'est pas disponible, par conséquent "
                     + "la deuxième formule de calcul de la performance globale a été utilisée.";
-        } 
-        
-        for(GrillePerformance grille : grilles) {
+        }
+
+        for (GrillePerformance grille : grilles) {
             RapportPageOne page = new RapportPageOne();
-            
+
             page.setTitreEvaluation(titre);
             page.setTextEvaluation(texte);
-            
+
             page.setTexteEfficacite(texteEfficacite);
             page.setFormuleEfficacite(formuleEfficacite);
             page.setResultatEfficacite(resultatEfficacite);
-            
+
             page.setTexteEfficience(texteEfficience);
             page.setFormuleEfficience(null);
             page.setResultatEfficience(null);
-            
+
             page.setTexteGouvernance(texteGouvernance);
             page.setTexteImpact(texteImpact);
-            
+
             String seuilPerformance = "[" + grille.getBorneInferieur() + " - " + grille.getBorneSuperieur() + (grille.getBorneInferieur() < 90 ? "[" : "]");
             String appreciation = grille.getAppreciation();
-            
+
             page.setAppreciation(appreciation);
             page.setSeuilPerformance(seuilPerformance);
-            
+
             donnees.add(page);
-        }  
-        
+        }
+
         return donnees;
     }
-    
-    
-    public static List<RapportPageTwo> constructRapportPageTwo(Structure structure, Performance performance, Ponderation ponderation) throws Exception{
-       
-        List<RapportPageTwo> donnees = new ArrayList<>(); 
-        
-        double pg = (Math.round(performance.getPgs() * 100)/100);
-        
-        double ei = (Math.round(performance.getEfficience() * 100)/100);
-        double effic = (Math.round(performance.getEfficacite() * 100)/100);
-        double gouv = (Math.round(performance.getGouvernance() * 100)/100);
-        double impact = (Math.round(performance.getImpact() * 100)/100);
-         
-        
+
+    public static List<RapportPageTwo> constructRapportPageTwo(Structure structure, Performance performance, Ponderation ponderation) throws Exception {
+
+        List<RapportPageTwo> donnees = new ArrayList<>();
+
+        double pg = (Math.round(performance.getPgs() * 100) / 100);
+
+        double ei = (Math.round(performance.getEfficience() * 100) / 100);
+        double effic = (Math.round(performance.getEfficacite() * 100) / 100);
+        double gouv = (Math.round(performance.getGouvernance() * 100) / 100);
+        double impact = (Math.round(performance.getImpact() * 100) / 100);
+
         String structLibelle = structure.getSigle().toUpperCase();
-        
+
         String titrePerformance = "<b>Performance globale de " + structLibelle + "</b>";
-        
+
         String textePerformance = "La performance de " + structLibelle + " se situe à " + pg + "%. Elle est obtenue à partir du calcul de la moyenne pondérée des différents critères.";
-        
-        String formulePerformance = "<b>PG = (" + ponderation.getEfficacite() + "% x " + effic + ") + (" + ponderation.getEfficience() + "0% x "  + ei + ") + (" + ponderation.getGouvernance() + "% x " +  gouv + "%)";
-       
-        if(ponderation.getImpact() > 0){
-            formulePerformance = formulePerformance + "(" +ponderation.getImpact() + "%) </b>";
-        }else {
+
+        String formulePerformance = "<b>PG = (" + ponderation.getEfficacite() + "% x " + effic + ") + (" + ponderation.getEfficience() + "0% x " + ei + ") + (" + ponderation.getGouvernance() + "% x " + gouv + "%)";
+
+        if (ponderation.getImpact() > 0) {
+            formulePerformance = formulePerformance + "(" + ponderation.getImpact() + "%) </b>";
+        } else {
             formulePerformance = formulePerformance + "</b>";
         }
-        
+
         String resultatPerformance = "<b>PG = " + pg + "%</b>";
-        
+
         // Construction de l'objet
         RapportPageTwo page = new RapportPageTwo();
         page.setTitrePerformance(titrePerformance);
         page.setTextePerformance(textePerformance);
         page.setFormulePerformance(formulePerformance);
         page.setResultatPerformance(resultatPerformance);
-        
+
         page.setLibelleEfficacite("Efficacité");
         page.setValeurEfficacite(effic + "%");
-        
+
         page.setLibelleEfficience("Efficience");
         page.setValeurEfficience(ei + "%");
-        
-        
+
         page.setLibelleGouvernance("Gouvernance");
         page.setValeurGouvernance(gouv + "%");
-        
-        if(ponderation.getImpact() > 0){
+
+        if (ponderation.getImpact() > 0) {
             page.setLibelleImpact("Impact");
             page.setValeurImpact(impact + "%");
         }
-        
+
         page.setLibellePerformance("Performance globale");
         page.setValeurPerformance(pg + "%");
-         
-        donnees.add(page); 
-        
+
+        donnees.add(page);
+
         return donnees;
     }
-    
-    public static void main(String [] args) throws Exception{
+
+    public static void main(String[] args) throws Exception {
         String lettre = Nombre.CALCULATE.getValue(5);
-        
+
         System.err.println(" ==================+> " + lettre);
     }
 }

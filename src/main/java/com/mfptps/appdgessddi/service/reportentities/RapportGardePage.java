@@ -4,6 +4,7 @@
  */
 package com.mfptps.appdgessddi.service.reportentities;
 
+import java.io.InputStream;
 import java.io.Serializable;
 
 /**
@@ -11,16 +12,18 @@ import java.io.Serializable;
  * @author aboubacary
  */
 public class RapportGardePage implements Serializable {
-    
+
     private String ministere;
-    
+
     private String structureParent;
-    
+
     private String structure;
-    
+
     private String titre;
-    
+
     private String libelleStructure;
+
+    private InputStream logo;
 
     public String getMinistere() {
         return ministere;
@@ -61,5 +64,13 @@ public class RapportGardePage implements Serializable {
     public void setLibelleStructure(String libelleStructure) {
         this.libelleStructure = libelleStructure;
     }
-       
+
+    public InputStream getLogo() {
+        return logo;
+    }
+
+    public void setLogo(InputStream logo) {
+        this.logo = logo;
+    }
+
 }
