@@ -21,13 +21,13 @@
             <column name="password_hash" type="varchar(60)"/>
             <column name="nom" type="varchar(50)"/>
             <column name="prenom" type="varchar(150)"/>
-            <column name="email" type="varchar(191)">
+            <column name="email" type="varchar(254)">
                 <constraints unique="true" nullable="true" uniqueConstraintName="ux_agent_email"/>
             </column>
             <column name="actif" type="boolean" valueBoolean="false">
                 <constraints nullable="false" />
             </column>
-            <column name="telephone" type="varchar(15)"/>
+            <column name="telephone" type="varchar(20)"/>
             <column name="activation_key" type="varchar(20)"/>
             <column name="reset_key" type="varchar(20)"/>
             <column name="created_by" type="varchar(50)">

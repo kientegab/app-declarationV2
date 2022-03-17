@@ -57,8 +57,8 @@ public class Agent extends CommonEntity {
     @Column(name = "nom", length = 50)
     private String nom;
 
-    @Size(max = 50)
-    @Column(name = "prenom", length = 50)
+    @Size(max = 150)
+    @Column(name = "prenom", length = 150)
     private String prenom;
 
     @NotNull
