@@ -138,6 +138,32 @@ public class AgentService {
         return newAgent;
     }
 
+    public Optional<AgentDTO> attribuerProfiles(String matricule, Set<String> profiles) {
+        return Optional.of(agentRepository
+                .findOneByMatricule(matricule))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(agent -> {
+                    this.clearAgentCaches(agent);
+
+                    Set<Profile> managedProfiles = agent.getProfiles();
+                    managedProfiles.clear();
+                    profiles.stream()
+                            .map(profileRepository::findByName)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .forEach(managedProfiles::add);
+
+                    this.clearAgentCaches(agent);
+
+                    log.debug("Changed Profiles for Agent: {}", agent);
+
+                    return agent;
+                })
+                .map(AgentDTO::new);
+
+    }
+
     public Agent affectationAgent(String matriculeOrMail, Long structureID) {
         Structure structure = structureRepository.findById(structureID).orElseThrow(() -> new CustomException("Structure with id = " + structureID + " does not exist !"));
         Agent agent = agentRepository.findOneByMatriculeOrEmail(matriculeOrMail, matriculeOrMail).orElseThrow(() -> new CustomException("Agent with matricule or email " + matriculeOrMail + " does not exist !"));
@@ -194,7 +220,7 @@ public class AgentService {
      * @return updated agent.
      */
     public Optional<AgentDTO> updateAgent(AgentDTO agentDTO) {
-        log.info("__________________agentDTO:{}\n",agentDTO);
+
         return Optional.of(agentRepository
                 .findById(agentDTO.getId()))
                 .filter(Optional::isPresent)

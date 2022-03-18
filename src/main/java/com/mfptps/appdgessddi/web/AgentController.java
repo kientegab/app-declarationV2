@@ -9,6 +9,7 @@ import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.*;
 import com.mfptps.appdgessddi.web.vm.AffectationVM;
 import com.mfptps.appdgessddi.web.vm.ManagedAgentVM;
+import com.mfptps.appdgessddi.web.vm.ProfilerVM;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -64,6 +65,8 @@ public class AgentController {
 
     @Value("${application.name}")
     private String applicationName;
+
+    private static final String ENTITY_NAME = "agent";
 
     private final AgentService agentService;
 
@@ -202,6 +205,28 @@ public class AgentController {
         return ResponseUtil.wrapOrNotFound(
                 agentService.getAgentWithProfilesByMatricule(login)
         );
+    }
+
+    /**
+     * MODIFIE LE(S) PROFILE(S) D'UN AGENT
+     *
+     * @param profilerVM
+     * @return
+     */
+    @PutMapping("/agents/profiles")
+    public ResponseEntity<AgentDTO> attribuerProfiles(@Valid @RequestBody ProfilerVM profilerVM) {
+        if (profilerVM.getMatricule() == null) {
+            throw new BadRequestAlertException("Id invalide", ENTITY_NAME, "matriculenull");
+        }
+
+        Optional<AgentDTO> updatedAgent = agentService.attribuerProfiles(profilerVM.getMatricule(), profilerVM.getProfiles());
+
+        if (!updatedAgent.isPresent()) {
+            throw new CustomException("Agent " + profilerVM.getMatricule() + " introuvable !");
+        }
+
+        return ResponseUtil.wrapOrNotFound(updatedAgent,
+                HeaderUtil.createAlert(applicationName, "agentManagement.updated", profilerVM.getMatricule()));
     }
 
     /**
