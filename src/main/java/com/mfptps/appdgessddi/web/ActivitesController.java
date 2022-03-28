@@ -37,14 +37,14 @@ public class ActivitesController {
     }
 
     /**
-     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
+     * Access granted to DIR_DGESS, RESP_DGESS, FOCAL_STRUCT, (ADMIN)
      *
      * @param activites
      * @return
      * @throws URISyntaxException
      */
     @PostMapping
-    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",,\"" + AppUtil.FS + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Activites> create(@Valid @RequestBody ActivitesDTO activites) throws URISyntaxException {
 
         Activites activite = activiteService.create(activites);
@@ -55,14 +55,14 @@ public class ActivitesController {
     }
 
     /**
-     * Access granted to DIR_DGESS, RESP_DGESS, (ADMIN)
+     * Access granted to DIR_DGESS, RESP_DGESS, FOCAL_STRUCT, (ADMIN)
      *
      * @param activites
      * @return
      * @throws URISyntaxException
      */
     @PutMapping
-    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.FS + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Activites> updateActivites(@Valid @RequestBody Activites activites) throws URISyntaxException {
         log.debug("Mis à jour de l'activité : {}", activites);
         if (activites.getId() == null) {
