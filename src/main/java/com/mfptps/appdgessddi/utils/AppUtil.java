@@ -20,6 +20,7 @@ import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammeRepository;
 import com.mfptps.appdgessddi.service.CustomException;
+import com.mfptps.appdgessddi.web.vm.ManagedAgentVM;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -29,6 +30,7 @@ import java.util.Calendar;
 import static java.util.Calendar.YEAR;
 import java.util.Date;
 import java.util.List;
+import javax.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -39,6 +41,9 @@ import lombok.extern.slf4j.Slf4j;
 public class AppUtil {
 
     private static InputStream logoStream;
+
+    @Size(min = ManagedAgentVM.PASSWORD_MIN_LENGTH, max = ManagedAgentVM.PASSWORD_MAX_LENGTH)
+    public static final String PASSWORD = "12345678";
 
     /**
      * TYPE OF STRUCTURE

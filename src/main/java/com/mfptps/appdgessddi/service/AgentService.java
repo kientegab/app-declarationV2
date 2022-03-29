@@ -81,14 +81,23 @@ public class AgentService {
     }
 
     public Optional<Agent> requestPasswordReset(String mail) {
-        return agentRepository.findOneByEmailIgnoreCase(mail)
+        Optional<Agent> result = agentRepository.findOneByEmailIgnoreCase(mail)
                 .filter(Agent::isActif)
                 .map(agent -> {
-                    agent.setResetKey(RandomUtil.generateResetKey());
+                    agent.setPassword(passwordEncoder.encode(AppUtil.PASSWORD));//===========
+                    agent.setActivationKey(RandomUtil.generateActivationKey());//========
+                    //agent.setResetKey(RandomUtil.generateResetKey());
                     agent.setResetDate(Instant.now());
+                    agent.setActif(false);//=======
+
                     this.clearAgentCaches(agent);
                     return agent;
                 });
+
+        if (!result.isPresent()) {//==============
+            throw new CustomException("Agent d'email " + mail + " désactivé ou inexistant !");
+        }
+        return result;
     }
 
     public Agent registerAgent(AgentDTO agentDTO, String password) {
