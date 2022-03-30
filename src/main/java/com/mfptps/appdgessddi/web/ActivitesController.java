@@ -44,7 +44,7 @@ public class ActivitesController {
      * @throws URISyntaxException
      */
     @PostMapping
-    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",,\"" + AppUtil.FS + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.FS + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Activites> create(@Valid @RequestBody ActivitesDTO activites) throws URISyntaxException {
 
         Activites activite = activiteService.create(activites);
