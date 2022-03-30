@@ -9,7 +9,9 @@ import com.mfptps.appdgessddi.service.MailService;
 import com.mfptps.appdgessddi.service.dto.ActivatedPassword;
 import com.mfptps.appdgessddi.service.dto.AgentDTO;
 import com.mfptps.appdgessddi.service.dto.PasswordChangeDTO;
+import com.mfptps.appdgessddi.web.exceptions.BadRequestAlertException;
 import com.mfptps.appdgessddi.web.exceptions.InvalidPasswordException;
+import com.mfptps.appdgessddi.web.vm.EmailVM;
 import com.mfptps.appdgessddi.web.vm.KeyAndPasswordVM;
 import com.mfptps.appdgessddi.web.vm.ManagedAgentVM;
 import java.util.*;
@@ -18,6 +20,7 @@ import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +39,9 @@ public class AccountController {
     }
 
     private final Logger log = LoggerFactory.getLogger(AccountController.class);
+
+    @Value("${application.name}")
+    private String applicationName;
 
     private final AgentRepository agentRepository;
 
@@ -166,6 +172,23 @@ public class AccountController {
             throw new AccountControllerException("Agent could not be found");
         }
         agentService.updateAgent(agentDTO.getNom(), agentDTO.getPrenom(), agentDTO.getEmail());
+    }
+
+    /**
+     * Mot de passe oublié ? on commence par ici
+     *
+     * @param emailVM
+     */
+    @PostMapping("/account/reset-password-init")
+    public void resetPassword(@Valid @RequestBody EmailVM emailVM) {
+        if (emailVM.getEmail() == null) {
+            throw new BadRequestAlertException("Veuillez renseigner l'email.", applicationName, "emailnull");
+        }
+
+        Optional<Agent> agent = agentService.requestPasswordReset(emailVM.getEmail());
+        if (agent.isPresent()) {
+            mailService.sendActivationEmail(agent.get());
+        }
     }
 
     /**
