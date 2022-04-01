@@ -30,19 +30,19 @@ public class PeriodiciteServiceImpl implements PeriodiciteService {
 
     @Override
     public Periodicite create(Periodicite periodicite) {
-        if (!periodicite.isActif()) {
+//        if (!periodicite.isActif()) {
+//            return periodiciteRepository.save(periodicite);
+//        } else {
+        Periodicite existingActif = periodiciteRepository.findByActifTrue().orElse(null);
+        if (existingActif == null) {
             return periodiciteRepository.save(periodicite);
         } else {
-            Periodicite existingActif = periodiciteRepository.findByActifTrue().orElse(null);
-            if (existingActif == null) {
-                return periodiciteRepository.save(periodicite);
-            } else {
-                existingActif.setActif(false);
-                existingActif.setDeleted(true);
-                periodiciteRepository.save(existingActif);
-                return periodiciteRepository.save(periodicite);
-            }
+            existingActif.setActif(false);
+            existingActif.setDeleted(true);
+            periodiciteRepository.save(existingActif);
+            return periodiciteRepository.save(periodicite);
         }
+//        }
     }
 
     @Override

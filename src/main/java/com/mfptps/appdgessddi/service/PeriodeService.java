@@ -18,6 +18,8 @@ public interface PeriodeService {
 
     Periode create(Periode periode);
 
+    Periode update(Periode periode);
+
     List<Periode> findByPeriodiciteActif();
 
     Optional<Periode> findByDateAndPeriodiciteActif(Date date);

@@ -109,18 +109,22 @@ public class MinistereServiceImpl implements MinistereService {
         data.setStructureId(structure.getId());
         data.setStructureCode(structure.getSigle());
         data.setStructureLibelle(structure.getLibelle());
+        try {
 
-        // Recherche de la période
-        List<Periode> periodes = periodeRepository.findByPeriodiciteActif();
+            // Recherche de la période
+            List<Periode> periodes = periodeRepository.findByPeriodiciteActif();
 
-        Periode periode = AppUtil.checkExactPeriode(periodes, date);
+            Periode periode = AppUtil.checkExactPeriode(periodes, date);
 
-        // Renseigner les informations de la période et de la périodicité
-        data.setPeriode(periode.getLibelle());
-        data.setPeriodicite(periode.getPeriodicite().getLibelle());
+            // Renseigner les informations de la période et de la périodicité
+            data.setPeriode(periode.getLibelle());
+            data.setPeriodicite(periode.getPeriodicite().getLibelle());
 
-        // Renseigner la date du jour en la formattant en string
-        data.setDateJour(AppUtil.convertToShortDate(date));
+            // Renseigner la date du jour en la formattant en string
+            data.setDateJour(AppUtil.convertToShortDate(date));
+        } catch (Exception e) {
+            throw new CustomException("Veuillez paramétrer la périodicité et les périodes svp.");
+        }
 
         return Optional.of(data);
     }

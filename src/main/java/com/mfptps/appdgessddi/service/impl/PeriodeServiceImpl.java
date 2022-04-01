@@ -44,6 +44,15 @@ public class PeriodeServiceImpl implements PeriodeService {
     }
 
     @Override
+    public Periode update(Periode periode) {
+        periodiciteRepository.findById(periode.getPeriodicite().getId())
+                .filter(Periodicite::isActif)
+                .orElseThrow(() -> new CustomException("Opération interdite ! Veuillez selectionner une périodicité active."));
+
+        return periodeRepository.save(periode);
+    }
+
+    @Override
     public List<Periode> findByPeriodiciteActif() {
         return periodeRepository.findByPeriodiciteActif();
     }
