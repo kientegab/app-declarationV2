@@ -43,7 +43,7 @@ public class AppUtil {
     private static InputStream logoStream;
 
     @Size(min = ManagedAgentVM.PASSWORD_MIN_LENGTH, max = ManagedAgentVM.PASSWORD_MAX_LENGTH)
-    public static final String PASSWORD = "12345678";
+    public static final String DEFAULT_PASSWORD = "12345678";
 
     /**
      * TYPE OF STRUCTURE
@@ -270,11 +270,13 @@ public class AppUtil {
         calendar.setTime(currentDate);
 
         int year = calendar.get(YEAR);
-
         for (Periode per : periodes) {
             Date start = repairDate(per.getDebut(), year);
             Date end = repairDate(per.getFin(), year);
-            if (currentDate.after(start) && currentDate.before(end)) {
+
+//            log.error("=========== CURRENT " + currentDate + " COMPARE_TO " + start + "=" + currentDate.compareTo(start));
+//            log.error("=========== END " + end + " COMPARE_TO " + currentDate + "=" + end.compareTo(currentDate));
+            if (start.compareTo(currentDate) >= 0 && end.compareTo(currentDate) >= 0) {//currentDate.after(start) && currentDate.before(end)
                 foundOne = per;
                 break;
             }

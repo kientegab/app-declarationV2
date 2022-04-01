@@ -75,6 +75,7 @@ public class AgentService {
                     agent.setPassword(passwordEncoder.encode(newPassword));
                     agent.setResetKey(null);
                     agent.setResetDate(null);
+                    agent.setActif(true);
                     this.clearAgentCaches(agent);
                     return agent;
                 });
@@ -84,7 +85,7 @@ public class AgentService {
         Optional<Agent> result = agentRepository.findOneByEmailIgnoreCase(mail)
                 .filter(Agent::isActif)
                 .map(agent -> {
-                    agent.setPassword(passwordEncoder.encode(AppUtil.PASSWORD));//===========
+                    agent.setPassword(passwordEncoder.encode(AppUtil.DEFAULT_PASSWORD));//===========
                     agent.setActivationKey(RandomUtil.generateActivationKey());//========
                     //agent.setResetKey(RandomUtil.generateResetKey());
                     agent.setResetDate(Instant.now());

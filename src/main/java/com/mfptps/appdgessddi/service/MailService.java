@@ -1,14 +1,11 @@
 package com.mfptps.appdgessddi.service;
 
+import com.mfptps.appdgessddi.config.ApplicationProperties;
+import com.mfptps.appdgessddi.entities.Agent;
 import java.nio.charset.StandardCharsets;
-
 import javax.annotation.Nullable;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-
-import com.mfptps.appdgessddi.config.ApplicationProperties;
-import com.mfptps.appdgessddi.entities.Agent;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
@@ -44,9 +41,9 @@ public class MailService {
     private final SpringTemplateEngine templateEngine;
 
     public MailService(
-        ApplicationProperties applicationProperties,
-        JavaMailSender javaMailSender,
-        SpringTemplateEngine templateEngine
+            ApplicationProperties applicationProperties,
+            JavaMailSender javaMailSender,
+            SpringTemplateEngine templateEngine
     ) {
         this.applicationProperties = applicationProperties;
         this.javaMailSender = javaMailSender;
@@ -56,12 +53,12 @@ public class MailService {
     @Async
     public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
         log.debug(
-            "Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
-            isMultipart,
-            isHtml,
-            to,
-            subject,
-            content
+                "Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
+                isMultipart,
+                isHtml,
+                to,
+                subject,
+                content
         );
 
         // Prepare message using a Spring helper
