@@ -59,8 +59,7 @@ public class ProfileServiceImpl implements ProfileService {
             for (Profile profile : mesProfiles) {
                 list.add(profileMapper.toDTO(profile));
             }
-            profiles = new PageImpl<ProfileDTO>(list, pageable, mesProfiles.size());
-
+            profiles = new PageImpl<ProfileDTO>(list, pageable, mesProfiles.size());;
         }
         return profiles;
     }
