@@ -186,6 +186,7 @@ public class AccountController {
         }
 
         Optional<Agent> agent = agentService.requestPasswordReset(emailVM.getEmail());
+
         if (agent.isPresent()) {
             mailService.sendPasswordResetMail(agent.get());
         }

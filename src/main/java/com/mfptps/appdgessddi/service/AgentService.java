@@ -89,7 +89,7 @@ public class AgentService {
                     agent.setActivationKey(RandomUtil.generateActivationKey());//========
                     //agent.setResetKey(RandomUtil.generateResetKey());
                     agent.setResetDate(Instant.now());
-                    agent.setActif(false);//=======
+                    //agent.setActif(false);//=======
 
                     this.clearAgentCaches(agent);
                     return agent;
