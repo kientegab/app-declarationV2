@@ -276,9 +276,14 @@ public class AppUtil {
 
 //            log.error("=========== CURRENT " + currentDate + " COMPARE_TO " + start + "=" + currentDate.compareTo(start));
 //            log.error("=========== END " + end + " COMPARE_TO " + currentDate + "=" + end.compareTo(currentDate));
-            if (start.compareTo(currentDate) >= 0 && end.compareTo(currentDate) >= 0) {//currentDate.after(start) && currentDate.before(end)
+            if (currentDate.compareTo(start) >= 0 && end.compareTo(currentDate) >= 0) {//currentDate.after(start) && currentDate.before(end)
                 foundOne = per;
                 break;
+                //comprendre compareTo()
+                //soient date = 25/05/1998 et date2 = 09/01/1999
+                //date.compareTo(date2) = -1 (avant ou anterieur)
+                //date2.compareTo(date) = 1 (apres ou posterieur)
+                //date.compareTo(date) =0 (pendant)
             }
         }
 
