@@ -116,6 +116,7 @@ public class PerformerServiceImpl implements PerformerService {
 
         // récupération de la podération par défaut
         Ponderation ponderation = ponderationRepository.findActivePonderation().orElse(null);
+        System.out.println("_______________________ ActivePonderationID: " + ponderation.getId());
 
         // récupération de l'exercice par défaut
         Exercice exercice = exerciceRepository.findById(exerciceId).orElse(null);
@@ -141,35 +142,40 @@ public class PerformerServiceImpl implements PerformerService {
 
             // récupération des évaluations de gouvernance
             List<EvaluationGouvernance> evalGouv = evaluationGouvernanceRepository.findStructureEvaluation(structure.getId(), exercice.getId()); // changment du type
-
+            for (EvaluationGouvernance e : evalGouv) {
+                System.out.println("________________________ evalGouv: " + e.getStructure().getSigle() + " ___ " + e.getValeurReference());
+            }
 //            if (evalGouv.isEmpty()) {
 //                throw new CustomException("Données de gouvernance non renseignées !");
 //            }
             // nombre total d'activités programmées
             long nap = programmationRepository.countStructureProgrammation(structure.getId(), exercice.getId());
-
+            System.out.println("________________________ nap: " + nap);
             // =+ taux global de réalisation des objectifs TGRO; 
             // ce taux vient de la somme des taux d'exécution par structure, cette valeur est stocquée dans la table évaluation
             tmp = evaluationRepository.findEvaluation(structure.getId(), exercice.getId());
+
             double tgro = tmp.isPresent() ? tmp.get() : 0;
+            System.out.println("______________________ tgro: " + tgro);
 
             // nombre activités réalisées à temps
             long nart = programmationRepository.countActiviteRealiserATemps(structure.getId(), exercice.getId());
-
+            System.out.println("______________________ nart: " + nart);
             // =+ coefficient temps CT
             double coeffTemps = nart / ((nap > 0) ? nap : 1);
-
+            System.out.println("______________________ coeffTemps: " + coeffTemps);
             // calcul de l'efficacité ea
             double ea = (tgro * 60 + coeffTemps * 40) / 100;
             ea = (ea >= 0) ? ea : 0;
+            System.out.println("______________________ ea: " + ea);
 
             // AJout
             perf.setTgro(tgro);
             perf.setCoefftemps(coeffTemps);
-            
+
             perf.setEfficacite(ea);
             efficacite = (ea >= 0) ? (efficacite + ea) : efficacite;
-
+            System.out.println("______________________ efficacite: " + efficacite);
             // ====== + FIN CALCULS ea =====//
             // calcul de l'efficience ei
             double ei = 0;
@@ -177,18 +183,22 @@ public class PerformerServiceImpl implements PerformerService {
             // =+ montant total dépensée
             tmp = programmationRepository.coutReelStructureProgrammation(structure.getId(), exercice.getId());
             double montant_total = tmp.isPresent() ? tmp.get() : 1;
+            System.out.println("________________________ montant_total:" + montant_total);
             // =+ somme des couts prévisionnels des activités réalisées à 100%
             tmp = programmationRepository.coutPrevsionnelStructureProgrammation(structure.getId(), exercice.getId());
             double cout_previsionnel = tmp.isPresent() ? tmp.get() : 0;
+            System.out.println("________________________ cout_previsionnel:" + cout_previsionnel);
             // =+ somme des couts réels des activités réalisées à 100%
             tmp = programmationRepository.coutEffectifStructureProgrammation(structure.getId(), exercice.getId());
             double cout_effectif = tmp.isPresent() ? tmp.get() : 0;
+            System.out.println("________________________ cout_effectif:" + cout_effectif);
 
             if (montant_total > 0) {
                 ei = (cout_previsionnel - cout_effectif) / montant_total;
             }
 
             efficience = (ei >= 0) ? (efficience + ei) : efficience;
+            System.out.println("________________________ efficience:" + cout_effectif);
 
             // calcul de la gouvernance gouv
             double gouv = 0;
@@ -253,7 +263,7 @@ public class PerformerServiceImpl implements PerformerService {
         gouvernance = gouvernance / count;
         impact = impact / count;
         pgs = pgs / count;
-
+        System.out.println("_______________________ pgs:" + pgs);
         appreciation = grilleRepository.findGrilleAppreciation(pgs).orElse("");
 
         // dernières données

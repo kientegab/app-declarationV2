@@ -184,6 +184,7 @@ public class TacheServiceImpl implements TacheService {
      * table
      */
     void evaluerTacheAValeurCible(TacheEvaluer precedent, Tache t, Tache tdb, long periodeId) {
+        System.out.println("________________________ tache a cible");
         TacheEvaluer aEvaluer = new TacheEvaluer();
 
         //si c'est la toute premiere evaluation de la tache
@@ -214,6 +215,7 @@ public class TacheServiceImpl implements TacheService {
      * @param periodeId
      */
     void firstEvaluationOfSomeTache(TacheEvaluer aEvaluer, boolean execute, Tache t, Tache tdb, long periodeId) {
+        System.out.println("____________________________ 1ere evaluation");
         aEvaluer.setTache(tdb);
         aEvaluer.setValeurAtteinte(t.getValeur());
         aEvaluer.setValeurCumulee(t.getValeur());
@@ -238,7 +240,9 @@ public class TacheServiceImpl implements TacheService {
      * @param periodeId
      */
     void newOrUpdateEvaluationOfSomeTache(TacheEvaluer aEvaluer, TacheEvaluer precedent, Tache t, Tache tdb, long periodeId) {
+        System.out.println("______________________________ new or update evaluation line");
         if (precedent.getIdPeriode() == periodeId) {//Mise à jour car nous sommes toujours dans la meme periode
+            System.out.println("______________________________ update evaluation line");
             precedent.setValeurAtteinte(t.getValeur());
             precedent.setValeurCumulee(precedent.getValeurAtteinte());
             TacheEvaluer updated = tacheEvaluerRepository.save(precedent);
@@ -248,6 +252,7 @@ public class TacheServiceImpl implements TacheService {
                 tacheRepository.save(tdb);
             }
         } else {//nouvelle evaluation de la periode suivante
+            System.out.println("______________________________ new evaluation line");
             aEvaluer.setTache(tdb);
             aEvaluer.setValeurAtteinte(t.getValeur());
             aEvaluer.setValeurCumulee(precedent.getValeurCumulee() + t.getValeur());

@@ -90,6 +90,7 @@ public class Programmation extends CommonEntity {
     @Column(length = 1000)
     private String indicateur;//equivaut a indicateurDeResultat
 
+    @Column(length = 1000)
     private String observations;
 
     @Column(name = "valid_initial")
