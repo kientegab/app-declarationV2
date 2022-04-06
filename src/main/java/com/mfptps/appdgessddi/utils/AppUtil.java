@@ -26,6 +26,7 @@ import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.web.vm.ManagedAgentVM;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -267,7 +268,7 @@ public class AppUtil {
         }
         return response;
     }
-    
+
     /**
      * SOUS FONCTION (TAUX PAR STRUCTURE): Taux d'execution par exercice/pph
      *
@@ -294,8 +295,7 @@ public class AppUtil {
         }
         return taux;
     }
-    
-    
+
     //SOUS FONCTION DE tauxExecutionByExerciceOrPeriode(...)
     private static double tauxByValueOfPeriode(Programmation prog, Tache tache, Optional<TacheEvaluer> tacheEvaluee, double tauxTaches) {
         if ((tache.getValeur() == 1D) && tache.isExecute()) {//tache sans cible(cible = 1)  deja execute
@@ -308,7 +308,7 @@ public class AppUtil {
 
         return tauxTaches;
     }
-    
+
     //SOUS FONCTION DE tauxByValueOfPeriode(...)
     private static double tauxByValueOfProgrammationCible(Programmation prog, Tache tache, Optional<TacheEvaluer> tacheEvaluee, double tauxTaches) {
         if (tacheEvaluee.isPresent()) {
@@ -330,10 +330,10 @@ public class AppUtil {
         for (Periode per : periodes) {
             Date start = repairDate(per.getDebut(), year);
             Date end = repairDate(per.getFin(), year);
- 
+
             if (currentDate.compareTo(start) >= 0 && end.compareTo(currentDate) >= 0) {
                 foundOne = per;
-                break; 
+                break;
             }
         }
 
@@ -402,4 +402,10 @@ public class AppUtil {
         return result;
     }
 
+    public static double arrondirDecimal(double valeur) {
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        return Double.valueOf(df.format(valeur).replace(",", "."));
+    }
 }

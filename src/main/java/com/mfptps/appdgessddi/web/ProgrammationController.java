@@ -307,6 +307,7 @@ public class ProgrammationController {
         }
 
         String[] tab = AppUtil.constructFormatAndExtension(printGlobalVM.getFormat());
+        System.out.println("_____________________tab1: " + tab[1]);
         response.setContentType(tab[0]);
         response.setHeader("Content-Disposition", String.format("attachment; filename=\"Rapport_activites_" + printGlobalVM.getMinistereId() + tab[1] + "\""));
         OutputStream outStream = response.getOutputStream();

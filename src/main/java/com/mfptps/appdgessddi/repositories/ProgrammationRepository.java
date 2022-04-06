@@ -86,8 +86,8 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT p FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.deleted = false "
             + "AND p.structure.id = s.id AND s.id = :structureId "
-            + "AND p.exercice.id = e.id AND e.id = :exerciceId "
-            + "GROUP BY p.objectif.id")
+            + "AND p.exercice.id = e.id AND e.id = :exerciceId ")
+    //+ "GROUP BY p.objectif.id")
     List<Programmation> findByStructureAndExercice(long structureId, long exerciceId);
 
     @Query("SELECT p FROM Programmation p, Structure s, Exercice e "
@@ -126,7 +126,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id =?2 "
             + "AND p.deleted = false "
             + "AND p.validationFinal = true")
     long countStructureProgrammation(long structureId, long exerciceId);
@@ -134,7 +134,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT SUM(p.coutReel) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id =?2 "
             + "AND p.deleted = false "
             + "AND p.validationFinal = true")
     Optional<Double> coutReelStructureProgrammation(long structureId, long exerciceId);
@@ -142,7 +142,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id=?2 "
             + "AND p.deleted = false "
             + "AND p.validationFinal = true")
     Optional<Double> coutPrevsionnelStructureProgrammation(long structureId, long exerciceId);
@@ -150,7 +150,15 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id=?2 "
+            + "AND p.deleted = false "
+            + "AND p.validationFinal = true AND p.taux >= 100")
+    Optional<Double> coutPrevsionnelStructureProgrammation_(long structureId, long exerciceId);
+
+    @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, Exercice e "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id =?1 "
+            + "AND p.exercice.id = e.id AND e.id =?2 "
             + "AND p.deleted = false "
             + "AND p.validationFinal = true "
             + "AND p.taux>=100 AND p.lastEvalDate<=p.deadLine")
@@ -163,7 +171,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id =?2 "
             + "AND p.deleted = false "
             + "AND p.taux>=100 "
             + "AND p.validationFinal = true")
@@ -172,7 +180,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id =?2 "
             + "AND p.deleted = false "
             + "AND p.taux < 100 "
             + "AND p.taux > 0 "
@@ -182,7 +190,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id =?2 "
             + "AND p.deleted = false "
             + "AND p.taux = 0 "
             + "AND p.validationFinal = true")

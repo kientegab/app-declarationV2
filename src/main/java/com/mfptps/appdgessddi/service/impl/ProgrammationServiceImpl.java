@@ -591,11 +591,11 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
             } else {
                 if (fileFormat.trim().toLowerCase().equals("excel")) {
-                    JRXlsExporter exporter = new JRXlsExporter();
+                    JRXlsxExporter exporter = new JRXlsxExporter();
 
                     exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
                     exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
-                    SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+                    SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
                     configuration.setOnePagePerSheet(true);
                     configuration.setDetectCellType(true);
                     configuration.setCollapseRowSpan(false);

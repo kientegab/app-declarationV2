@@ -125,7 +125,7 @@ public class TacheServiceImpl implements TacheService {
     @Transactional(rollbackFor = CustomException.class)
     public List<Tache> evaluer(List<Tache> taches) {
         //on recupere la programmation concernee a partir de la liste de taches recues en parametre
-        Programmation programmation = taches.get(0).getProgrammation();
+        Programmation programmation = programmationRepository.findById(taches.get(0).getProgrammation().getId()).get();//taches.get(0).getProgrammation();
 
         // Extraction de la Structure concernée
         Structure currentStructure = programmation.getStructure();
@@ -198,7 +198,6 @@ public class TacheServiceImpl implements TacheService {
      * table
      */
     void evaluerTacheAValeurCible(TacheEvaluer precedent, Tache t, Tache tdb, long periodeId) {
-        System.out.println("________________________ tache a cible");
         TacheEvaluer aEvaluer = new TacheEvaluer();
 
         //si c'est la toute premiere evaluation de la tache
@@ -253,9 +252,7 @@ public class TacheServiceImpl implements TacheService {
      * @param periodeId
      */
     void newOrUpdateEvaluationOfSomeTache(TacheEvaluer aEvaluer, TacheEvaluer precedent, Tache t, Tache tdb, long periodeId) {
-        System.out.println("______________________________ new or update evaluation line");
         if (precedent.getIdPeriode() == periodeId) {//Mise à jour car nous sommes toujours dans la meme periode
-            System.out.println("______________________________ update evaluation line");
             precedent.setValeurAtteinte(t.getValeur());
             precedent.setValeurCumulee(precedent.getValeurAtteinte());
             TacheEvaluer updated = tacheEvaluerRepository.save(precedent);
@@ -265,7 +262,6 @@ public class TacheServiceImpl implements TacheService {
                 tacheRepository.save(tdb);
             }
         } else {//nouvelle evaluation de la periode suivante
-            System.out.println("______________________________ new evaluation line");
             aEvaluer.setTache(tdb);
             aEvaluer.setValeurAtteinte(t.getValeur());
             aEvaluer.setValeurCumulee(precedent.getValeurCumulee() + t.getValeur());
@@ -301,7 +297,6 @@ public class TacheServiceImpl implements TacheService {
     }
 
     protected boolean calculateEvaluation(Structure structure, Exercice exercice) {
-
         boolean returnValue = false;
 
         // Recherche de l'évaluation
