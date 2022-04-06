@@ -11,6 +11,8 @@ import com.mfptps.appdgessddi.entities.Periode;
 import com.mfptps.appdgessddi.entities.Programmation;
 import com.mfptps.appdgessddi.entities.ProgrammationPhysique;
 import com.mfptps.appdgessddi.entities.Programme;
+import com.mfptps.appdgessddi.entities.Tache;
+import com.mfptps.appdgessddi.entities.TacheEvaluer;
 import com.mfptps.appdgessddi.enums.BaseStatus;
 import com.mfptps.appdgessddi.enums.TypeObjectif;
 import com.mfptps.appdgessddi.repositories.ActionRepository;
@@ -19,6 +21,7 @@ import com.mfptps.appdgessddi.repositories.ObjectifRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammeRepository;
+import com.mfptps.appdgessddi.repositories.TacheEvaluerRepository;
 import com.mfptps.appdgessddi.service.CustomException;
 import com.mfptps.appdgessddi.web.vm.ManagedAgentVM;
 import java.io.InputStream;
@@ -30,6 +33,7 @@ import java.util.Calendar;
 import static java.util.Calendar.YEAR;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import javax.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 
@@ -263,6 +267,59 @@ public class AppUtil {
         }
         return response;
     }
+    
+    /**
+     * SOUS FONCTION (TAUX PAR STRUCTURE): Taux d'execution par exercice/pph
+     *
+     * @param periodeId
+     * @return
+     */
+    public static double tauxExecutionByExerciceOrPeriode(List<Programmation> programmations, Long periodeId, TacheEvaluerRepository tacheEvaluerRepository) {
+        double taux = 0;//taux global recherche
+
+        for (Programmation prog : programmations) {
+            double tauxTaches = 0;//taux global de chaque programmation
+            //on totalise les taux des taches de chaque programmation
+            for (Tache tache : prog.getTaches()) {
+                if (periodeId == null) {//============== CALCULS SANS TENIR COMPTE DE LA PEDIODE
+                    //Optional<TacheEvaluer> tacheEvaluee = tacheEvaluerRepository.getByTacheAndActive(tache.getId());
+                    tauxTaches = tauxByValueOfPeriode(prog, tache, null, tauxTaches);
+                } else {//============== CALCULS EN FONCTION DE LA PERIODE
+                    Optional<TacheEvaluer> tacheEvaluee = tacheEvaluerRepository.getByTacheAndPeriodeActive(tache.getId(), periodeId);
+                    tauxTaches = tauxByValueOfPeriode(prog, tache, tacheEvaluee, tauxTaches);
+                }
+            }
+            //on totalise le taux de chaque programmation 
+            taux += tauxTaches;
+        }
+        return taux;
+    }
+    
+    
+    //SOUS FONCTION DE tauxExecutionByExerciceOrPeriode(...)
+    private static double tauxByValueOfPeriode(Programmation prog, Tache tache, Optional<TacheEvaluer> tacheEvaluee, double tauxTaches) {
+        if ((tache.getValeur() == 1D) && tache.isExecute()) {//tache sans cible(cible = 1)  deja execute
+            tauxTaches += tache.getPonderation();
+        } else if ((tache.getValeur() != 1D) && tache.isExecute()) {//tache a cible deja execute(meme au dela de la cible prevue)
+            tauxTaches += tache.getPonderation();
+        } else if ((tache.getValeur() != 1D) && !tache.isExecute() && tacheEvaluee != null) {//tache a cible execute partiellement
+            tauxTaches = tauxByValueOfProgrammationCible(prog, tache, tacheEvaluee, tauxTaches);
+        }
+
+        return tauxTaches;
+    }
+    
+    //SOUS FONCTION DE tauxByValueOfPeriode(...)
+    private static double tauxByValueOfProgrammationCible(Programmation prog, Tache tache, Optional<TacheEvaluer> tacheEvaluee, double tauxTaches) {
+        if (tacheEvaluee.isPresent()) {
+            if (prog.getCible() != 1D) {//programmation a cible 
+                tauxTaches += (tacheEvaluee.get().getValeurCumulee() / prog.getCible()) * tache.getPonderation();
+            } else {//programmation sans cible (cible = 1) 
+                tauxTaches += (tacheEvaluee.get().getValeurCumulee() / tache.getValeur()) * tache.getPonderation();
+            }
+        }
+        return tauxTaches;
+    }
 
     public static Periode checkExactPeriode(List<Periode> periodes, Date currentDate) {
         Periode foundOne = null;
@@ -273,17 +330,10 @@ public class AppUtil {
         for (Periode per : periodes) {
             Date start = repairDate(per.getDebut(), year);
             Date end = repairDate(per.getFin(), year);
-
-//            log.error("=========== CURRENT " + currentDate + " COMPARE_TO " + start + "=" + currentDate.compareTo(start));
-//            log.error("=========== END " + end + " COMPARE_TO " + currentDate + "=" + end.compareTo(currentDate));
-            if (currentDate.compareTo(start) >= 0 && end.compareTo(currentDate) >= 0) {//currentDate.after(start) && currentDate.before(end)
+ 
+            if (currentDate.compareTo(start) >= 0 && end.compareTo(currentDate) >= 0) {
                 foundOne = per;
-                break;
-                //comprendre compareTo()
-                //soient date = 25/05/1998 et date2 = 09/01/1999
-                //date.compareTo(date2) = -1 (avant ou anterieur)
-                //date2.compareTo(date) = 1 (apres ou posterieur)
-                //date.compareTo(date) =0 (pendant)
+                break; 
             }
         }
 
