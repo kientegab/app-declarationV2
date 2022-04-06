@@ -5,9 +5,13 @@
  */
 package com.mfptps.appdgessddi.service.impl;
 
+import com.mfptps.appdgessddi.entities.Evaluation;
+import com.mfptps.appdgessddi.entities.Exercice;
 import com.mfptps.appdgessddi.entities.Programmation;
+import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.entities.Tache;
 import com.mfptps.appdgessddi.entities.TacheEvaluer;
+import com.mfptps.appdgessddi.repositories.EvaluationRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationPhysiqueRepository;
 import com.mfptps.appdgessddi.repositories.ProgrammationRepository;
 import com.mfptps.appdgessddi.repositories.TacheEvaluerRepository;
@@ -38,19 +42,20 @@ public class TacheServiceImpl implements TacheService {
     private final TacheRepository tacheRepository;
     private final TacheEvaluerRepository tacheEvaluerRepository;
     private final ProgrammationRepository programmationRepository;
-    private final ProgrammationPhysiqueRepository programmationPhysiqueRepository;
-    private final ProgrammationService programmationService;//DECONSEILLE
+    private final ProgrammationPhysiqueRepository programmationPhysiqueRepository; 
+    private final EvaluationRepository evaluationRepository;
 
     public TacheServiceImpl(TacheRepository tacheRepository,
             TacheEvaluerRepository tacheEvaluerRepository,
             ProgrammationRepository programmationRepository,
             ProgrammationPhysiqueRepository programmationPhysiqueRepository,
-            ProgrammationService programmationService) {
+            EvaluationRepository evaluationRepository) {
+        
         this.tacheRepository = tacheRepository;
         this.tacheEvaluerRepository = tacheEvaluerRepository;
         this.programmationRepository = programmationRepository;
-        this.programmationPhysiqueRepository = programmationPhysiqueRepository;
-        this.programmationService = programmationService;
+        this.programmationPhysiqueRepository = programmationPhysiqueRepository; 
+        this.evaluationRepository = evaluationRepository;
     }
 
     @Override
@@ -122,6 +127,12 @@ public class TacheServiceImpl implements TacheService {
     public List<Tache> evaluer(List<Tache> taches) {
         //on recupere la programmation concernee a partir de la liste de taches recues en parametre
         Programmation programmation = taches.get(0).getProgrammation();
+        
+        // Extraction de la Structure concernée
+        Structure currentStructure = programmation.getStructure();
+        
+        // Extraction de la l'Exercice concerné
+        Exercice currentExercice = programmation.getExercice();
 
         //on recupere les taches(enregistrees lors de la programmation) depuis la bd
         List<Tache> tachesdb = this.get(programmation.getId());
@@ -139,7 +150,7 @@ public class TacheServiceImpl implements TacheService {
                 //instructions pour taches a valeur cible
                 //si tacheAEvaluer correspond a tacheFromDB
                 //si tacheFromDB est non encore executee et possede valeur cible
-                if (t.getId().equals(tdb.getId()) && (tdb.getValeur() != 1D) && !tdb.isExecute()) {
+                if (t.getId().equals(tdb.getId()) && (tdb.getValeur() != 1D)) { //&& !tdb.isExecute()
                     TacheEvaluer tacheEvaluerPrecedent = new TacheEvaluer();
                     //on recupere l'evaluation precedente de la ieme tache 
                     tacheEvaluerPrecedent = tacheEvaluerRepository.getByTacheAndActive(tdb.getId()).orElse(null); //===============
@@ -148,7 +159,7 @@ public class TacheServiceImpl implements TacheService {
                     this.evaluerTacheAValeurCible(tacheEvaluerPrecedent, t, tdb, periode.getPeriode());
                 } //instructions pour tache sans valeur cible et non encore executee
                 //dans ce cas, On met a jour la ligne Tache puis cree une ligne TacheEvaluer. 
-                else if (t.getId().equals(tdb.getId()) && (tdb.getValeur() == 1D) && !tdb.isExecute() && t.isExecute()) {
+                else if (t.getId().equals(tdb.getId()) && (tdb.getValeur() == 1D)) { //&& !tdb.isExecute() && t.isExecute()
                     TacheEvaluer tacheEvaluer = new TacheEvaluer();
                     tacheEvaluer.setCumuleeActive(false);//car cette tacheEvaluer ne sera pas utilise lors du calcul de taux
                     tacheEvaluer.setValeurCumulee(tdb.getPonderation());
@@ -166,10 +177,15 @@ public class TacheServiceImpl implements TacheService {
         //initialise et met a jour la programmation
         programmation = programmationRepository.findById(programmation.getId()).get();
         ResponseCheckPeriode checkPeriodes = AppUtil.checkProgrammationPhysique(programmation.getId(), programmationPhysiqueRepository);
-        double tx = programmationService.tauxExecutionByExerciceOrPeriode(Arrays.asList(programmation), checkPeriodes.getPeriode());
+        //double tx = programmationService.tauxExecutionByExerciceOrPeriode(Arrays.asList(programmation), checkPeriodes.getPeriode());
+        double tx = AppUtil.tauxExecutionByExerciceOrPeriode(Arrays.asList(programmation), checkPeriodes.getPeriode(), tacheEvaluerRepository);
         programmation.setLastEvalDate(new Date());
         programmation.setTaux(tx);
         programmationRepository.save(programmation);
+        
+        
+        //Calcul de l'évaluation globale de la structure
+        calculateEvaluation(currentStructure, currentExercice);
 
         return null;
     }
@@ -183,7 +199,7 @@ public class TacheServiceImpl implements TacheService {
      * @param tdb : tache in list come from database for updating TacheEvaluer
      * table
      */
-    void evaluerTacheAValeurCible(TacheEvaluer precedent, Tache t, Tache tdb, long periodeId) {
+    private void evaluerTacheAValeurCible(TacheEvaluer precedent, Tache t, Tache tdb, long periodeId) {
         TacheEvaluer aEvaluer = new TacheEvaluer();
 
         //si c'est la toute premiere evaluation de la tache
@@ -213,7 +229,7 @@ public class TacheServiceImpl implements TacheService {
      * @param tdb
      * @param periodeId
      */
-    void firstEvaluationOfSomeTache(TacheEvaluer aEvaluer, boolean execute, Tache t, Tache tdb, long periodeId) {
+    private void firstEvaluationOfSomeTache(TacheEvaluer aEvaluer, boolean execute, Tache t, Tache tdb, long periodeId) {
         aEvaluer.setTache(tdb);
         aEvaluer.setValeurAtteinte(t.getValeur());
         aEvaluer.setValeurCumulee(t.getValeur());
@@ -280,6 +296,48 @@ public class TacheServiceImpl implements TacheService {
                 throw new CustomException("Le cumul (" + precedent.getValeurCumulee() + " + " + t.getValeur() + ") des valeurs cibles atteintes ne doit pas excéder la valeur cible (" + tdb.getValeur() + ") de la tache.");
             }
         }
+    }
+    
+    protected boolean calculateEvaluation(Structure structure, Exercice exercice){
+        
+        boolean returnValue = false;
+        
+        // Recherche de l'évaluation
+        Evaluation evaluation = evaluationRepository.findStructureEvaluation(structure.getId(), exercice.getId()).orElse(null);
+        
+        // Evaluation non existante 
+        if(evaluation == null){
+            evaluation = new Evaluation();
+            evaluation.setStructure(structure);
+            evaluation.setExercice(exercice);
+        }
+        
+        double score = 0;
+        
+        // Chargement de la liste des programmations
+        
+        List<Programmation> progs = programmationRepository.findByStructureAndExercice(structure.getId(), exercice.getId());
+         
+        if(progs.isEmpty()){
+            returnValue = false;
+        }else{
+         
+            int total = progs.size();
+
+            for(Programmation prog : progs){
+                score = score + prog.getTaux();
+            } 
+
+            score = Math.round((score / total)*100)/100;
+
+            if(score != evaluation.getValeur()){
+                evaluation.setValeur(score);
+                evaluationRepository.save(evaluation);
+                returnValue = true;
+            }
+        }
+        
+        return returnValue;
     }
 
 }
