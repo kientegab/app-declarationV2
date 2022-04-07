@@ -6,6 +6,7 @@ import com.mfptps.appdgessddi.entities.Structure;
 import com.mfptps.appdgessddi.repositories.MinistereRepository;
 import com.mfptps.appdgessddi.repositories.PeriodeRepository;
 import com.mfptps.appdgessddi.repositories.StructureRepository;
+import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.MinistereService;
 import com.mfptps.appdgessddi.service.dto.MinistereDTO;
 import com.mfptps.appdgessddi.service.dto.statisticresponses.MinistereBundleData;
@@ -58,8 +59,12 @@ public class MinistereServiceImpl implements MinistereService {
     @Override
     @Transactional(readOnly = true)
     public Page<Ministere> findAll(Pageable pageable) {
-
-        return ministereRepository.findAll(pageable);
+        if (SecurityUtils.isCurrentUserInRole(AppUtil.ADMIN)) {
+            return ministereRepository.findAll(pageable);
+        } else {
+            //Ne pas retourner le MinistereTest au cas où le client n'est pas ADMIN
+            return ministereRepository.findAll(AppUtil.BASIC_MINISTERE_CODE, pageable);
+        }
     }
 
     @Override
