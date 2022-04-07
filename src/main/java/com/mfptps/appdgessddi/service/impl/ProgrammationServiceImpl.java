@@ -591,6 +591,7 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
             } else {
                 if (fileFormat.trim().toLowerCase().equals("excel")) {
+                    System.out.println("hello world");
                     JRXlsExporter exporter = new JRXlsExporter();
 
                     exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
