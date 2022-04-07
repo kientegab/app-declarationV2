@@ -11,8 +11,6 @@ import com.mfptps.appdgessddi.service.NotificationService;
 import com.mfptps.appdgessddi.service.dto.NotificationAgentDTO;
 import com.mfptps.appdgessddi.service.dto.NotificationDTO;
 import com.mfptps.appdgessddi.service.impl.EmailServiceImpl;
-import com.mfptps.appdgessddi.utils.AppUtil;
-import com.mfptps.appdgessddi.utils.HeaderUtil;
 import com.mfptps.appdgessddi.utils.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,6 +32,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/api/notifications")
 public class NotificationController {
+
     private final Logger log = LoggerFactory.getLogger(NotificationController.class);
 
     private static final String ENTITY_NAME = "notification_agent";
@@ -42,22 +41,21 @@ public class NotificationController {
     private String applicationName;
 
     private final EmailServiceImpl emailServiceImpl;
-    
+
     private final NotificationAgentService notificationAgentService;
-    
+
     private final NotificationService notificationService;
 
-    public NotificationController(EmailServiceImpl emailServiceImpl
-                        , NotificationAgentService notificationAgentService
-                        , NotificationService notificationService) {
+    public NotificationController(EmailServiceImpl emailServiceImpl,
+             NotificationAgentService notificationAgentService,
+             NotificationService notificationService) {
         this.emailServiceImpl = emailServiceImpl;
         this.notificationAgentService = notificationAgentService;
         this.notificationService = notificationService;
     }
-    
-    
+
     @PostMapping
-    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
+    @PreAuthorize("hasAnyAuthority(\"" + AppUtil.DD + "\",\"" + AppUtil.RDDII + "\",\"" + AppUtil.RD + "\", \"" + AppUtil.ADMIN + "\")")
     public ResponseEntity<Notification> create(@Valid @RequestBody NotificationDTO notificationDTO) throws URISyntaxException {
 
         Notification notification = notificationService.create(notificationDTO);
@@ -66,7 +64,7 @@ public class NotificationController {
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, notification.getId().toString()))
                 .body(notification);
     }
-    
+
     @GetMapping
     public ResponseEntity<List<NotificationDTO>> findAll(Pageable pageable) {
         Page<NotificationDTO> notification = notificationService.findAll(pageable);
@@ -74,7 +72,7 @@ public class NotificationController {
         return ResponseEntity.ok().headers(headers).body(notification.getContent());
 
     }
-    
+
     @GetMapping(path = "/agent/")
     public ResponseEntity<List<NotificationAgentDTO>> findAllAgent(Pageable pageable) {
         Page<NotificationAgentDTO> notificationAgent = notificationAgentService.findAll(pageable);
@@ -82,7 +80,7 @@ public class NotificationController {
         return ResponseEntity.ok().headers(headers).body(notificationAgent.getContent());
 
     }
-    
+
     @GetMapping(path = "/{id}")
     public ResponseEntity<NotificationDTO> getNotificationByID(@PathVariable(name = "id") Long id) {
         log.debug("Consultation de la notification : {}", id);
@@ -93,17 +91,17 @@ public class NotificationController {
     @GetMapping(path = "/agent/{username}")
     public ResponseEntity<List<NotificationAgent>> getNotificationAgentByID(@PathVariable(name = "username") String username, Pageable pageable) {
         log.debug("Consultation de la notification : {}", username);
-        Page<NotificationAgent> notificationAgent = notificationAgentService.get(username,pageable);
+        Page<NotificationAgent> notificationAgent = notificationAgentService.get(username, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), notificationAgent);
         return ResponseEntity.ok().headers(headers).body(notificationAgent.getContent());
     }
-    
+
     @GetMapping(path = "/nonlu/{username}")
     public Long getNumberNonlu(@PathVariable(name = "username") String username) {
         log.debug("notification non lu: {}", username);
         return notificationAgentService.getNonLu(username);
     }
-    
+
     /**
      * Access granted to ADMIN
      *
@@ -121,5 +119,4 @@ public class NotificationController {
                 .build();
     }
 
-    
 }

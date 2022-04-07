@@ -48,7 +48,7 @@ public class Evaluation extends CommonEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private double valeur;//Programmation with single tache
+    private double valeur;//taux avancement
 
     @Column(nullable = false)
     @Type(type = "yes_no")

@@ -18,6 +18,11 @@ public interface MinistereStructureRepository extends JpaRepository<MinistereStr
 
     Page<MinistereStructure> findAllByStatutIsTrue(Pageable pageable);
 
+    @Query("SELECT ms FROM MinistereStructure ms "
+            + "WHERE ms.statut IS TRUE "
+            + "AND ms.ministere.code != :codeMinistere")
+    Page<MinistereStructure> findAllByStatutIsTrue(String codeMinistere, Pageable pageable);
+
     Page<MinistereStructure> findByMinistereIdAndStatutIsTrue(long ministereId, Pageable pageable);
 
     @Query("SELECT ms.structure FROM MinistereStructure ms "

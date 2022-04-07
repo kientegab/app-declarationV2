@@ -179,16 +179,45 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     @Override
     public Programmation update(Programmation programmation) {
-        Optional<Programmation> response = programmationRepository.findById(programmation.getId())
-                .filter(p -> !p.isValidationFinal())
-                .map(p -> {
-                    return programmationRepository.save(programmation);
-                });
+        Programmation response = null;
+        Programmation fromDB = programmationRepository.findById(programmation.getId()).orElseThrow(() -> new CustomException("Programmation d'id " + programmation.getId() + " inexistante"));
 
-        if (!response.isPresent()) {
+        if (fromDB.isValidationFinal()
+                && ((fromDB.getCible() != programmation.getCible()) || (fromDB.getCoutPrevisionnel() != programmation.getCoutPrevisionnel()))) {
             throw new CustomException("Modification non autorisée car la programmation est déjà validée.");
         }
-        return response.get();
+
+        //update uniquement coutReel et Observations si Exercice non cloture et programmation validee au CASEM
+        if (fromDB.isValidationFinal() && (fromDB.getExercice().getStatut() != ExerciceStatus.CLOS)) {
+            fromDB.setResultatsAtteints(programmation.getResultatsAtteints());
+            fromDB.setCoutReel(programmation.getCoutReel());
+            fromDB.setObservations(programmation.getObservations());
+
+            response = programmationRepository.save(fromDB);
+        }
+
+        //update si la programmation n'est pas encore validee au CASEM
+        if (!fromDB.isValidationFinal()) {
+            response = programmationRepository.save(programmation);
+            if (fromDB.isSingleton()) {//songer a mettre à jour la valeur cible de la tache
+                Tache tache = tacheRepository.findByDeletedFalseAndProgrammationId(fromDB.getId()).get(0);
+                tache.setValeur(programmation.getCible());
+                tacheRepository.save(tache);
+            }
+        }
+
+        return response;
+
+//        Optional<Programmation> fromDB = programmationRepository.findById(programmation.getId())
+//                .filter(p -> !p.isValidationFinal())
+//                .map(p -> {
+//                    return programmationRepository.save(programmation);
+//                });
+//
+//        if (!fromDB.isPresent()) {
+//            throw new CustomException("Modification non autorisée car la programmation est déjà validée.");
+//        }
+//        return fromDB.get();
     }
 
     /**
@@ -591,12 +620,11 @@ public class ProgrammationServiceImpl implements ProgrammationService {
                 JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
             } else {
                 if (fileFormat.trim().toLowerCase().equals("excel")) {
-                    System.out.println("hello world");
-                    JRXlsExporter exporter = new JRXlsExporter();
+                    JRXlsxExporter exporter = new JRXlsxExporter();
 
                     exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
                     exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
-                    SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+                    SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
                     configuration.setOnePagePerSheet(true);
                     configuration.setDetectCellType(true);
                     configuration.setCollapseRowSpan(false);

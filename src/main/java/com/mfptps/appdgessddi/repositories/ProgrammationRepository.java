@@ -86,8 +86,8 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT p FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.deleted = false "
             + "AND p.structure.id = s.id AND s.id = :structureId "
-            + "AND p.exercice.id = e.id AND e.id = :exerciceId "
-            + "GROUP BY p.objectif.id")
+            + "AND p.exercice.id = e.id AND e.id = :exerciceId ")
+    //+ "GROUP BY p.objectif.id")
     List<Programmation> findByStructureAndExercice(long structureId, long exerciceId);
 
     @Query("SELECT p FROM Programmation p, Structure s, Exercice e "
@@ -123,10 +123,10 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND s.id = ms.structure.id AND ms.statut = true AND ms.ministere.id = :ministereId")
     List<Programmation> findByMinistereAndExerciceAndPeriodeValided(long ministereId, long exerciceId, long periodeId);
 
-    @Query("SELECT COUNT(p) FROM Programmation p, Structure s, Exercice e "
+    @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id =?2 "
             + "AND p.deleted = false "
             + "AND p.validationFinal = true")
     long countStructureProgrammation(long structureId, long exerciceId);
@@ -134,7 +134,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT SUM(p.coutReel) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id =?2 "
             + "AND p.deleted = false "
             + "AND p.validationFinal = true")
     Optional<Double> coutReelStructureProgrammation(long structureId, long exerciceId);
@@ -142,7 +142,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id=?2 "
             + "AND p.deleted = false "
             + "AND p.validationFinal = true")
     Optional<Double> coutPrevsionnelStructureProgrammation(long structureId, long exerciceId);
@@ -150,46 +150,54 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id=?2 "
+            + "AND p.deleted = false "
+            + "AND p.validationFinal = true AND p.taux >= 100")
+    Optional<Double> coutPrevsionnelStructureProgrammation_(long structureId, long exerciceId);
+
+    @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, Exercice e "
+            + "WHERE p.structure.id = s.id "
+            + "AND s.id =?1 "
+            + "AND p.exercice.id = e.id AND e.id =?2 "
             + "AND p.deleted = false "
             + "AND p.validationFinal = true "
             + "AND p.taux>=100 AND p.lastEvalDate<=p.deadLine")
     Optional<Double> coutEffectifStructureProgrammation(long structureId, long exerciceId);
 
-    @Query("SELECT COUNT(p.id) FROM Programmation p WHERE p.structure.id=?1 AND p.exercice.id=?2 AND p.taux>=100 AND p.lastEvalDate<=p.deadLine ")
+    @Query("SELECT COUNT(DISTINCT p) FROM Programmation p WHERE p.structure.id=?1 AND p.exercice.id=?2 AND p.taux>=100 AND p.lastEvalDate<=p.deadLine ")
     long countActiviteRealiserATemps(long structureId, long exerciceId);
 
     // requetes pour des comptages plus précis
-    @Query("SELECT COUNT(p) FROM Programmation p, Structure s, Exercice e "
+    @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id =?2 "
             + "AND p.deleted = false "
             + "AND p.taux>=100 "
             + "AND p.validationFinal = true")
     long countStructureProgrammationTerminer(long structureId, long exerciceId);
 
-    @Query("SELECT COUNT(p) FROM Programmation p, Structure s, Exercice e "
+    @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id =?2 "
             + "AND p.deleted = false "
             + "AND p.taux < 100 "
             + "AND p.taux > 0 "
             + "AND p.validationFinal = true")
     long countStructureProgrammationEncours(long structureId, long exerciceId);
 
-    @Query("SELECT COUNT(p) FROM Programmation p, Structure s, Exercice e "
+    @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
-            + "AND p.exercice.id =?2 "
+            + "AND p.exercice.id = e.id AND e.id =?2 "
             + "AND p.deleted = false "
             + "AND p.taux = 0 "
             + "AND p.validationFinal = true")
     long countStructureProgrammationEnattente(long structureId, long exerciceId);
 
     // calculs pour un ministère sans passer par la structure
-    @Query("SELECT COUNT(p) FROM Programmation p, Structure s,  MinistereStructure m "
+    @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s,  MinistereStructure m "
             + "WHERE p.structure.id = s.id "
             + "AND s.id = m.structure.id "
             + "AND m.ministere.id =?1 "
@@ -199,7 +207,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.validationFinal = true")
     long countMinistereProgrammation(long ministereId, long exerciceId);
 
-    @Query("SELECT COUNT(p) FROM Programmation p, Structure s,  MinistereStructure m "
+    @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s,  MinistereStructure m "
             + "WHERE p.structure.id = s.id "
             + "AND s.id = m.structure.id "
             + "AND m.ministere.id =?1 "
@@ -210,7 +218,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.validationFinal = true")
     long countMinistereTermine(long ministereId, long exerciceId);
 
-    @Query("SELECT COUNT(p) FROM Programmation p, Structure s,  MinistereStructure m "
+    @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s,  MinistereStructure m "
             + "WHERE p.structure.id = s.id "
             + "AND s.id = m.structure.id "
             + "AND m.ministere.id =?1 "
@@ -222,7 +230,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.validationFinal = true")
     long countMinistereEncours(long ministereId, long exerciceId);
 
-    @Query("SELECT COUNT(p) FROM Programmation p, Structure s,  MinistereStructure m "
+    @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s,  MinistereStructure m "
             + "WHERE p.structure.id = s.id "
             + "AND s.id = m.structure.id "
             + "AND m.ministere.id =?1 "
@@ -243,7 +251,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.validationFinal = true")
     Optional<Double> coutReelMinistereProgrammation(long ministereId, long exerciceId);
 
-    @Query("SELECT COUNT(p.id) FROM Programmation p, Structure s, MinistereStructure m WHERE p.structure.id=s.id AND s.id=m.structure.id AND m.ministere.id=?1 AND m.statut=true AND p.exercice.id=?2 AND p.taux>=100 AND p.lastEvalDate<=p.deadLine ")
+    @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s, MinistereStructure m WHERE p.structure.id=s.id AND s.id=m.structure.id AND m.ministere.id=?1 AND m.statut=true AND p.exercice.id=?2 AND p.taux>=100 AND p.lastEvalDate<=p.deadLine ")
     long countMinistereActiviteRealiserATemps(long ministereId, long exerciceId);
 
     @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s,  MinistereStructure m "
@@ -278,7 +286,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
      * @param fin
      * @return
      */
-    @Query("SELECT COUNT(p) FROM Programmation p, Structure s,  MinistereStructure m "
+    @Query("SELECT COUNT(DISTINCT p) FROM Programmation p, Structure s,  MinistereStructure m "
             + "WHERE p.structure.id = s.id "
             + "AND s.id = m.structure.id "
             + "AND m.ministere.id =?1 "

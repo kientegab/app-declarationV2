@@ -22,6 +22,7 @@ import com.mfptps.appdgessddi.service.PerformerService;
 import com.mfptps.appdgessddi.service.dto.PerformanceDTO;
 import com.mfptps.appdgessddi.service.dto.PerformerDTO;
 import com.mfptps.appdgessddi.service.mapper.PerformerMapper;
+import com.mfptps.appdgessddi.utils.AppUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -147,18 +148,16 @@ public class PerformerServiceImpl implements PerformerService {
 //            }
             // nombre total d'activités programmées
             long nap = programmationRepository.countStructureProgrammation(structure.getId(), exercice.getId());
-
             // =+ taux global de réalisation des objectifs TGRO; 
             // ce taux vient de la somme des taux d'exécution par structure, cette valeur est stocquée dans la table évaluation
             tmp = evaluationRepository.findEvaluation(structure.getId(), exercice.getId());
+
             double tgro = tmp.isPresent() ? tmp.get() : 0;
 
             // nombre activités réalisées à temps
             long nart = programmationRepository.countActiviteRealiserATemps(structure.getId(), exercice.getId());
-
             // =+ coefficient temps CT
             double coeffTemps = nart / ((nap > 0) ? nap : 1);
-
             // calcul de l'efficacité ea
             double ea = (tgro * 60 + coeffTemps * 40) / 100;
             ea = (ea >= 0) ? ea : 0;
@@ -166,10 +165,9 @@ public class PerformerServiceImpl implements PerformerService {
             // AJout
             perf.setTgro(tgro);
             perf.setCoefftemps(coeffTemps);
-            
+            ea = AppUtil.arrondirDecimal(ea);//Math.round(ea * 100) / 100;
             perf.setEfficacite(ea);
             efficacite = (ea >= 0) ? (efficacite + ea) : efficacite;
-
             // ====== + FIN CALCULS ea =====//
             // calcul de l'efficience ei
             double ei = 0;
@@ -178,7 +176,7 @@ public class PerformerServiceImpl implements PerformerService {
             tmp = programmationRepository.coutReelStructureProgrammation(structure.getId(), exercice.getId());
             double montant_total = tmp.isPresent() ? tmp.get() : 1;
             // =+ somme des couts prévisionnels des activités réalisées à 100%
-            tmp = programmationRepository.coutPrevsionnelStructureProgrammation(structure.getId(), exercice.getId());
+            tmp = programmationRepository.coutPrevsionnelStructureProgrammation_(structure.getId(), exercice.getId());
             double cout_previsionnel = tmp.isPresent() ? tmp.get() : 0;
             // =+ somme des couts réels des activités réalisées à 100%
             tmp = programmationRepository.coutEffectifStructureProgrammation(structure.getId(), exercice.getId());
@@ -187,20 +185,21 @@ public class PerformerServiceImpl implements PerformerService {
             if (montant_total > 0) {
                 ei = (cout_previsionnel - cout_effectif) / montant_total;
             }
-
+            ei = AppUtil.arrondirDecimal(ei);//Math.round(ei * 100) / 100;
+            perf.setEfficience(ei);
             efficience = (ei >= 0) ? (efficience + ei) : efficience;
 
             // calcul de la gouvernance gouv
             double gouv = 0;
 
-            if (evalGouv != null && !evalGouv.isEmpty()) {
+            if (!evalGouv.isEmpty()) {
                 for (EvaluationGouvernance eval : evalGouv) {
-                    gouv = gouv + (eval.getValeur() / eval.getValeurReference()) * 100;
+                    gouv = gouv + (eval.getValeur() / eval.getValeurReference());
                 }
                 // après addition on fait la moyenne
                 gouv = (gouv >= 0) ? (gouv / evalGouv.size()) : 0;
             }
-
+            gouv = AppUtil.arrondirDecimal(gouv);//Math.round(gouv * 100) / 100;
             perf.setGouvernance(gouv);
             gouvernance = (gouv >= 0) ? (gouvernance + gouv) : gouvernance;
 
@@ -224,7 +223,7 @@ public class PerformerServiceImpl implements PerformerService {
                     imp = (imp >= 0) ? (imp / nombre) : 0;
                 }
             }
-
+            imp = AppUtil.arrondirDecimal(imp);//Math.round(imp * 100) / 100;
             perf.setImpact(imp);
 
             impact = (imp >= 0) ? (impact + imp) : impact;
@@ -233,8 +232,8 @@ public class PerformerServiceImpl implements PerformerService {
             double pg = ((ponderation.getEfficacite() * ea)
                     + (ponderation.getEfficience() * ei)
                     + (ponderation.getGouvernance() * gouv)
-                    + (ponderation.getImpact() * imp)) * 100;
-
+                    + (ponderation.getImpact() * imp)) / 100;
+            pg = AppUtil.arrondirDecimal(pg);//Math.round(pg * 100) / 100;
             perf.setPgs(pg);
 
             // Sauvegarde de la performance par structure
@@ -253,7 +252,6 @@ public class PerformerServiceImpl implements PerformerService {
         gouvernance = gouvernance / count;
         impact = impact / count;
         pgs = pgs / count;
-
         appreciation = grilleRepository.findGrilleAppreciation(pgs).orElse("");
 
         // dernières données
