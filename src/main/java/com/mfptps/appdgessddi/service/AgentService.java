@@ -4,6 +4,7 @@ import com.mfptps.appdgessddi.entities.*;
 import com.mfptps.appdgessddi.repositories.*;
 import com.mfptps.appdgessddi.security.SecurityUtils;
 import com.mfptps.appdgessddi.service.dto.AgentDTO;
+import com.mfptps.appdgessddi.service.dto.AgentStructureDTO;
 import com.mfptps.appdgessddi.utils.AppUtil;
 import com.mfptps.appdgessddi.utils.RandomUtil;
 import com.mfptps.appdgessddi.web.exceptions.CustomException;
@@ -324,6 +325,14 @@ public class AgentService {
             result = agentRepository.findAllByStructure(structureId, pageable).map(AgentDTO::new);
         }
         return result;
+    }
+
+    /*
+    * liste l'agent avec la structure
+     */
+    @Transactional(readOnly = true)
+    public AgentStructureDTO getAgentsWithStructure(long id) {
+        return agentRepository.findAgentById(id);
     }
 
     @Transactional(readOnly = true)

@@ -6,6 +6,7 @@
 package com.mfptps.appdgessddi.repositories;
 
 import com.mfptps.appdgessddi.entities.Agent;
+import com.mfptps.appdgessddi.service.dto.AgentStructureDTO;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -72,4 +73,11 @@ public interface AgentRepository extends JpaRepository<Agent, Long> {
             + "WHERE a.actif = true AND a.deleted = false "
             + "AND ast.structure.id = :structureId AND a.id = ast.agent.id AND ast.actif = true")
     Page<Agent> findAllByStructure(@Param("structureId") long structureId, Pageable pageable);
+
+    @Query(value = "SELECT new com.mfptps.appdgessddi.service.dto.AgentStructureDTO (a.id, a.matricule,a.nom,a.prenom,a.telephone,a.email,a.actif, s.libelle) "
+            + "FROM Agent a, AgentStructure ags, Structure s "
+            + "WHERE ags.structure.id = s.id "
+            + "AND a.id = :id "
+            + "AND ags.agent.id = a.id ")
+    AgentStructureDTO findAgentById(@Param("id") long id);
 }

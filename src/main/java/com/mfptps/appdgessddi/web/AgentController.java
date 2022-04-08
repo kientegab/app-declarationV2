@@ -5,6 +5,7 @@ import com.mfptps.appdgessddi.entities.Agent;
 import com.mfptps.appdgessddi.repositories.AgentRepository;
 import com.mfptps.appdgessddi.service.AgentService;
 import com.mfptps.appdgessddi.service.dto.AgentDTO;
+import com.mfptps.appdgessddi.service.dto.AgentStructureDTO;
 import com.mfptps.appdgessddi.utils.*;
 import com.mfptps.appdgessddi.web.exceptions.*;
 import com.mfptps.appdgessddi.web.vm.AffectationVM;
@@ -178,6 +179,18 @@ public class AgentController {
         final Page<AgentDTO> page = agentService.getAllManagedAgentsByStructure(structureId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /*
+    * Liste l'agent avec sa structure
+     */
+    @GetMapping("/agents/struct/{id}")
+    public ResponseEntity<AgentStructureDTO> getAgentWithStructure(@PathVariable(name = "id", required = true) Long id) {
+        if (id == null) {
+            throw new BadRequestAlertException("Veuillez renseigner le paramètre", applicationName, "idnull");
+        }
+        AgentStructureDTO page = agentService.getAgentsWithStructure(id);
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
     /**
