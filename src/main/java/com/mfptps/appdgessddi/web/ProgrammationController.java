@@ -128,6 +128,20 @@ public class ProgrammationController {
     }
 
     /**
+     * Liste les programmations ENATTENTE de cette structure
+     *
+     * @param structureId : id of Structure referency by ids in path
+     * @param pageable
+     * @return
+     */
+    @GetMapping(path = "/all/exercice-enattente/{ids}")
+    public ResponseEntity<List<Programmation>> findProgrammationsByExerciceENATTENTE(@PathVariable(name = "ids", required = true) Long structureId, Pageable pageable) {
+        Page<Programmation> programmations = programmationService.findAllENATTENTE(structureId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), programmations);
+        return ResponseEntity.ok().headers(headers).body(programmations.getContent());
+    }
+
+    /**
      * list of Programmation for Evaluation
      *
      * @param structureId

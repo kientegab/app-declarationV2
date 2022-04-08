@@ -452,12 +452,13 @@ public class ReportUtil {
 
         List<RapportPageOne> donnees = new ArrayList<>();
 
-        double ct = (Math.round(performance.getCoefftemps() * 100) / 100);
-        double tgro = (Math.round(performance.getTgro() * 100) / 100);
-        double ei = (Math.round(performance.getEfficience() * 100) / 100);
-        double effic = (Math.round(performance.getEfficacite() * 100) / 100);
-        double gouv = (Math.round(performance.getGouvernance() * 100) / 100);
-        double impact = (Math.round(performance.getImpact() * 100) / 100);
+        //double ct = (Math.round(performance.getCoefftemps() * 100) / 100);
+        double ct = performance.getCoefftemps();
+        double tgro = performance.getTgro();
+        double ei = performance.getEfficience();
+        double effic = performance.getEfficacite();
+        double gouv = performance.getGouvernance();
+        double impact = performance.getImpact();
 
         String structLibelle = structure.getSigle().toUpperCase();
 
@@ -477,17 +478,17 @@ public class ReportUtil {
         String texteEfficience;
 
         if (ei > 0) {
-            texteEfficience = structLibelle + " a un niveau de performance de " + ei + "% sur le plan de l'efficience. Ce qui représente le rapport du coût prévisionnel des activités réalisées à 100% moins le oût effectif des activités réalisées à 100% par le montant total dépensé.";
+            texteEfficience = structLibelle + " a un niveau de performance de <b>" + ei + "%</b> sur le plan de l'efficience. Ce qui représente le rapport du coût prévisionnel des activités réalisées à 100% moins le oût effectif des activités réalisées à 100% par le montant total dépensé.";
         } else {
             texteEfficience = "Dans l'impossibilité d'avoir des données pour le calcul de l'efficience pour toutes structures, le comité a décidé d'affecter 0% comme valeur.";
         }
 
-        String texteGouvernance = structLibelle + " a un niveau de performance de " + gouv + "% sur le plan de la gouvernance.";
+        String texteGouvernance = structLibelle + " a un niveau de performance de <b>" + gouv + "%</b> sur le plan de la gouvernance.";
 
         String texteImpact;
 
         if (ponderation.getImpact() > 0) {
-            texteImpact = structLibelle + " a un niveau de performance de " + impact + "% sur le plan de l'impact.";
+            texteImpact = structLibelle + " a un niveau de performance de <b>" + impact + "%</b> sur le plan de l'impact.";
         } else {
             texteImpact = "L'indicateur d'impact n'a pas été pris en compte pour toutes les structures pour l'évaluation " + annee + ". Les données de l'impact sont en effet extraites du "
                     + " document du rapport annuel de performance (RAP) du budget Programme du ministère. Le rapport de l'année " + annee + " du ministère n'est pas disponible, par conséquent "
@@ -527,23 +528,23 @@ public class ReportUtil {
 
         List<RapportPageTwo> donnees = new ArrayList<>();
 
-        double pg = (Math.round(performance.getPgs() * 100) / 100);
+        double pg = performance.getPgs();//(Math.round(performance.getPgs() * 100) / 100);
 
-        double ei = (Math.round(performance.getEfficience() * 100) / 100);
-        double effic = (Math.round(performance.getEfficacite() * 100) / 100);
-        double gouv = (Math.round(performance.getGouvernance() * 100) / 100);
-        double impact = (Math.round(performance.getImpact() * 100) / 100);
+        double ei = performance.getEfficience();
+        double effic = performance.getEfficacite();
+        double gouv = performance.getGouvernance();
+        double impact = performance.getImpact();
 
         String structLibelle = structure.getSigle().toUpperCase();
 
         String titrePerformance = "<b>Performance globale de " + structLibelle + "</b>";
 
-        String textePerformance = "La performance de " + structLibelle + " se situe à " + pg + "%. Elle est obtenue à partir du calcul de la moyenne pondérée des différents critères.";
+        String textePerformance = "La performance de " + structLibelle + " se situe à <b>" + pg + "%</b>. Elle est obtenue à partir du calcul de la moyenne pondérée des différents critères.";
 
-        String formulePerformance = "<b>PG = (" + ponderation.getEfficacite() + "% x " + effic + ") + (" + ponderation.getEfficience() + "0% x " + ei + ") + (" + ponderation.getGouvernance() + "% x " + gouv + "%)";
+        String formulePerformance = "<b>PG = (" + ponderation.getEfficacite() + "% x " + effic + ") + (" + ponderation.getEfficience() + "% x " + ei + ") + (" + ponderation.getGouvernance() + "% x " + gouv + ")";
 
         if (ponderation.getImpact() > 0) {
-            formulePerformance = formulePerformance + "(" + ponderation.getImpact() + "%) </b>";
+            formulePerformance = formulePerformance + " + (" + ponderation.getImpact() + "% x " + impact + ") </b>";
         } else {
             formulePerformance = formulePerformance + "</b>";
         }

@@ -77,6 +77,16 @@ public interface ProgrammationService {
     Page<Programmation> findAllENCOURS(Long structureId, Pageable pageable);
 
     /**
+     * Liste des activites programmees d'une structure donnee de l'exercice en
+     * attente
+     *
+     * @param structureId
+     * @param pageable
+     * @return
+     */
+    Page<Programmation> findAllENATTENTE(Long structureId, Pageable pageable);
+
+    /**
      * Liste des activites programmees (d'une structure) et validees au CASEM
      *
      * @param structureId

@@ -284,6 +284,12 @@ public class ProgrammationServiceImpl implements ProgrammationService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Programmation> findAllENATTENTE(Long structureId, Pageable pageable) {
+        return programmationRepository.findAll(structureId, ExerciceStatus.EN_ATTENTE, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<Programmation> findAllValided(Long structureId, Pageable pageable) {
         return programmationRepository.findAllValided(structureId, pageable);
     }

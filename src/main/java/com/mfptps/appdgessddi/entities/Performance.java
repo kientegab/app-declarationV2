@@ -1,6 +1,7 @@
 package com.mfptps.appdgessddi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.text.DecimalFormat;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,10 +37,10 @@ public class Performance extends CommonEntity {
 
     @Column(name = "efficacite")
     private double efficacite;
-    
+
     @Column(name = "coefftemps")
     private double coefftemps;
-    
+
     @Column(name = "tgro")
     private double tgro;
 
@@ -83,7 +84,10 @@ public class Performance extends CommonEntity {
     }
 
     public double getEfficacite() {
-        return efficacite;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        return Double.valueOf(df.format(efficacite).replace(",", "."));
     }
 
     public void setEfficacite(double efficacite) {
@@ -91,7 +95,10 @@ public class Performance extends CommonEntity {
     }
 
     public double getEfficience() {
-        return efficience;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        return Double.valueOf(df.format(efficience).replace(",", "."));
     }
 
     public void setEfficience(double efficience) {
@@ -99,7 +106,10 @@ public class Performance extends CommonEntity {
     }
 
     public double getGouvernance() {
-        return gouvernance;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        return Double.valueOf(df.format(gouvernance).replace(",", "."));
     }
 
     public void setGouvernance(double gouvernance) {
@@ -107,7 +117,10 @@ public class Performance extends CommonEntity {
     }
 
     public double getImpact() {
-        return impact;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        return Double.valueOf(df.format(impact).replace(",", "."));
     }
 
     public void setImpact(double impact) {
@@ -115,7 +128,10 @@ public class Performance extends CommonEntity {
     }
 
     public double getPgs() {
-        return pgs;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        return Double.valueOf(df.format(pgs).replace(",", "."));
     }
 
     public void setPgs(double pgs) {
@@ -155,7 +171,10 @@ public class Performance extends CommonEntity {
     }
 
     public double getCoefftemps() {
-        return coefftemps;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        return Double.valueOf(df.format(coefftemps).replace(",", "."));
     }
 
     public void setCoefftemps(double coefftemps) {
@@ -163,7 +182,10 @@ public class Performance extends CommonEntity {
     }
 
     public double getTgro() {
-        return tgro;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        return Double.valueOf(df.format(tgro).replace(",", "."));
     }
 
     public void setTgro(double tgro) {

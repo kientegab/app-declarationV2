@@ -37,7 +37,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
     @Query("SELECT p FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.deleted = false "
             + "AND p.structure.id = s.id AND s.id = :structureId "
-            + "AND p.exercice.id = e.id AND e.statut = :statut")//filtrer par exercice en cours
+            + "AND p.exercice.id = e.id AND e.statut = :statut")//filtrer par exercice en-cours ou en-attente
     Page<Programmation> findAll(Long structureId, ExerciceStatus statut, Pageable Pageable);
 
     @Query("SELECT p FROM Programmation p, Structure s "
@@ -155,7 +155,7 @@ public interface ProgrammationRepository extends JpaRepository<Programmation, Lo
             + "AND p.validationFinal = true AND p.taux >= 100")
     Optional<Double> coutPrevsionnelStructureProgrammation_(long structureId, long exerciceId);
 
-    @Query("SELECT SUM(p.coutPrevisionnel) FROM Programmation p, Structure s, Exercice e "
+    @Query("SELECT SUM(p.coutReel) FROM Programmation p, Structure s, Exercice e "
             + "WHERE p.structure.id = s.id "
             + "AND s.id =?1 "
             + "AND p.exercice.id = e.id AND e.id =?2 "

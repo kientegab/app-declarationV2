@@ -1,14 +1,12 @@
 package com.mfptps.appdgessddi.service.dto;
 
-import javax.validation.constraints.*;
-
 import com.mfptps.appdgessddi.config.Constants;
 import com.mfptps.appdgessddi.entities.*;
-
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.validation.constraints.*;
 
 /**
  * A DTO representing a agent, with his profiles.
@@ -27,7 +25,7 @@ public class AgentDTO {
 
     @Size(max = 50)
     private String prenom;
-    
+
     private String telephone;
 
     @Email
@@ -45,9 +43,9 @@ public class AgentDTO {
     private String lastModifiedBy;
 
     private Instant lastModifiedDate;
-    
+
     private Set<String> privileges;
-    
+
     private Set<String> profiles;
 
     public AgentDTO() {
@@ -70,16 +68,15 @@ public class AgentDTO {
         agent.getProfiles().stream().forEach(r -> {
             prof.add(r.getName());
             actions.addAll(r.getPrivileges());
-                });
+        });
         this.profiles = prof;
         this.privileges = actions.stream()
-            .map(Privilege::getName)
-            .collect(Collectors.toSet());
-        
+                .map(Privilege::getName)
+                .collect(Collectors.toSet());
+
 //        if(null != agent.getStructure() && null != agent.getStructure().getId()) {
 //            this.structureId = agent.getStructure().getId();
 //        }
-        
     }
 
     public Long getId() {
@@ -98,7 +95,6 @@ public class AgentDTO {
         this.matricule = matricule;
     }
 
-    
     public String getNom() {
         return nom;
     }
@@ -178,7 +174,7 @@ public class AgentDTO {
     public void setProfiles(Set<String> profiles) {
         this.profiles = profiles;
     }
-    
+
     public String getEmail() {
         return email;
     }
@@ -197,18 +193,18 @@ public class AgentDTO {
 
     @Override
     public String toString() {
-        return "AgentDTO{" +
-            "matricule='" + matricule + '\'' +
-            ", nom='" + nom + '\'' +
-            ", prenom='" + prenom + '\'' +
-            ", email='" + email + '\'' +
-            ", actif=" + actif +
-            ", createdBy=" + createdBy +
-            ", createdDate=" + createdDate +
-            ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate +
-            ", profiles=" + profiles +
-            ", privileges=" + privileges +
-            "}";
+        return "AgentDTO{"
+                + "matricule='" + matricule + '\''
+                + ", nom='" + nom + '\''
+                + ", prenom='" + prenom + '\''
+                + ", email='" + email + '\''
+                + ", actif=" + actif
+                + ", createdBy=" + createdBy
+                + ", createdDate=" + createdDate
+                + ", lastModifiedBy='" + lastModifiedBy + '\''
+                + ", lastModifiedDate=" + lastModifiedDate
+                + ", profiles=" + profiles
+                + ", privileges=" + privileges
+                + "}";
     }
 }

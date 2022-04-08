@@ -22,7 +22,6 @@ import com.mfptps.appdgessddi.service.PerformerService;
 import com.mfptps.appdgessddi.service.dto.PerformanceDTO;
 import com.mfptps.appdgessddi.service.dto.PerformerDTO;
 import com.mfptps.appdgessddi.service.mapper.PerformerMapper;
-import com.mfptps.appdgessddi.utils.AppUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -140,7 +139,7 @@ public class PerformerServiceImpl implements PerformerService {
             perf.setExercice(exercice);
             perf.setStructure(structure);
 
-            // récupération des évaluations de gouvernance
+            // récupération des évaluations(ou indicateurs) de gouvernance
             List<EvaluationGouvernance> evalGouv = evaluationGouvernanceRepository.findStructureEvaluation(structure.getId(), exercice.getId()); // changment du type
 
 //            if (evalGouv.isEmpty()) {
@@ -157,7 +156,7 @@ public class PerformerServiceImpl implements PerformerService {
             // nombre activités réalisées à temps
             long nart = programmationRepository.countActiviteRealiserATemps(structure.getId(), exercice.getId());
             // =+ coefficient temps CT
-            double coeffTemps = nart / ((nap > 0) ? nap : 1);
+            double coeffTemps = ((nap > 0) ? nart / Double.valueOf(nap) : 0);
             // calcul de l'efficacité ea
             double ea = (tgro * 60 + coeffTemps * 40) / 100;
             ea = (ea >= 0) ? ea : 0;
@@ -165,7 +164,6 @@ public class PerformerServiceImpl implements PerformerService {
             // AJout
             perf.setTgro(tgro);
             perf.setCoefftemps(coeffTemps);
-            ea = AppUtil.arrondirDecimal(ea);//Math.round(ea * 100) / 100;
             perf.setEfficacite(ea);
             efficacite = (ea >= 0) ? (efficacite + ea) : efficacite;
             // ====== + FIN CALCULS ea =====//
@@ -185,7 +183,7 @@ public class PerformerServiceImpl implements PerformerService {
             if (montant_total > 0) {
                 ei = (cout_previsionnel - cout_effectif) / montant_total;
             }
-            ei = AppUtil.arrondirDecimal(ei);//Math.round(ei * 100) / 100;
+
             perf.setEfficience(ei);
             efficience = (ei >= 0) ? (efficience + ei) : efficience;
 
@@ -199,7 +197,7 @@ public class PerformerServiceImpl implements PerformerService {
                 // après addition on fait la moyenne
                 gouv = (gouv >= 0) ? (gouv / evalGouv.size()) : 0;
             }
-            gouv = AppUtil.arrondirDecimal(gouv);//Math.round(gouv * 100) / 100;
+
             perf.setGouvernance(gouv);
             gouvernance = (gouv >= 0) ? (gouvernance + gouv) : gouvernance;
 
@@ -214,26 +212,29 @@ public class PerformerServiceImpl implements PerformerService {
                 int nombre = contribs.size();
 
                 for (Contribuer contrib : contribs) {
-                    // I = (VA – VR) / (Cible-VR) x 100 où VA = valeur atteinte = Valeur dans Contribuer et VR = Valeur référence i.e cible dans Contribuer 
+                    // I = (VA – VR) / (Cible-VR) x 100 où VA = valeur atteinte = Valeur dans Contribuer 
+                    //et VR = Valeur référence i.e cible dans Contribuer 
                     //et Cible correspond à cible dans ParametrerImpact
-                    imp = imp + (((contrib.getValeur() - contrib.getCible()) / (contrib.getParametrerImpact().getCible() - contrib.getCible())) * 100);
-                }
+                    double denominateur = (contrib.getParametrerImpact().getCible() - contrib.getCible());
+                    if (denominateur != 0) {
+                        imp = imp + (((contrib.getValeur() - contrib.getCible()) / denominateur) * 100);
+                    }
 
+                }
                 if (nombre > 0) {
-                    imp = (imp >= 0) ? (imp / nombre) : 0;
+                    imp = imp / nombre;//(imp >= 0) ? (imp / nombre) : 0;
                 }
             }
-            imp = AppUtil.arrondirDecimal(imp);//Math.round(imp * 100) / 100;
             perf.setImpact(imp);
 
-            impact = (imp >= 0) ? (impact + imp) : impact;
+            impact = impact + imp;//(imp >= 0) ? (impact + imp) : impact;
 
             // calcul de la performance globale de la structure
             double pg = ((ponderation.getEfficacite() * ea)
                     + (ponderation.getEfficience() * ei)
                     + (ponderation.getGouvernance() * gouv)
                     + (ponderation.getImpact() * imp)) / 100;
-            pg = AppUtil.arrondirDecimal(pg);//Math.round(pg * 100) / 100;
+
             perf.setPgs(pg);
 
             // Sauvegarde de la performance par structure
