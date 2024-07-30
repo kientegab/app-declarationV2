@@ -1,8 +1,7 @@
-package bf.mefp.appDeclaration.appdgddeclaration.controller;
+package com.mefp.appdeclaration.web;
 
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Pays;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Region;
-import bf.mefp.appDeclaration.appdgddeclaration.service.RegionService;
+import com.mefp.appdeclaration.entities.Region;
+import com.mefp.appdeclaration.service.RegionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,7 @@ import java.util.Optional;
 public class RegionController {
     @Autowired
 
-    private final RegionService regionService;
+    private final RegionService  regionService;
 
     public RegionController(RegionService regionService) {
         this.regionService = regionService;

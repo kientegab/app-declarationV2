@@ -72,6 +72,9 @@
             <column name="profile_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
+<!--            <column name="region_id" type="bigint">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
         </createTable>
 
         <addPrimaryKey columnNames="agent_id, profile_id" tableName="agent_profile"/>

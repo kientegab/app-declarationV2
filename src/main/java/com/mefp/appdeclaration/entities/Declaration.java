@@ -1,13 +1,13 @@
-package bf.mefp.appDeclaration.appdgddeclaration.entity;
+package com.mefp.appdeclaration.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+//import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -28,12 +28,12 @@ public class Declaration {
     private Date dateDeclaration;
 
     private String motifVoyage;
-    @ManyToOne(targetEntity = Devise.class)
-    @JoinColumn(name="devise_id")
+    //@ManyToOne(targetEntity = Devise.class)
+   // @JoinColumn(name="devise_id")
 
-    private Devise devise;
+   // private Devise devise;
 
-    private Long montant;
+   // private Long montant;
 
     private Long montantCFA;
 
@@ -49,12 +49,19 @@ public class Declaration {
     @ManyToOne(targetEntity = Voyageur.class)
     @JoinColumn(name="voyageur_id")
     private Voyageur voyageur;
-    @OneToMany(mappedBy = "declaration", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"declaration"}, allowSetters = true)
-    private Set<Document> documents = new HashSet<>() ;
+    //@OneToMany(mappedBy = "declaration", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+   // @JsonIgnoreProperties(value = {"declaration"}, allowSetters = true)
+    //private Set<Document> documents = new HashSet<>() ;
+   // private List<Document> documents;
+   //@OneToMany(mappedBy = "devise", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+   //@JsonIgnoreProperties(value = {"devise"}, allowSetters = true)
+    //private Set<DeviseMontantdto> deviseMontants;
+   //private List<DeviseMontantdto> deviseMontants;
     public Declaration(Long id) {
         this.id = id;
     }
+
+
 
     public Long getId() {
         return id;
@@ -88,21 +95,6 @@ public class Declaration {
         this.motifVoyage = motifVoyage;
     }
 
-    public Devise getDevise() {
-        return devise;
-    }
-
-    public void setDevise(Devise devise) {
-        this.devise = devise;
-    }
-
-    public Long getMontant() {
-        return montant;
-    }
-
-    public void setMontant(Long montant) {
-        this.montant = montant;
-    }
 
 
     public Boolean getEstDeclare() {

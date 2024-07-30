@@ -1,9 +1,9 @@
-package bf.mefp.appDeclaration.appdgddeclaration.repository;
+package com.mefp.appdeclaration.repositories;
 
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Declaration;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Voyageur;
+
+
+import com.mefp.appdeclaration.entities.Voyageur;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;

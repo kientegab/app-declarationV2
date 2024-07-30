@@ -1,7 +1,10 @@
-package bf.mefp.appDeclaration.appdgddeclaration.entity;
+package com.mefp.appdeclaration.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
+
+import javax.persistence.*;
+
+//import jakarta.persistence.*;
 @Entity
 @Table(name = "document")
 public class Document {

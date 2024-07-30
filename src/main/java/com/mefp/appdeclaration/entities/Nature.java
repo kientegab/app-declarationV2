@@ -1,2 +1,4 @@
-package com.mefp.appdeclaration.entities;public class Nature {
+package com.mefp.appdeclaration.entities;
+
+public class Nature {
 }

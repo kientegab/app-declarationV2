@@ -1,14 +1,16 @@
-package bf.mefp.appDeclaration.appdgddeclaration.entity;
+package com.mefp.appdeclaration.entities;
 
 //@author  <brikientega@gmail.com>
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "Voyageur")
-public class Voyageur {
+@Table (name = "Voyageur")
+public class Voyageur  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "sequence_voyageur")

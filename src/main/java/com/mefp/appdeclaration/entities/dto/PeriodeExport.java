@@ -1,4 +1,4 @@
-package bf.mefp.appDeclaration.appdgddeclaration.entity.dto;
+package com.mefp.appdeclaration.entities.dto;
 
 import lombok.Data;
 

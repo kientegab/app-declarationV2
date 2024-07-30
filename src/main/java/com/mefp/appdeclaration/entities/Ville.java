@@ -1,16 +1,18 @@
-package bf.mefp.appDeclaration.appdgddeclaration.entity;
+package com.mefp.appdeclaration.entities;
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
 
 //@author  <brikientega@gmail.com>
 @Data
 @Entity
 @Table(name = "ville", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"libelle"}, name = "ux_libelle_in_ville")})
+        @UniqueConstraint(columnNames = {"libelle"}, name = "ux_libelle_in_ville") })
 public class Ville {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_ville")
     //@GeneratedValue(strategy = GenerationType.AUTO)
     @JoinColumn(name="ville_id",nullable = false)

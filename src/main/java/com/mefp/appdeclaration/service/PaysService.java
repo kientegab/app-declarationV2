@@ -1,12 +1,9 @@
-package bf.mefp.appDeclaration.appdgddeclaration.service;
+package com.mefp.appdeclaration.service;
 
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Pays;
-import bf.mefp.appDeclaration.appdgddeclaration.repository.PaysRepository;
-import org.apache.coyote.Response;
+import com.mefp.appdeclaration.entities.Pays;
+import com.mefp.appdeclaration.repositories.PaysRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +12,7 @@ import java.util.Optional;
 public class PaysService {
     @Autowired
 
-    private final PaysRepository paysRepository;
+    private final PaysRepository  paysRepository;
 
     public PaysService(PaysRepository paysRepository) {
         this.paysRepository = paysRepository;

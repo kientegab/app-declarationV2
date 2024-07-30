@@ -1,13 +1,15 @@
-package bf.mefp.appDeclaration.appdgddeclaration.entity;
+package com.mefp.appdeclaration.entities;
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
 
 @Data
 @Entity
 @Table(name = "devise", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"libelle"}, name = "ux_libelle_in_devise")})
-public class Devise {
+public class Devise extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_devise")

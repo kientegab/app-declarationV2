@@ -1,7 +1,9 @@
-package com.mefp.appdeclaration.entities;
+package com.mefp.appdeclaration.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-//import jakarta.persistence.*;
+import com.mefp.appdeclaration.entities.DeviseMontantdto;
+import com.mefp.appdeclaration.entities.Document;
+import com.mefp.appdeclaration.entities.Voyageur;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -9,30 +11,15 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
-//@NoArgsConstructor
-//@AllArgsConstructor
-@Entity
-@Table(name = "declaration")
-public class Declaration {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_decl")
-    //@GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, unique = true, length = 10)
-    @JoinColumn(name="declaration_id",nullable = false)
+public class DeclarationDTO {
+
+
     private Long id;
 
     private Date dateDeclaration;
 
     private String motifVoyage;
-    //@ManyToOne(targetEntity = Devise.class)
-   // @JoinColumn(name="devise_id")
-
-   // private Devise devise;
-
-   // private Long montant;
 
     private Long montantCFA;
 
@@ -40,22 +27,18 @@ public class Declaration {
 
     private String nationalite;
 
-    @Column(nullable = true)
     private String justification;
 
     private String commentaire;
 
-    @ManyToOne(targetEntity = Voyageur.class)
-    @JoinColumn(name="voyageur_id")
+
     private Voyageur voyageur;
-    @OneToMany(mappedBy = "declaration", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"declaration"}, allowSetters = true)
+
     private Set<Document> documents = new HashSet<>() ;
-    @OneToMany(mappedBy = "devise", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"devise"}, allowSetters = true)
+
     private Set<DeviseMontantdto> deviseMontants = new HashSet<>() ;
 
-    public Declaration(Long id) {
+    public DeclarationDTO(Long id) {
         this.id = id;
     }
 
@@ -69,6 +52,14 @@ public class Declaration {
 
     public Long getId() {
         return id;
+    }
+
+    public Set<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(Set<Document> documents) {
+        this.documents = documents;
     }
 
     public Long getMontantCFA() {
@@ -142,6 +133,6 @@ public class Declaration {
         this.voyageur = voyageur;
     }
 
-    public Declaration() {
+    public DeclarationDTO() {
     }
 }

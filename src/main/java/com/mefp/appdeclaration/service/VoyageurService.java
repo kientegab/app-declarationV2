@@ -1,14 +1,11 @@
-package bf.mefp.appDeclaration.appdgddeclaration.service;
+package com.mefp.appdeclaration.service;
 
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Declaration;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Structure;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Voyageur;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.dto.Declarationdto;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.dto.ListDeclaration;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.dto.ListVoyageur;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.dto.Voyageurdto;
-import bf.mefp.appDeclaration.appdgddeclaration.repository.StructureRepository;
-import bf.mefp.appDeclaration.appdgddeclaration.repository.VoyageurRepository;
+import com.mefp.appdeclaration.entities.Structure;
+import com.mefp.appdeclaration.entities.Voyageur;
+import com.mefp.appdeclaration.entities.dto.ListVoyageur;
+import com.mefp.appdeclaration.entities.dto.Voyageurdto;
+import com.mefp.appdeclaration.repositories.StructureRepository;
+import com.mefp.appdeclaration.repositories.VoyageurRepository;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
@@ -85,7 +82,7 @@ public class VoyageurService {
             // recup image
             InputStream imgLogo = resourceLoader.getResource("classpath:logo_douane.jpeg").getInputStream();
             //recup struct..
-            Structure structure = structureRepository.findById(1L).orElseThrow( ()-> new RuntimeException("structure inexistante"));
+            Structure  structure = structureRepository.findById(1L).orElseThrow( ()-> new RuntimeException("structure inexistante"));
             List<ListVoyageur> listVoyageurs= new ArrayList<>();
             List<Voyageur> voyageurs=voyageurRepository.findAll();
             for (Voyageur dec:voyageurs) {
@@ -102,7 +99,7 @@ public class VoyageurService {
 
             }
             // conteneur de données de base à imprimer
-            Voyageurdto voyageurdto = new Voyageurdto(imgLogo, structure.getRegion().getLibelle(), structure.getLibelle(), listVoyageurs);
+            Voyageurdto  voyageurdto = new Voyageurdto(imgLogo, structure.getRegion().getLibelle(), structure.getLibelle(), listVoyageurs);
 
             InputStream inputStream = this.getClass().getResourceAsStream("/voyageur.jasper");
 

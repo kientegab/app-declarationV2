@@ -1,7 +1,6 @@
-package bf.mefp.appDeclaration.appdgddeclaration.entity.dto;
+package com.mefp.appdeclaration.entities.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

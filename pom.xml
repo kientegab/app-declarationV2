@@ -9,12 +9,12 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.mfptps</groupId>
-    <artifactId>app-dgessddi</artifactId>
+    <artifactId>app-declaration</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>app-dgessddi</name>
-    <description>Plateforme d&apos;evaluation des performances des structures</description>
+    <description>Système de controle des moyens de paiements</description>
     <properties> 
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <hibernate.version>5.4.32.Final</hibernate.version>
         <springdoc.version>1.5.9</springdoc.version>
         <liquibase.version>4.6.1</liquibase.version>
@@ -181,7 +181,10 @@
             <version>0.11.2</version>
             <scope>runtime</scope>
         </dependency>
-        
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
@@ -265,14 +268,14 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>1.4.2.Final</version>
-                        </path>
-						
-                    </annotationProcessorPaths>
+<!--                    <annotationProcessorPaths>-->
+<!--                        <path>-->
+<!--                            <groupId>org.mapstruct</groupId>-->
+<!--                            <artifactId>mapstruct-processor</artifactId>-->
+<!--                            <version>1.4.2.Final</version>-->
+<!--                        </path>-->
+<!--						-->
+<!--                    </annotationProcessorPaths>-->
                 </configuration>
             </plugin>
         </plugins>

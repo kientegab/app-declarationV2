@@ -1,24 +1,18 @@
-package bf.mefp.appDeclaration.appdgddeclaration.controller;
+package com.mefp.appdeclaration.web;
 
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Declaration;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.dto.PeriodeExport;
-import bf.mefp.appDeclaration.appdgddeclaration.service.DeclarationService;
 
-import bf.mefp.appDeclaration.appdgddeclaration.service.DocService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletResponse;
+//import jakarta.servlet.http.HttpServletResponse;
+import com.mefp.appdeclaration.entities.Declaration;
+import com.mefp.appdeclaration.entities.dto.PeriodeExport;
+import com.mefp.appdeclaration.service.DeclarationService;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +22,7 @@ import java.util.Optional;
 public class DeclarationController {
 
     @Autowired
-    private  final DeclarationService declarationService;
+    private  final DeclarationService  declarationService;
 
     public DeclarationController(DeclarationService declarationService) {
         this.declarationService = declarationService;
@@ -36,7 +30,7 @@ public class DeclarationController {
     }
     @PostMapping("/declaration")
     public ResponseEntity<Declaration> createDeclaration(@RequestBody Declaration declaration){
-       Long montant= Long.valueOf("5000000");
+  //     Long montant= Long.valueOf("5000000");
 //     declaration.setMontant(montant);
         declaration.setEstDeclare(true);
         Declaration declaration1= declarationService.createDeclaration(declaration);
@@ -65,7 +59,7 @@ public class DeclarationController {
         return ResponseEntity.ok(listeVdeclaration);
     }
     @GetMapping("/declaration")
-    public ResponseEntity<List<Declaration>> findAllList(){
+    public ResponseEntity<List<Declaration>> findAllListD(){
         List<Declaration> listeDeclaration= declarationService.findAllDeclaration();
         return ResponseEntity.ok(listeDeclaration);
     }
@@ -77,7 +71,7 @@ public class DeclarationController {
     }
 
     @PostMapping(value = "/declaration/export")
-    public void exportDeclaration(HttpServletResponse reponse, @RequestBody PeriodeExport periodeExport)
+    public void exportDeclaration(HttpServletResponse  reponse, @RequestBody PeriodeExport  periodeExport)
             throws IOException, JRException {
         OutputStream  outputStream = reponse.getOutputStream();
         reponse.setContentType("application/pdf");

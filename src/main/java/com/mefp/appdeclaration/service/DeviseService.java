@@ -1,8 +1,6 @@
-package bf.mefp.appDeclaration.appdgddeclaration.service;
-
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Devise;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Pays;
-import bf.mefp.appDeclaration.appdgddeclaration.repository.DeviseRepository;
+package com.mefp.appdeclaration.service;
+import com.mefp.appdeclaration.entities.Devise;
+import com.mefp.appdeclaration.repositories.DeviseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +11,7 @@ import java.util.Optional;
 public class DeviseService {
     @Autowired
 
-    private  final DeviseRepository deviseRepository;
+    private  final DeviseRepository  deviseRepository;
 
     public DeviseService(DeviseRepository deviseRepository) {
         this.deviseRepository = deviseRepository;

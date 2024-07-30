@@ -1,20 +1,17 @@
-package bf.mefp.appDeclaration.appdgddeclaration.service;
+package com.mefp.appdeclaration.service;
 
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Declaration;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.StatDeclaration;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Structure;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.dto.Declarationdto;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.dto.ListDeclaration;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.dto.PeriodeExport;
-import bf.mefp.appDeclaration.appdgddeclaration.repository.DeclarationRepository;
-import bf.mefp.appDeclaration.appdgddeclaration.repository.StructureRepository;
-import bf.mefp.appDeclaration.appdgddeclaration.utils.ResponseMessage;
+import com.mefp.appdeclaration.entities.Declaration;
+import com.mefp.appdeclaration.entities.Structure;
+import com.mefp.appdeclaration.entities.dto.Declarationdto;
+import com.mefp.appdeclaration.entities.dto.ListDeclaration;
+import com.mefp.appdeclaration.entities.dto.PeriodeExport;
+import com.mefp.appdeclaration.repositories.DeclarationRepository;
+import com.mefp.appdeclaration.repositories.StructureRepository;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,11 +21,11 @@ import java.util.*;
 @Service
 public  class DeclarationService {
 
-    private final DeclarationRepository declarationRepository;
+    private final DeclarationRepository  declarationRepository;
 
     private final ResourceLoader resourceLoader;
 
-   private final StructureRepository structureRepository;
+   private final StructureRepository  structureRepository;
 
     public DeclarationService(DeclarationRepository declarationRepository, ResourceLoader resourceLoader, StructureRepository structureRepository) {
         this.declarationRepository = declarationRepository;
@@ -75,8 +72,9 @@ public  class DeclarationService {
             Declaration laDeclaration= optionalDeclaration.get();
             laDeclaration.setDateDeclaration(declaration.getDateDeclaration());
             laDeclaration.setMotifVoyage(declaration.getMotifVoyage());
-            laDeclaration.setDevise(declaration.getDevise());
-            laDeclaration.setMontant(declaration.getMontant());
+           // laDeclaration.setDevise(declaration.getDevise());
+           // laDeclaration.setMontant(declaration.getMontant());
+           // laDeclaration.setDeviseMontants(declaration.getDeviseMontants());
             laDeclaration.setMontantCFA(declaration.getMontantCFA());
             laDeclaration.setJustification(declaration.getJustification());
             return Optional.of(declarationRepository.save((laDeclaration)));
@@ -85,13 +83,13 @@ public  class DeclarationService {
         }
     }
 
-    public void exportDeclaration(PeriodeExport periodeExport, OutputStream outputStream){
+    public void exportDeclaration(PeriodeExport  periodeExport, OutputStream outputStream){
 
             try {
                 //
                 InputStream imgLogo = resourceLoader.getResource("classpath:logo_douane.jpeg").getInputStream();
 //recup struct..
-                Structure structure = structureRepository.findById(1L).orElseThrow( ()-> new RuntimeException("structure inexistante"));
+                Structure  structure = structureRepository.findById(1L).orElseThrow( ()-> new RuntimeException("structure inexistante"));
                 List<ListDeclaration> listDeclarations= new ArrayList<>();
                 List<Declaration> declarations=declarationRepository.findByPeriode(periodeExport.getDateDebut(), periodeExport.getDateFin());
                 for (Declaration dec:declarations) {
@@ -107,13 +105,14 @@ public  class DeclarationService {
                     declarationdto.setProvenance(dec.getVoyageur().getVilleProvenance().getLibelle());
                     declarationdto.setDestination(dec.getVoyageur().getVilleDestination());
                     declarationdto.setMotifVoyage(dec.getMotifVoyage());
-                    declarationdto.setMontant(dec.getMontant().toString()+" "+ dec.getDevise().getCode());
+                   // declarationdto.setMontant(dec.getMontant().toString()+" "+ dec.getDevise().getCode());
+                    declarationdto.setMontant(dec.getMontantCFA().toString()+"FCFA");
                     declarationdto.setJustificatif(dec.getJustification());
                     declarationdto.setCommentaire(dec.getCommentaire());
                     listDeclarations.add(declarationdto);
                 }
                 // conteneur de données de base à imprimer
-                Declarationdto declarationdto = new Declarationdto(imgLogo, structure.getRegion().getLibelle(), structure.getLibelle(), listDeclarations);
+                Declarationdto  declarationdto = new Declarationdto(imgLogo, structure.getRegion().getLibelle(), structure.getLibelle(), listDeclarations);
 
                 InputStream inputStream = this.getClass().getResourceAsStream("/declaration.jasper");
 

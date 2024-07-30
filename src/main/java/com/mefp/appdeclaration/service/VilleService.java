@@ -1,7 +1,7 @@
-package bf.mefp.appDeclaration.appdgddeclaration.service;
+package com.mefp.appdeclaration.service;
 
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Ville;
-import bf.mefp.appDeclaration.appdgddeclaration.repository.VilleRepository;
+import com.mefp.appdeclaration.entities.Ville;
+import com.mefp.appdeclaration.repositories.VilleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.Optional;
 @Service
 public class VilleService {
     @Autowired
-    private final VilleRepository villeRepository;
+    private final VilleRepository  villeRepository;
 
     public VilleService(VilleRepository villeRepository) {
         this.villeRepository = villeRepository;

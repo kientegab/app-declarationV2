@@ -1,14 +1,16 @@
-package bf.mefp.appDeclaration.appdgddeclaration.entity;
+package com.mefp.appdeclaration.entities;
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
 
 //@author  <brikientega@gmail.com>
 @Data
 @Entity
 @Table(name = "pays", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"libelle"}, name = "ux_libelle_in_pays")})
-public class Pays{
+public class Pays  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,19 +3,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-       <groupId>com.mfptps</groupId>
-       <artifactId>app-dgessddi</artifactId>
+       <groupId>com.mefp</groupId>
+       <artifactId>app-declaration</artifactId>
        <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>backend-dgessddi</artifactId>
+    <artifactId>backend-declaration</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
     	<dependency>
-            <groupId>com.mfptps</groupId>
-            <artifactId>ui-dgessdii</artifactId>
+            <groupId>com.mefp</groupId>
+            <artifactId>ui-declaration</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
         </dependency>

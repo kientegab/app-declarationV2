@@ -1,8 +1,6 @@
-package bf.mefp.appDeclaration.appdgddeclaration.controller;
-
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Devise;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Region;
-import bf.mefp.appDeclaration.appdgddeclaration.service.DeviseService;
+package com.mefp.appdeclaration.web;
+import com.mefp.appdeclaration.entities.Devise;
+import com.mefp.appdeclaration.service.DeviseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +15,7 @@ import java.util.Optional;
 public class DeviseController {
 
     @Autowired
-    private final DeviseService deviseService;
+    private final DeviseService  deviseService;
 
     public DeviseController(DeviseService deviseService) {
         this.deviseService = deviseService;

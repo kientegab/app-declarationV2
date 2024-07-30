@@ -1,8 +1,8 @@
-package bf.mefp.appDeclaration.appdgddeclaration.controller;
+package com.mefp.appdeclaration.web;
 
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Pays;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Voyageur;
-import bf.mefp.appDeclaration.appdgddeclaration.service.PaysService;
+
+import com.mefp.appdeclaration.entities.Pays;
+import com.mefp.appdeclaration.service.PaysService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class paysController {
     @Autowired
-    private  final PaysService paysService;
+    private  final PaysService  paysService;
 
     public paysController(PaysService paysService) {
         this.paysService = paysService;

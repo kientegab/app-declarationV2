@@ -1,8 +1,8 @@
-package bf.mefp.appDeclaration.appdgddeclaration.controller;
+package com.mefp.appdeclaration.web;
 
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Pays;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Ville;
-import bf.mefp.appDeclaration.appdgddeclaration.service.VilleService;
+
+import com.mefp.appdeclaration.entities.Ville;
+import com.mefp.appdeclaration.service.VilleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.Optional;
 @RequestMapping("/api/dgd")
 public class VilleController {
     @Autowired
-    private final VilleService villeService;
+    private final VilleService  villeService;
 
     public VilleController(VilleService villeService) {
         this.villeService = villeService;

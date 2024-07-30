@@ -1,17 +1,17 @@
-package bf.mefp.appDeclaration.appdgddeclaration.controller;
+package com.mefp.appdeclaration.web;
 
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Voyageur;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.dto.PeriodeExport;
-import bf.mefp.appDeclaration.appdgddeclaration.service.VoyageurService;
-import jakarta.servlet.http.HttpServletResponse;
+
+//import jakarta.servlet.http.HttpServletResponse;
+import com.mefp.appdeclaration.entities.Voyageur;
+import com.mefp.appdeclaration.service.VoyageurService;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequestMapping("/api/dgd")
 public class VoyageurController {
     @Autowired
-    private  final VoyageurService voyageurService;
+    private  final VoyageurService  voyageurService;
 
     public VoyageurController(VoyageurService voyageurService) {
         this.voyageurService = voyageurService;
@@ -28,7 +28,7 @@ public class VoyageurController {
 
     @PostMapping("/voyageur")
     public ResponseEntity<Voyageur> createVoyageur(@RequestBody Voyageur voyageur){
-        Voyageur voyageur1= voyageurService.createVoayageur((voyageur));
+        Voyageur  voyageur1= voyageurService.createVoayageur((voyageur));
         return  ResponseEntity.ok(voyageur1);
     }
 
@@ -66,7 +66,7 @@ public class VoyageurController {
         return ResponseEntity.noContent().build();
     }
     @GetMapping(value = "/voyageur/export")
-    public void exportVoyageur(HttpServletResponse reponse)
+    public void exportVoyageur(HttpServletResponse  reponse)
             throws IOException, JRException {
         OutputStream outputStream = reponse.getOutputStream();
         reponse.setContentType("application/pdf");

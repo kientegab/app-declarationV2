@@ -1,9 +1,7 @@
 
-package bf.mefp.appDeclaration.appdgddeclaration.entity;
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+package com.mefp.appdeclaration.entities;
+import lombok.Data;
+import javax.persistence.*;
 
 /**
  *
@@ -14,7 +12,7 @@ import org.hibernate.annotations.Where;
 @Table(name = "region")
 // @SQLDelete(sql = "UPDATE region SET deleted = true WHERE id=?")
 // @Where(clause = "deleted = false")
-public class Region  {
+public class Region extends CommonEntity {
 
     private static final long serialVersionUID = 5686144131119283929L;
 
@@ -23,7 +21,7 @@ public class Region  {
     //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_region")
     //@GeneratedValue(strategy = GenerationType.AUTO)
     @JoinColumn(name="region_id",nullable = false)
-    @Column(nullable = false, unique = true, length = 10)
+    @Column(unique = true, nullable = false, length = 10)
     private Long idRegion;
 
     @Column(unique = true, nullable = false, length = 90)

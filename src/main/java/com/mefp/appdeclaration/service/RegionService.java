@@ -1,8 +1,6 @@
-package bf.mefp.appDeclaration.appdgddeclaration.service;
-
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Devise;
-import bf.mefp.appDeclaration.appdgddeclaration.entity.Region;
-import bf.mefp.appDeclaration.appdgddeclaration.repository.RegionRepository;
+package com.mefp.appdeclaration.service;
+import com.mefp.appdeclaration.entities.Region;
+import com.mefp.appdeclaration.repositories.RegionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

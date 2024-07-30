@@ -1,4 +1,4 @@
-package bf.mefp.appDeclaration.appdgddeclaration.config;
+package com.mefp.appdeclaration.config;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 @Component
 public class utils {
 
