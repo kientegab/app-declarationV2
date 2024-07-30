@@ -1,12 +1,9 @@
 package com.mefp.appdeclaration.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.mefp.appdeclaration.entities.DeviseMontantdto;
+import com.mefp.appdeclaration.entities.DeviseMontant;
 import com.mefp.appdeclaration.entities.Document;
 import com.mefp.appdeclaration.entities.Voyageur;
-import lombok.Data;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,17 +33,17 @@ public class DeclarationDTO {
 
     private Set<Document> documents = new HashSet<>() ;
 
-    private Set<DeviseMontantdto> deviseMontants = new HashSet<>() ;
+    private Set<DeviseMontant> deviseMontants = new HashSet<>() ;
 
     public DeclarationDTO(Long id) {
         this.id = id;
     }
 
-    public Set<DeviseMontantdto> getDeviseMontants() {
+    public Set<DeviseMontant> getDeviseMontants() {
         return deviseMontants;
     }
 
-    public void setDeviseMontants(Set<DeviseMontantdto> deviseMontants) {
+    public void setDeviseMontants(Set<DeviseMontant> deviseMontants) {
         this.deviseMontants = deviseMontants;
     }
 

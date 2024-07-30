@@ -1,16 +1,16 @@
-package com.mefp.appdeclaration.service;
+package com.mefp.appdeclaration.service.impl;
 
 
 //import jakarta.transaction.Transactional;
 import com.mefp.appdeclaration.config.ApplicationProperties;
 import com.mefp.appdeclaration.config.utils;
 import com.mefp.appdeclaration.entities.Declaration;
-import com.mefp.appdeclaration.entities.DeviseMontantdto;
+import com.mefp.appdeclaration.entities.DeviseMontant;
 import com.mefp.appdeclaration.entities.Document;
-import com.mefp.appdeclaration.entities.dto.Declarationdto;
 import com.mefp.appdeclaration.repositories.DeclarationRepository;
 import com.mefp.appdeclaration.repositories.DeviseMontantRepository;
 import com.mefp.appdeclaration.repositories.DocumentRepository;
+import com.mefp.appdeclaration.service.DocService;
 import com.mefp.appdeclaration.service.dto.DeclarationDTO;
 import com.mefp.appdeclaration.service.mapper.DeclarationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ public class DocServiceImpl implements DocService {
 
     public DeclarationDTO upload(DeclarationDTO demandeDTO, MultipartFile[] fichiersJoint) throws Exception, IOException {
         Declaration declaration = new Declaration();
-        DeviseMontantdto deviseMontantdto=new DeviseMontantdto();
+        DeviseMontant  deviseMontantdto=new DeviseMontant();
 
         if (demandeDTO.getVoyageur()== null) {
             throw new Exception("Veuillez sélectionner d'abord un voyageur.");
@@ -90,8 +90,8 @@ public class DocServiceImpl implements DocService {
         }
 
         if(!demandeDTO.getDeviseMontants().isEmpty()){
-            for(DeviseMontantdto deviseMontantdto1:demandeDTO.getDeviseMontants()){
-                DeviseMontantdto deviseMontantdto2=new DeviseMontantdto();
+            for(DeviseMontant deviseMontantdto1:demandeDTO.getDeviseMontants()){
+                DeviseMontant deviseMontantdto2=new DeviseMontant();
                 deviseMontantdto2.setDevise(deviseMontantdto1.getDevise());
                 deviseMontantdto2.setMontant(deviseMontantdto1.getMontant());
                 deviseMontantdto2.setDeclaration(declaration);
