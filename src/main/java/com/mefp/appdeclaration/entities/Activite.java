@@ -7,25 +7,24 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "nature", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"libelle"}, name = "ux_libelle_in_nature")})
-public class Nature {
-
+@Table(name = "activite", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"libelle"}, name = "ux_libelle_in_activite")})
+public class Activite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name="nature_id",nullable = false)
+    @JoinColumn(name="activite_id",nullable = false)
     @Column(nullable = false, unique = true, length = 10)
     private Long id;
 
-//    @Column(nullable = false, length = 90)
-    private String code;
+    @Column(nullable = false, length = 90)
+    private String type;
 
     private String libelle;
     private  String description;
-    private Date  valideDe;
+    private Date valideDe;
     private  Date valideFin;
 
-    public Nature() {
+    public Activite() {
     }
 
     public Long getId() {
@@ -36,12 +35,12 @@ public class Nature {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
+    public String getType() {
+        return type;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getLibelle() {

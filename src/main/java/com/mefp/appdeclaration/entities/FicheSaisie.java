@@ -15,8 +15,9 @@ public class FicheSaisie extends CommonEntity {
     private Long id;
     @Column(nullable = false, unique = true, length = 50)
     private String numSaisie;
+    @Column(nullable = false, unique = true, length = 50)
     private Date dateSaisie;
-
+    private Long anneeSaisie;
     @ManyToOne(targetEntity = Structure.class)
     @JoinColumn(name="structure_id")
     private Structure structureSaisie;

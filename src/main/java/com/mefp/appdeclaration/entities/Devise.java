@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "devise", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"libelle"}, name = "ux_libelle_in_devise")})
-public class Devise extends CommonEntity {
+public class Devise  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_devise")

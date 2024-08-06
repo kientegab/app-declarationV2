@@ -14,11 +14,20 @@ public class FicheSaisieDTO {
 
     private String numSaisie;
     private Date dateSaisie;
+    private Long anneeSaisie;
+
+    public Long getAnneeSaisie() {
+        return anneeSaisie;
+    }
+
+    public void setAnneeSaisie(Long anneeSaisie) {
+        this.anneeSaisie = anneeSaisie;
+    }
 
     private Structure structureSaisie;
 
     private Ville lieuSaisie;
-    private  String itinéraire;
+    private  String itineraire;
     private String commentaire;
     private Set<NatureSaisie> nature = new HashSet<>() ;
     private Set<ProcedeSaisie> procede = new HashSet<>() ;
@@ -65,11 +74,11 @@ public class FicheSaisieDTO {
     }
 
     public String getItinéraire() {
-        return itinéraire;
+        return itineraire;
     }
 
     public void setItinéraire(String itinéraire) {
-        this.itinéraire = itinéraire;
+        this.itineraire = itinéraire;
     }
 
     public String getCommentaire() {
