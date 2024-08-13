@@ -12,16 +12,16 @@ public class IntervenantSaisie implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @ManyToOne(targetEntity = Structure.class)
+    //@ManyToOne(targetEntity = Structure.class)
 //    @JoinColumn(name="structure_id")
 //    private Structure structureSaisie;
-//    @ManyToOne(targetEntity = FicheSaisie.class)
+    @ManyToOne(targetEntity = FicheSaisie.class)
     @JoinColumn(name="ficheSaisie_id")
     private FicheSaisie ficheSaisie;
     @Column(nullable = true)
-    private String IdentiteIntervenant;
+    private String identiteIntervenant;
     @Column(nullable = true)
-    private String ContactIntervenant;
+    private String contactIntervenant;
 
     public IntervenantSaisie() {
     }
@@ -42,20 +42,21 @@ public class IntervenantSaisie implements Serializable {
 //        this.structureSaisie = structureSaisie;
 //    }
 
+
     public String getIdentiteIntervenant() {
-        return IdentiteIntervenant;
+        return identiteIntervenant;
     }
 
     public void setIdentiteIntervenant(String identiteIntervenant) {
-        IdentiteIntervenant = identiteIntervenant;
+        this.identiteIntervenant = identiteIntervenant;
     }
 
     public String getContactIntervenant() {
-        return ContactIntervenant;
+        return contactIntervenant;
     }
 
     public void setContactIntervenant(String contactIntervenant) {
-        ContactIntervenant = contactIntervenant;
+        this.contactIntervenant = contactIntervenant;
     }
 
     public FicheSaisie getFicheSaisie() {

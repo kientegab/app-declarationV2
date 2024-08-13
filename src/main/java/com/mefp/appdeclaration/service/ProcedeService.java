@@ -1,8 +1,9 @@
 package com.mefp.appdeclaration.service;
 
-import com.mefp.appdeclaration.entities.Nature;
 import com.mefp.appdeclaration.entities.Procede;
+import com.mefp.appdeclaration.entities.ProcedeSaisie;
 import com.mefp.appdeclaration.repositories.ProcedeRepository;
+import com.mefp.appdeclaration.repositories.ProcedeSaisieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,11 @@ public class ProcedeService {
     @Autowired
     private final ProcedeRepository procedeRepository;
 
-    public ProcedeService(ProcedeRepository procedeRepository) {
+    @Autowired
+    private final ProcedeSaisieRepository procedeSaisieRepository;
+    public ProcedeService(ProcedeRepository procedeRepository, ProcedeSaisieRepository procedeSaisieRepository) {
         this.procedeRepository = procedeRepository;
+        this.procedeSaisieRepository = procedeSaisieRepository;
     }
 
 
@@ -24,6 +28,7 @@ public class ProcedeService {
     }
 
     public List<Procede> findAll(){return  procedeRepository.findAll();}
+    public List<ProcedeSaisie> findProcedeByFicheSaisieId(Long id){return procedeSaisieRepository.findProcedeSaisieByFicheSaisieId(id);}
     public Optional<Procede> findById(Long id){return procedeRepository.findById(id);}
 
     public Optional<Procede> update(Long id, Procede procede){

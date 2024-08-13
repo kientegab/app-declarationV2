@@ -13,9 +13,9 @@ public class FicheSaisie extends CommonEntity {
     @JoinColumn(name="ficheSaisie_id",nullable = false)
     @Column(nullable = false, unique = true, length = 10)
     private Long id;
-    @Column(nullable = false, unique = true, length = 50)
+//    @Column(nullable = false, unique = true, length = 50)
     private String numSaisie;
-    @Column(nullable = false, unique = true, length = 50)
+//    @Column(nullable = false, unique = true, length = 50)
     private Date dateSaisie;
     private Long anneeSaisie;
     @ManyToOne(targetEntity = Structure.class)
@@ -24,10 +24,29 @@ public class FicheSaisie extends CommonEntity {
     @ManyToOne(targetEntity = Ville.class)
     @JoinColumn(name="ville_id")
     private Ville lieuSaisie;
-    private  String itinéraire;
+    private  String itineraire;
     private String commentaire;
 
     public FicheSaisie() {
+    }
+
+    public FicheSaisie(Long id, String numSaisie, Date dateSaisie, Long anneeSaisie, Structure structureSaisie, Ville lieuSaisie, String itineraire, String commentaire) {
+        this.id = id;
+        this.numSaisie = numSaisie;
+        this.dateSaisie = dateSaisie;
+        this.anneeSaisie = anneeSaisie;
+        this.structureSaisie = structureSaisie;
+        this.lieuSaisie = lieuSaisie;
+        this.itineraire = itineraire;
+        this.commentaire = commentaire;
+    }
+
+    public Long getAnneeSaisie() {
+        return anneeSaisie;
+    }
+
+    public void setAnneeSaisie(Long anneeSaisie) {
+        this.anneeSaisie = anneeSaisie;
     }
 
     public Long getId() {
@@ -71,12 +90,13 @@ public class FicheSaisie extends CommonEntity {
         this.lieuSaisie = lieuSaisie;
     }
 
-    public String getItinéraire() {
-        return itinéraire;
+
+    public String getItineraire() {
+        return itineraire;
     }
 
-    public void setItinéraire(String itinéraire) {
-        this.itinéraire = itinéraire;
+    public void setItineraire(String itineraire) {
+        this.itineraire = itineraire;
     }
 
     public String getCommentaire() {

@@ -1,6 +1,8 @@
 package com.mefp.appdeclaration.web;
 
+import com.mefp.appdeclaration.entities.FicheSaisie;
 import com.mefp.appdeclaration.entities.Nature;
+import com.mefp.appdeclaration.entities.NatureSaisie;
 import com.mefp.appdeclaration.entities.Pays;
 import com.mefp.appdeclaration.service.NatureService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +44,11 @@ public class NatureController {
     public ResponseEntity<Void> deleteNature(@PathVariable("id") Long id){
         Optional<Nature> laNature= natureService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("nature/fiche/{id}")
+    public ResponseEntity<List<NatureSaisie>> findNatureByFicheSaisieId(@PathVariable("id") Long id){
+        List<NatureSaisie> laFiche= natureService.findNatureByFicheSaisieId(id);
+        return ResponseEntity.ok(laFiche);
     }
 }

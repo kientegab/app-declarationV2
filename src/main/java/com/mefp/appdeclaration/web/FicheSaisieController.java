@@ -22,7 +22,7 @@ public class FicheSaisieController {
     }
 
     @PostMapping("/fiches")
-    public ResponseEntity<FicheSaisieDTO> create(FicheSaisieDTO ficheSaisieDTO){
+    public ResponseEntity<FicheSaisieDTO> create(@RequestBody FicheSaisieDTO ficheSaisieDTO){
         FicheSaisieDTO ficheSaisieDTO1=ficheSaisieService.create(ficheSaisieDTO);
          return ResponseEntity.ok(ficheSaisieDTO1);
     }
@@ -34,9 +34,15 @@ public class FicheSaisieController {
     }
 
     @PutMapping("/fiches/{id}")
-    public ResponseEntity<Optional> update(@RequestBody FicheSaisieDTO ficheSaisieDTO,@PathVariable("id") Long id ){
+    public ResponseEntity<Optional<FicheSaisieDTO>> update(@RequestBody FicheSaisieDTO ficheSaisieDTO,@PathVariable("id") Long id ){
        Optional<FicheSaisieDTO>  ficheSaisie= ficheSaisieService.update(ficheSaisieDTO, id);
        return  ResponseEntity.ok(ficheSaisie);
 
+    }
+
+    @GetMapping("/fiches/{id}")
+    public ResponseEntity<Optional<FicheSaisie>> findByFicheSaisieId(@PathVariable("id") Long id){
+        Optional<FicheSaisie> laFiche= ficheSaisieService.findFicheSaisieById(id);
+        return ResponseEntity.ok(laFiche);
     }
 }

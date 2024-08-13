@@ -15,23 +15,27 @@ public class FicheSaisieDTO {
     private String numSaisie;
     private Date dateSaisie;
     private Long anneeSaisie;
-
-    public Long getAnneeSaisie() {
-        return anneeSaisie;
-    }
-
-    public void setAnneeSaisie(Long anneeSaisie) {
-        this.anneeSaisie = anneeSaisie;
-    }
-
     private Structure structureSaisie;
-
     private Ville lieuSaisie;
     private  String itineraire;
     private String commentaire;
     private Set<NatureSaisie> nature = new HashSet<>() ;
     private Set<ProcedeSaisie> procede = new HashSet<>() ;
     private Set<IntervenantSaisie> intervenant = new HashSet<>() ;
+
+    public FicheSaisieDTO(Long id, String numSaisie, Date dateSaisie, Long anneeSaisie, Structure structureSaisie, Ville lieuSaisie, String itineraire, String commentaire, Set<NatureSaisie> nature, Set<ProcedeSaisie> procede, Set<IntervenantSaisie> intervenant) {
+        this.id = id;
+        this.numSaisie = numSaisie;
+        this.dateSaisie = dateSaisie;
+        this.anneeSaisie = anneeSaisie;
+        this.structureSaisie = structureSaisie;
+        this.lieuSaisie = lieuSaisie;
+        this.itineraire = itineraire;
+        this.commentaire = commentaire;
+        this.nature = nature;
+        this.procede = procede;
+        this.intervenant = intervenant;
+    }
 
     public Long getId() {
         return id;
@@ -40,7 +44,13 @@ public class FicheSaisieDTO {
     public void setId(Long id) {
         this.id = id;
     }
+    public Long getAnneeSaisie() {
+        return anneeSaisie;
+    }
 
+    public void setAnneeSaisie(Long anneeSaisie) {
+        this.anneeSaisie = anneeSaisie;
+    }
     public String getNumSaisie() {
         return numSaisie;
     }
@@ -73,12 +83,12 @@ public class FicheSaisieDTO {
         this.lieuSaisie = lieuSaisie;
     }
 
-    public String getItinéraire() {
+    public String getItineraire() {
         return itineraire;
     }
 
-    public void setItinéraire(String itinéraire) {
-        this.itineraire = itinéraire;
+    public void setItineraire(String itineraire) {
+        this.itineraire = itineraire;
     }
 
     public String getCommentaire() {

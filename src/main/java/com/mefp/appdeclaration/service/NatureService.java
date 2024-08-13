@@ -1,6 +1,7 @@
 package com.mefp.appdeclaration.service;
 
 import com.mefp.appdeclaration.entities.Nature;
+import com.mefp.appdeclaration.entities.NatureSaisie;
 import com.mefp.appdeclaration.repositories.NatureRepository;
 import com.mefp.appdeclaration.repositories.NatureSaisieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,12 @@ public class NatureService {
     @Autowired
     private final NatureRepository natureRepository;
 
-    public NatureService(NatureRepository natureRepository) {
+    @Autowired
+    private final NatureSaisieRepository natureSaisieRepository;
+
+    public NatureService(NatureRepository natureRepository, NatureSaisieRepository natureSaisieRepository) {
         this.natureRepository = natureRepository;
+        this.natureSaisieRepository = natureSaisieRepository;
     }
 
     public Nature create(Nature nature){
@@ -23,6 +28,7 @@ public class NatureService {
     }
 
     public List<Nature> findAll(){return  natureRepository.findAll();}
+    public List<NatureSaisie> findNatureByFicheSaisieId(Long id){return natureSaisieRepository.findNatureSaisieByFicheSaisieId(id);}
     public Optional<Nature> findById(Long id){return natureRepository.findById(id);}
 
     public Optional<Nature> update(Long id, Nature nature){

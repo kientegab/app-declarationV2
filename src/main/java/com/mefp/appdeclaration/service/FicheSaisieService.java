@@ -15,4 +15,6 @@ public interface FicheSaisieService{
 
 
     Optional<FicheSaisieDTO> update(FicheSaisieDTO ficheSaisieDTO, Long id);
+
+    Optional<FicheSaisie> findFicheSaisieById(Long id);
 }

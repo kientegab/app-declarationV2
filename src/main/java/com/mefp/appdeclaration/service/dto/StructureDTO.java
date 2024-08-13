@@ -22,6 +22,9 @@ public class StructureDTO {
 //    private Ministere ministere;
     private Region region;
 
+    public StructureDTO() {
+    }
+
     public Region getRegion() {
         return region;
     }

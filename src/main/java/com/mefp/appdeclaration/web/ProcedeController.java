@@ -1,7 +1,9 @@
 package com.mefp.appdeclaration.web;
 
 import com.mefp.appdeclaration.entities.Nature;
+import com.mefp.appdeclaration.entities.NatureSaisie;
 import com.mefp.appdeclaration.entities.Procede;
+import com.mefp.appdeclaration.entities.ProcedeSaisie;
 import com.mefp.appdeclaration.service.NatureService;
 import com.mefp.appdeclaration.service.ProcedeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,4 +46,11 @@ public class ProcedeController {
         Optional<Procede> leProcede= procedeService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("procede/fiche/{id}")
+    public ResponseEntity<List<ProcedeSaisie>> findProcedeByFicheSaisieId(@PathVariable("id") Long id){
+        List<ProcedeSaisie> leProcede= procedeService.findProcedeByFicheSaisieId(id);
+        return ResponseEntity.ok(leProcede);
+    }
 }
+

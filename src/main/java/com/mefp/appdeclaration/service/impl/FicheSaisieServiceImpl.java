@@ -46,9 +46,9 @@ public class FicheSaisieServiceImpl implements FicheSaisieService {
         FicheSaisie ficheSaisie= new FicheSaisie();
         ficheSaisie.setDateSaisie(ficheSaisieDTO.getDateSaisie());
         ficheSaisie.setNumSaisie(ficheSaisieDTO.getNumSaisie());
-        ficheSaisie.setAnneeSaisie(Long.valueOf(ficheSaisieDTO.getDateSaisie().getYear()));
+        ficheSaisie.setAnneeSaisie(ficheSaisie.getAnneeSaisie());
         ficheSaisie.setLieuSaisie(ficheSaisieDTO.getLieuSaisie());
-        ficheSaisie.setItinéraire(ficheSaisieDTO.getItinéraire());
+        ficheSaisie.setItineraire(ficheSaisieDTO.getItineraire());
         ficheSaisie.setStructureSaisie(ficheSaisieDTO.getStructureSaisie());
         ficheSaisie.setCommentaire(ficheSaisieDTO.getCommentaire());
         ficheSaisieRepository.save(ficheSaisie);
@@ -59,7 +59,7 @@ public class FicheSaisieServiceImpl implements FicheSaisieService {
                 natureSaisie1.setNature(natureSaisie.getNature());
                 natureSaisie1.setPoids(natureSaisie.getPoids());
                 natureSaisie1.setValeur(natureSaisie.getValeur());
-                natureSaisie1.getFicheSaisie(ficheSaisie);
+                natureSaisie1.setFicheSaisie(ficheSaisie);
                 natureSaisieRepository.save(natureSaisie1);
             }
         }
@@ -103,9 +103,9 @@ public class FicheSaisieServiceImpl implements FicheSaisieService {
 
             ficheSaisie.setDateSaisie(ficheSaisieDTO.getDateSaisie());
             ficheSaisie.setNumSaisie(ficheSaisieDTO.getNumSaisie());
-            ficheSaisie.setAnneeSaisie(Long.valueOf(ficheSaisieDTO.getDateSaisie().getYear()));
+            ficheSaisie.setAnneeSaisie(ficheSaisie.getAnneeSaisie());
             ficheSaisie.setLieuSaisie(ficheSaisieDTO.getLieuSaisie());
-            ficheSaisie.setItinéraire(ficheSaisieDTO.getItinéraire());
+            ficheSaisie.setItineraire(ficheSaisieDTO.getItineraire());
             ficheSaisie.setStructureSaisie(ficheSaisieDTO.getStructureSaisie());
             ficheSaisie.setCommentaire(ficheSaisieDTO.getCommentaire());
             Optional.of(ficheSaisieRepository.save(ficheSaisie));
@@ -151,6 +151,12 @@ public class FicheSaisieServiceImpl implements FicheSaisieService {
         else {
           return  Optional.empty();
         }
+    }
+
+    @Override
+    public Optional<FicheSaisie> findFicheSaisieById(Long id){
+        FicheSaisie laFiche= ficheSaisieRepository.findFicheSaisieById(id);
+        return Optional.of(laFiche);
     }
 }
 
