@@ -24,7 +24,7 @@ public class FichePrevenController {
     }
 
     @PostMapping("/fichep")
-    public ResponseEntity<FichePrevention> createPrevention(FichePrevention fichePrevention){
+    public ResponseEntity<FichePrevention> createPrevention(@RequestBody FichePrevention fichePrevention){
         FichePrevention fichePrevention1=fichePreventionService.createPrevention(fichePrevention);
         return ResponseEntity.ok(fichePrevention1);
     }

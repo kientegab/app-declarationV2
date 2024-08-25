@@ -14,7 +14,7 @@ public class FichePrevention extends CommonEntity{
     @JoinColumn(name="fichePrevention_id",nullable = false)
     @Column(nullable = false, unique = true, length = 10)
     private Long id;
-    @Column(nullable = false, unique = true, length = 50)
+   // @Column(nullable = false, unique = true, length = 50)
     private Date datePrevention;
     private Date dateDebut;
     private Date dateFin;

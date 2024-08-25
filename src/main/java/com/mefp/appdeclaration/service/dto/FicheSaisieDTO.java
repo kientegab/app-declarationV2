@@ -1,10 +1,8 @@
 package com.mefp.appdeclaration.service.dto;
 
 import com.mefp.appdeclaration.entities.*;
+import net.bytebuddy.implementation.bind.annotation.Default;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +12,7 @@ public class FicheSaisieDTO {
 
     private String numSaisie;
     private Date dateSaisie;
-    private Long anneeSaisie;
+    private int anneeSaisie;
     private Structure structureSaisie;
     private Ville lieuSaisie;
     private  String itineraire;
@@ -23,7 +21,7 @@ public class FicheSaisieDTO {
     private Set<ProcedeSaisie> procede = new HashSet<>() ;
     private Set<IntervenantSaisie> intervenant = new HashSet<>() ;
 
-    public FicheSaisieDTO(Long id, String numSaisie, Date dateSaisie, Long anneeSaisie, Structure structureSaisie, Ville lieuSaisie, String itineraire, String commentaire, Set<NatureSaisie> nature, Set<ProcedeSaisie> procede, Set<IntervenantSaisie> intervenant) {
+    public FicheSaisieDTO(Long id, String numSaisie, Date dateSaisie, int anneeSaisie, Structure structureSaisie, Ville lieuSaisie, String itineraire, String commentaire, Set<NatureSaisie> nature, Set<ProcedeSaisie> procede, Set<IntervenantSaisie> intervenant) {
         this.id = id;
         this.numSaisie = numSaisie;
         this.dateSaisie = dateSaisie;
@@ -37,6 +35,7 @@ public class FicheSaisieDTO {
         this.intervenant = intervenant;
     }
 
+
     public Long getId() {
         return id;
     }
@@ -44,13 +43,15 @@ public class FicheSaisieDTO {
     public void setId(Long id) {
         this.id = id;
     }
-    public Long getAnneeSaisie() {
+
+    public int getAnneeSaisie() {
         return anneeSaisie;
     }
 
-    public void setAnneeSaisie(Long anneeSaisie) {
+    public void setAnneeSaisie(int anneeSaisie) {
         this.anneeSaisie = anneeSaisie;
     }
+
     public String getNumSaisie() {
         return numSaisie;
     }

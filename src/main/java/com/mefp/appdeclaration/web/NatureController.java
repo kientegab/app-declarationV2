@@ -1,14 +1,14 @@
 package com.mefp.appdeclaration.web;
 
-import com.mefp.appdeclaration.entities.FicheSaisie;
 import com.mefp.appdeclaration.entities.Nature;
 import com.mefp.appdeclaration.entities.NatureSaisie;
-import com.mefp.appdeclaration.entities.Pays;
+import com.mefp.appdeclaration.entities.dto.Naturedto;
 import com.mefp.appdeclaration.service.NatureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,5 +50,11 @@ public class NatureController {
     public ResponseEntity<List<NatureSaisie>> findNatureByFicheSaisieId(@PathVariable("id") Long id){
         List<NatureSaisie> laFiche= natureService.findNatureByFicheSaisieId(id);
         return ResponseEntity.ok(laFiche);
+    }
+
+    @GetMapping("nature/total/{id}")
+    public ResponseEntity<Naturedto> findByFicheSaisieId(@PathVariable("id") Long id){
+        Naturedto laNature=natureService.findByFicheSaisieId(id);
+        return  ResponseEntity.ok(laNature);
     }
 }

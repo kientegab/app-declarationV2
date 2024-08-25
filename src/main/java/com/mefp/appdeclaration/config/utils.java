@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Calendar;
+import java.util.Date;
 
 @Component
 public class utils {
@@ -32,4 +34,14 @@ public class utils {
         }
 
     }
+
+    public static int getCurrentYear() {
+        Date  date = new Date();
+        Calendar  cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        return cal.get(Calendar.YEAR);
+    }
+
+
 }

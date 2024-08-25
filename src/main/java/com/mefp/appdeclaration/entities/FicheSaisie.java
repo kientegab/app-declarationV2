@@ -17,7 +17,7 @@ public class FicheSaisie extends CommonEntity {
     private String numSaisie;
 //    @Column(nullable = false, unique = true, length = 50)
     private Date dateSaisie;
-    private Long anneeSaisie;
+    private int anneeSaisie;
     @ManyToOne(targetEntity = Structure.class)
     @JoinColumn(name="structure_id")
     private Structure structureSaisie;
@@ -30,7 +30,7 @@ public class FicheSaisie extends CommonEntity {
     public FicheSaisie() {
     }
 
-    public FicheSaisie(Long id, String numSaisie, Date dateSaisie, Long anneeSaisie, Structure structureSaisie, Ville lieuSaisie, String itineraire, String commentaire) {
+    public FicheSaisie(Long id, String numSaisie, Date dateSaisie, int anneeSaisie, Structure structureSaisie, Ville lieuSaisie, String itineraire, String commentaire) {
         this.id = id;
         this.numSaisie = numSaisie;
         this.dateSaisie = dateSaisie;
@@ -41,11 +41,12 @@ public class FicheSaisie extends CommonEntity {
         this.commentaire = commentaire;
     }
 
-    public Long getAnneeSaisie() {
+
+    public int getAnneeSaisie() {
         return anneeSaisie;
     }
 
-    public void setAnneeSaisie(Long anneeSaisie) {
+    public void setAnneeSaisie(int anneeSaisie) {
         this.anneeSaisie = anneeSaisie;
     }
 
