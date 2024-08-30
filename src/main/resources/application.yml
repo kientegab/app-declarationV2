@@ -1,5 +1,12 @@
 server:
   port: 8082
+  ssl:
+    enabled: true
+    protocol: TLS
+    key-store-type: PKCS12
+    key-store: classpath:keystore/douanes.p12
+    key-store-password: P@ssw0rd
+    key-alias: douanes-prod
   servlet:
     context-path:
 application:
@@ -102,7 +109,7 @@ spring:
       enabled: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:5432/declaration
+    url: jdbc:postgresql://localhost:5432/scmp_scssdb
     username: postgres
     password: 1222 #admin #rootPostgresql
     hikari:
@@ -133,7 +140,7 @@ spring:
   datasource:
     initialization-mode: always
     platform: postgres
-    url: jdbc:postgresql:localhost:5432/dgessdb
+    url: jdbc:postgresql:localhost:5432/scmp_scssdb
     username: postgres
     password: 1222 #rootPostgresql admin
     hikari:

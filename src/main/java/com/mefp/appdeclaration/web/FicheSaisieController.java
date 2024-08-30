@@ -4,6 +4,7 @@ import com.mefp.appdeclaration.config.utils;
 import com.mefp.appdeclaration.entities.FicheSaisie;
 import com.mefp.appdeclaration.entities.Structure;
 import com.mefp.appdeclaration.entities.dto.EtatSaisie;
+import com.mefp.appdeclaration.entities.dto.EtatSaisieDetail;
 import com.mefp.appdeclaration.entities.dto.PeriodeExport;
 import com.mefp.appdeclaration.service.AgentService;
 import com.mefp.appdeclaration.service.FicheSaisieService;
@@ -48,12 +49,24 @@ public class FicheSaisieController {
         List<FicheSaisie> laliste= ficheSaisieService.findAll();
         return  ResponseEntity.ok(laliste);
     }
+
+    @GetMapping("/fiches/struct-saisie/{id}")
+    public ResponseEntity<List<FicheSaisie>> findBystructureSaisieId(@PathVariable("id") Long id ){
+        List<FicheSaisie> laliste= ficheSaisieService.findBystructureSaisieId(id);
+        return  ResponseEntity.ok(laliste);
+    }
+
     @GetMapping("/fiches/struct/{id}")
     public ResponseEntity<List<EtatSaisie>> findPersonalise(@PathVariable("id") Long id ){
         List<EtatSaisie> laliste= ficheSaisieService.findPersonalise(id);
         return  ResponseEntity.ok(laliste);
     }
 
+    @GetMapping("/fiches/details/struct/{id}")
+    public ResponseEntity<List<EtatSaisieDetail>> findPersonaliseDetail(@PathVariable("id") Long id ){
+        List<EtatSaisieDetail> laliste= ficheSaisieService.findPersonaliseDetail(id);
+        return  ResponseEntity.ok(laliste);
+    }
     @PutMapping("/fiches/{id}")
     public ResponseEntity<Optional<FicheSaisieDTO>> update(@RequestBody FicheSaisieDTO ficheSaisieDTO,@PathVariable("id") Long id ){
        Optional<FicheSaisieDTO>  ficheSaisie= ficheSaisieService.update(ficheSaisieDTO, id);
@@ -68,11 +81,20 @@ public class FicheSaisieController {
     }
 
     @PostMapping(value = "/fiches/export")
-    public void exportDeclaration(HttpServletResponse reponse)
+    public void exportDeclaration( @RequestBody Structure structure,HttpServletResponse reponse)
             throws IOException, JRException {
         OutputStream outputStream = reponse.getOutputStream();
         reponse.setContentType("application/pdf");
         reponse.setHeader("Content-Disposition", String.format("attachment; filename=\"RAPPORT_SAISIES_"  + ".pdf" + "\""));
-        ficheSaisieService.exportDeclaration(outputStream);
+        ficheSaisieService.exportDeclaration(structure,outputStream);
+    }
+
+    @PostMapping(value = "/fiches/detail/export")
+    public void exportSaisieDetail( @RequestBody Structure structure,HttpServletResponse reponse)
+            throws IOException, JRException {
+        OutputStream outputStream = reponse.getOutputStream();
+        reponse.setContentType("application/pdf");
+        reponse.setHeader("Content-Disposition", String.format("attachment; filename=\"RAPPORT_SAISIES_"  + ".pdf" + "\""));
+        ficheSaisieService.exportSaisieDetails(structure,outputStream);
     }
 }

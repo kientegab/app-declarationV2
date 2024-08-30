@@ -2,6 +2,7 @@ package com.mefp.appdeclaration.config;
 
 import java.time.Duration;
 
+import lombok.AllArgsConstructor;
 import org.ehcache.config.builders.*;
 import org.ehcache.jsr107.Eh107Configuration;
 import org.hibernate.cache.jcache.ConfigSettings;
@@ -15,13 +16,15 @@ import org.springframework.context.annotation.*;
 
 import com.mefp.appdeclaration.utils.PrefixedKeyGenerator;
 
+
 @Configuration
 @EnableCaching
 public class CacheConfiguration {
 
     private GitProperties gitProperties;
     private BuildProperties buildProperties;
-    private final javax.cache.configuration.Configuration<Object, Object> jcacheConfiguration;
+    private final javax.cache.configuration.Configuration<Object, Object> jcacheConfiguration ;
+
 
     public CacheConfiguration(ApplicationProperties applicationProperties) {
         ApplicationProperties.Cache.Ehcache ehcache = applicationProperties.getCache().getEhcache();
@@ -33,6 +36,8 @@ public class CacheConfiguration {
                         ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(ehcache.getTimeToLiveSeconds())))
                 .build());
     }
+
+
 
     @Bean
     public HibernatePropertiesCustomizer hibernatePropertiesCustomizer(javax.cache.CacheManager cacheManager) {

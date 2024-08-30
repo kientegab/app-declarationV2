@@ -30,6 +30,7 @@ public class FicheSaisie extends CommonEntity {
     public FicheSaisie() {
     }
 
+
     public FicheSaisie(Long id, String numSaisie, Date dateSaisie, int anneeSaisie, Structure structureSaisie, Ville lieuSaisie, String itineraire, String commentaire) {
         this.id = id;
         this.numSaisie = numSaisie;

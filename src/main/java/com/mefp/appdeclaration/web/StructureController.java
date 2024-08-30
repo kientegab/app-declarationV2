@@ -94,14 +94,14 @@ public class StructureController {
                 .body(result);
     }
 
-    @GetMapping(path = "/structure")
-    public ResponseEntity<Page<Structure>> findAllStructure(Pageable pageable) {
-        Page<Structure> structure = structureService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), structure);
-        return ResponseEntity.ok().headers(headers).body(structure);
-    }
+//    @GetMapping(path = "/structure")
+//    public ResponseEntity<Page<Structure>> findAllStructure(Pageable pageable) {
+//        Page<Structure> structure = structureService.findAll(pageable);
+//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), structure);
+//        return ResponseEntity.ok().headers(headers).body(structure);
+//    }
 
-    @GetMapping(path = "/structures")
+    @GetMapping(path = "/structure")
     public ResponseEntity<List<Structure>> findAllStructures() {
         List<Structure> structure = structureService.findAllStructure();
         return ResponseEntity.ok(structure);

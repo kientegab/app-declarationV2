@@ -20,6 +20,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.*;
 
 @Service
@@ -38,7 +39,7 @@ public class FicheSaisieServiceImpl implements FicheSaisieService {
     @Autowired
     private  final FicheSaisieMapper ficheSaisieMapper;
     private final FicheSaisieCompMapper ficheSaisieCompMapper;
-    private  static int numIncrement= 0001;
+//    private  static int numIncrement= 0001;
     private final AgentService agentService;
     private final StructureRepository  structureRepository;
 
@@ -61,10 +62,25 @@ public class FicheSaisieServiceImpl implements FicheSaisieService {
         this.interpeleRepository = interpeleRepository;
     }
 
+    @Override
+    public List<FicheSaisie> findAll(){
+        return ficheSaisieRepository.findAll();
+    }
+    public List<FicheSaisie> findBystructureSaisieId(Long id){
+        return ficheSaisieRepository.findBystructureSaisieId(id);
+    }
+
+    public List<EtatSaisie> findPersonalise(Long id){
+        return ficheSaisieRepository.findPersonalise(id);
+    }
+
+    public List<EtatSaisieDetail> findPersonaliseDetail(Long id){
+        return ficheSaisieRepository.findPersonaliseDetail(id);
+    }
     public  String numeroSaisie(String matricule){
-        int val= numIncrement+1;
+
         String structureSigle= this.agentService.getStructureSigle(matricule);
-        String numeroSaisie= structureSigle+ utils.getCurrentYear()+val;
+        String numeroSaisie= structureSigle+ utils.getCurrentYear();
         return  numeroSaisie;
     }
 
@@ -99,11 +115,42 @@ public class FicheSaisieServiceImpl implements FicheSaisieService {
         ficheSaisieCompDTO1.setInterpele(ficheSaisieCompDTO.getInterpele());
         return ficheSaisieCompDTO1;
     }
+
+    static String getRandomString(int i) {
+        // bind the length
+        byte[] bytearray;
+        bytearray = new byte[256];
+        String mystring;
+        StringBuffer thebuffer;
+        String theAlphaNumericS;
+
+        new Random().nextBytes(bytearray);
+
+        mystring = new String(bytearray, Charset.forName("UTF-8"));
+
+        thebuffer = new StringBuffer();
+        // remove all spacial char
+        theAlphaNumericS = mystring.replaceAll("[^A-Z0-9]", "");
+
+        // random selection
+        for (int m = 0; m < theAlphaNumericS.length(); m++) {
+            if (Character.isLetter(theAlphaNumericS.charAt(m)) && (i > 0)
+                    || Character.isDigit(theAlphaNumericS.charAt(m)) && (i > 0)) {
+                thebuffer.append(theAlphaNumericS.charAt(m));
+                i--;
+            }
+        }
+
+        // the resulting string
+        return thebuffer.toString();
+    }
     @Override
     public FicheSaisieDTO create(FicheSaisieDTO ficheSaisieDTO, String matricule) {
+        int i=10;
         FicheSaisie ficheSaisie= new FicheSaisie();
+        String numero= numeroSaisie(matricule)+ getRandomString(i);
         ficheSaisie.setDateSaisie(ficheSaisieDTO.getDateSaisie());
-        ficheSaisie.setNumSaisie(numeroSaisie(matricule));
+        ficheSaisie.setNumSaisie(numero);
         ficheSaisie.setAnneeSaisie(utils.getCurrentYear());
         ficheSaisie.setLieuSaisie(ficheSaisieDTO.getLieuSaisie());
         ficheSaisie.setItineraire(ficheSaisieDTO.getItineraire());
@@ -149,31 +196,24 @@ public class FicheSaisieServiceImpl implements FicheSaisieService {
         ficheSaisieDTO1.setIntervenant(ficheSaisieDTO.getIntervenant());
         return ficheSaisieDTO1;
     }
-   @Override
-    public List<FicheSaisie> findAll(){
-      return ficheSaisieRepository.findAll();
-    }
 
-   public List<EtatSaisie> findPersonalise(Long id){
-       return ficheSaisieRepository.findPersonalise(id);
-   }
 
     @Override
-    public void exportDeclaration(OutputStream outputStream){
+    public void exportDeclaration(Structure structure, OutputStream outputStream){
 
         try {
             //recup logo
             InputStream imgLogo = resourceLoader.getResource("classpath:logo_douane.jpeg").getInputStream();
             //recup struct..
-            Structure lastructure = structureRepository.findById(1L).orElseThrow(() -> new RuntimeException("structure inexistante"));
+            Structure lastructure = structureRepository.findById(structure.getId()).orElseThrow(() -> new RuntimeException("structure inexistante"));
             List<SaisiePrintList> listSaisies = new ArrayList<>();
             //List<FicheSaisie> ficheSaisies = ficheSaisieRepository.findAll();
-            List<EtatSaisie> ficheSaisies = ficheSaisieRepository.findPersonalise(1l);
-            SaisiePrintList saisiePrintList = null;
+            List<EtatSaisie> ficheSaisies = ficheSaisieRepository.findPersonalise(structure.getId());
+
             for (EtatSaisie fiche : ficheSaisies) {
-                saisiePrintList = new SaisiePrintList();
-                saisiePrintList.setDateSaisie(fiche.getDateSaisie().toString());
+                SaisiePrintList saisiePrintList = new SaisiePrintList();
                 saisiePrintList.setNumSaisie(fiche.getNumSaisie());
+                saisiePrintList.setDateSaisie(fiche.getDateSaisie().toString());
                 saisiePrintList.setLieuSaisie(fiche.getLieuSaisie());
                 saisiePrintList.setItineraire(fiche.getItineraire());
                 saisiePrintList.setNature(fiche.getNature());
@@ -185,9 +225,9 @@ public class FicheSaisieServiceImpl implements FicheSaisieService {
             // conteneur de données de base à imprimer
             SaisiePrintdto saisiePrintdto = new SaisiePrintdto(imgLogo, lastructure.getRegion().getLibelle(), lastructure.getLibelle(), listSaisies);
 
-            InputStream inputStream = this.getClass().getResourceAsStream("/ficheSaisie.jasper");
+            InputStream inputStream = this.getClass().getResourceAsStream("/fiche_vrai.jasper");
 
-            JRDataSource jRDataSource = new JRBeanCollectionDataSource(Arrays.asList(saisiePrintList));
+            JRDataSource jRDataSource = new JRBeanCollectionDataSource(Arrays.asList(saisiePrintdto));
 
             Map<String, Object> map = new HashMap<>();
 
@@ -203,6 +243,58 @@ public class FicheSaisieServiceImpl implements FicheSaisieService {
             System.out.println("Erreur. ex = "+ex);
         }
     }
+
+    @Override
+    public void  exportSaisieDetails(Structure structure, OutputStream outputStream){
+
+        try {
+            //recup logo
+            InputStream imgLogo = resourceLoader.getResource("classpath:logo_douane.jpeg").getInputStream();
+            //recup struct..
+            Structure lastructure = structureRepository.findById(structure.getId()).orElseThrow(() -> new RuntimeException("structure inexistante"));
+            List<SaisieDPrintList> listSaisies = new ArrayList<>();
+            //List<FicheSaisie> ficheSaisies = ficheSaisieRepository.findAll();
+            List<EtatSaisieDetail> ficheSaisies = ficheSaisieRepository.findPersonaliseDetail(structure.getId());
+
+            for (EtatSaisieDetail fiche : ficheSaisies) {
+                SaisieDPrintList saisiePrintList = new SaisieDPrintList();
+                saisiePrintList.setNature(fiche.getNature());
+                saisiePrintList.setPoids(fiche.getPoids().toString());
+                saisiePrintList.setDateSaisie(fiche.getDateSaisie().toString());
+                saisiePrintList.setLieuSaisie(fiche.getLieuSaisie());
+                saisiePrintList.setItineraire(fiche.getItineraire());
+                saisiePrintList.setExportation(fiche.getExportation().toString());
+                saisiePrintList.setUsage(fiche.getUsage().toString());
+                saisiePrintList.setVente(fiche.getVente().toString());
+                saisiePrintList.setNombre(fiche.getNombre().toString());
+                saisiePrintList.setNationalite(fiche.getNationalite());
+                saisiePrintList.setSexe(fiche.getSexe().toString());
+                saisiePrintList.setTranche(fiche.getTranche());
+                saisiePrintList.setSuiteDonne(fiche.getSuiteDonne());
+                listSaisies.add(saisiePrintList);
+            }
+            // conteneur de données de base à imprimer
+            SaisieDPrintdto saisieDPrintdto = new SaisieDPrintdto(imgLogo, lastructure.getRegion().getLibelle(), lastructure.getLibelle(), listSaisies);
+
+            InputStream inputStream = this.getClass().getResourceAsStream("/fiche_detail.jasper");
+
+            JRDataSource jRDataSource = new JRBeanCollectionDataSource(Arrays.asList(saisieDPrintdto));
+
+            Map<String, Object> map = new HashMap<>();
+
+            JasperReport japerReport = (JasperReport) JRLoader.loadObject(inputStream);
+
+            JasperPrint jaspertPrint = JasperFillManager.fillReport(japerReport, map, jRDataSource);
+
+            JasperExportManager.exportReportToPdfStream(jaspertPrint, outputStream);
+
+        } catch (JRException e) {
+            throw new RuntimeException("Document indisponible, pour cause d'erreur inconnue ! Veuillez réessayer SVP."+e.getMessage());
+        } catch (IOException ex) {
+            System.out.println("Erreur. ex = "+ex);
+        }
+    }
+
     @Override
     public Optional<FicheSaisieDTO> update(FicheSaisieDTO ficheSaisieDTO, Long id){
         Optional<FicheSaisie> laFiche= ficheSaisieRepository.findById(id);
