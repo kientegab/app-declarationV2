@@ -21,6 +21,7 @@ import com.mefp.appdeclaration.service.dto.AgentDTO;
 import com.mefp.appdeclaration.service.dto.PasswordChangeDTO;
 import com.mefp.appdeclaration.web.exceptions.BadRequestAlertException;
 import com.mefp.appdeclaration.web.exceptions.InvalidPasswordException;
+import com.mefp.appdeclaration.web.exceptions.LoginAlreadyUsedException;
 import com.mefp.appdeclaration.web.vm.EmailVM;
 import com.mefp.appdeclaration.web.vm.KeyAndPasswordVM;
 import com.mefp.appdeclaration.web.vm.ManagedAgentVM;
@@ -28,6 +29,7 @@ import com.mefp.appdeclaration.web.vm.ManagedAgentVM;
 /**
  * REST controller for managing the current agent's account.
  */
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/dgd")
 public class AccountController {

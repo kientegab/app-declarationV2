@@ -1,8 +1,6 @@
 package com.mefp.appdeclaration.config;
 
 import java.time.Duration;
-
-import lombok.AllArgsConstructor;
 import org.ehcache.config.builders.*;
 import org.ehcache.jsr107.Eh107Configuration;
 import org.hibernate.cache.jcache.ConfigSettings;
@@ -13,10 +11,7 @@ import org.springframework.boot.info.*;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.*;
-
 import com.mefp.appdeclaration.utils.PrefixedKeyGenerator;
-
-
 @Configuration
 @EnableCaching
 public class CacheConfiguration {
@@ -52,7 +47,7 @@ public class CacheConfiguration {
             createCache(cm, com.mefp.appdeclaration.entities.Agent.class.getName());
             createCache(cm, com.mefp.appdeclaration.entities.Profile.class.getName());
             createCache(cm, com.mefp.appdeclaration.entities.Agent.class.getName() + ".profiles");
-            createCache(cm, com.mefp.appdeclaration.entities.Privilege.class.getName());
+            //createCache(cm, com.mefp.appdeclaration.entities.Privilege.class.getName());
             createCache(cm, com.mefp.appdeclaration.entities.Profile.class.getName() + ".privileges");
 
         };

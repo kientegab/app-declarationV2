@@ -21,6 +21,7 @@ import com.mefp.appdeclaration.web.vm.LoginVM;
 /**
  * Controller to authenticate agents.
  */
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/dgd")
 public class AgentJWTController {

@@ -19,6 +19,7 @@ import com.mefp.appdeclaration.service.PrivilegeService;
 import com.mefp.appdeclaration.utils.*;
 import com.mefp.appdeclaration.web.exceptions.*;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api")
 public class PrivilegeController {

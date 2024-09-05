@@ -23,6 +23,7 @@ import com.mefp.appdeclaration.service.dto.StructureDTO;
 import com.mefp.appdeclaration.utils.*;
 import com.mefp.appdeclaration.web.exceptions.BadRequestAlertException;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping(path = "/api/dgd")
 public class StructureController {

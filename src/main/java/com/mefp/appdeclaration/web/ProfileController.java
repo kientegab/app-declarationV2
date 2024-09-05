@@ -22,6 +22,7 @@ import com.mefp.appdeclaration.utils.*;
 import com.mefp.appdeclaration.web.exceptions.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/dgd")
 public class ProfileController {

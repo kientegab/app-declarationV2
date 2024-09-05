@@ -62,6 +62,7 @@ import com.mefp.appdeclaration.web.vm.ProfilerVM;
  * Another option would be to have a specific JPA entity graph to handle this
  * case.
  */
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/dgd")
 public class AgentController {
